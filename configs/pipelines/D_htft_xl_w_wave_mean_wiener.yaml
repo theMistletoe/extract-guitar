@@ -1,0 +1,26 @@
+name: D_htft_xl_w_wave_mean_wiener
+description: 'Strategy D: wave_mean of A_htdemucs6s_ft, A_xlance + Wiener'
+steps:
+- id: m0_guitar
+  model: htdemucs6s_gtrft
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: m1_guitar
+  model: xlance_gtr
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: ens
+  ensemble:
+  - m0_guitar
+  - m1_guitar
+  method: wave_mean
+- id: wf
+  post: wiener
+  input: ens
+  iterations: 1
+  power: 2.0
+output: wf

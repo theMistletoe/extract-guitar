@@ -1,0 +1,7 @@
+- pipeline: D_htft_xl_w_wave_mean_wiener
+  slug: D_htft_xl_w_wave_mean_wiener
+  strategy: D
+  hypothesis: Combining A_htdemucs6s_ft, A_xlance with wave_mean and a Wiener refinement
+    averages out model-specific errors and beats the best single member.
+  change: ensemble method=wave_mean, weights=equal, wiener post-filter
+  next: Compare methods; keep the best as Champion candidate.

@@ -40,3 +40,11 @@ Oracle masks computed from the ground truth on the same 41 clips: mixture-as-est
 12.84). The first ensemble (3.64 dB) is ≈7 dB below the Wiener oracle, so there is real
 headroom — the validation set is hard (guitar 7–14 dB below the rest in many clips) but not
 saturated.
+* exp008 mask mean (mixture phase, masks clipped to [0,1]): 3.30 dB (−0.34) — clipping the
+  ratio masks and using the mixture phase loses information the waveform mean keeps.
+* exp009–011 adding becruily as a third member: waveform mean 3.59, magnitude median 3.54,
+  mask mean 3.26 dB — a weaker member dilutes the average; not every extra model helps.
+* exp012 Wiener post-filter on the Champion ensemble: 3.52 dB (−0.12) — re-estimating the
+  mask from the ensemble's own target/residual PSDs sharpens it and removes guitar energy.
+* exp013/014 weight search (35:65 / 65:35): 3.62 / 3.58 dB — equal weights stay best; the
+  optimum is flat, so no fine weight tuning on the validation set is warranted.

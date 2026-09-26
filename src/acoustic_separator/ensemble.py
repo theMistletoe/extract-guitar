@@ -88,14 +88,16 @@ def mask_mean(ests, mix, weights=None, power: float = 1.0, **_):
 
 
 def band_weighted(ests, mix=None, band_weights=None, crossovers=(250.0, 2000.0, 8000.0),
-                  sr: int = 44100, **_):
-    """Frequency-dependent weighting: band_weights[i][b] = weight of estimate i in band b."""
+                  sr: int = 44100, normalize: bool = True, **_):
+    """Frequency-dependent weighting: band_weights[i][b] = weight of estimate i in band b.
+    With normalize=False the weights are used as given (e.g. least-squares fitted)."""
     T = ests[0].shape[-1]
     specs = [_stft(e) for e in ests]
     freqs = torch.fft.rfftfreq(N_FFT, 1 / sr)
     edges = [0.0, *crossovers, sr / 2 + 1]
     bw = np.asarray(band_weights, dtype=np.float64)  # (n_est, n_bands)
-    bw = bw / bw.sum(0, keepdims=True)
+    if normalize:
+        bw = bw / bw.sum(0, keepdims=True)
     W = torch.zeros(len(ests), len(freqs))
     for b in range(len(edges) - 1):
         sel = (freqs >= edges[b]) & (freqs < edges[b + 1])
