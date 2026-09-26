@@ -36,7 +36,9 @@ from acoustic_separator.refiner import MaskRefiner, features, istft, refiner_los
 
 CLIPS = ROOT / "datasets" / "train_clips"
 MANIFEST = ROOT / "datasets" / "manifest.csv"
-PARAMS = {"num_overlap": 2, "precision": "bf16"}
+# Training clips are 6 s; candidates are computed with a 6 s chunk so every clip costs exactly
+# one forward pass per model (default 13-20 s chunks would mostly process zero padding).
+PARAMS = {"num_overlap": 2, "precision": "bf16", "chunk_size": 264600}
 
 
 def train_pool():
@@ -54,6 +56,11 @@ def train_pool():
                 pool.setdefault(r["instrument"], []).append(
                     Source(id=r["id"], path=str(p), cls=r["instrument"], license=r["license"],
                            dataset=r["source"], split="train"))
+    ag = pool.get("acoustic_guitar", [])
+    nylon = [x for x in ag if x.id.startswith("gaps_")]
+    steel = [x for x in ag if not x.id.startswith("gaps_")]
+    if nylon and steel:  # balance nylon / steel string guitars (the target is nylon)
+        pool["acoustic_guitar"] = steel + nylon * max(1, round(len(steel) / len(nylon)))
     return pool, songs
 
 
@@ -62,7 +69,7 @@ def cmd_prepare(a):
     rng = np.random.default_rng(a.seed)
     CLIPS.mkdir(parents=True, exist_ok=True)
     n = 0
-    for song in songs:
+    for song in songs if a.clips_per_song > 0 else []:
         groups = load_song_groups(song)
         if "acoustic_guitar" not in groups:
             continue
@@ -74,10 +81,13 @@ def cmd_prepare(a):
             n += 1
     print({k: len(v) for k, v in pool.items()})
     scen = [s for s, d in SCENARIOS.items() if any(pool.get(c) for c in d["classes"])]
+    weights = json.loads(Path(a.scenario_weights).read_text()) if a.scenario_weights else {}
+    p = np.array([float(weights.get(sc, 1.0)) for sc in scen])
+    p = p / p.sum()
     for k in range(a.n_syn):
-        sc = scen[k % len(scen)]
+        sc = scen[k % len(scen)] if not weights else str(rng.choice(scen, p=p))
         clip = make_mixture(pool, sc, rng, seconds=a.seconds)
-        _write(CLIPS / f"syn_{sc}_{k:03d}", clip)
+        _write(CLIPS / f"syn{a.tag}_{sc}_{k:03d}", clip)
         n += 1
     print(f"{n} training clips in {CLIPS}")
 
@@ -86,7 +96,10 @@ def _write(d: Path, clip: dict):
     d.mkdir(parents=True, exist_ok=True)
     save_audio(d / "mixture.wav", clip["mixture"], 44100)
     save_audio(d / "acoustic_guitar.wav", clip["stems"]["acoustic_guitar"], 44100)
-    (d / "meta.json").write_text(json.dumps(clip["info"], default=str)[:20000])
+    for k, v in clip["stems"].items():
+        if k != "acoustic_guitar":
+            save_audio(d / "stems" / f"{k}.wav", v, 44100)
+    (d / "meta.json").write_text(json.dumps(clip["info"], default=str))
 
 
 def _spec(s: str):
@@ -124,9 +137,13 @@ def load_training_set(pos, neg):
     return data
 
 
-def batches(data, bs, crop, rng):
+def batches(data, bs, crop, rng, weights=None):
     idx = list(range(len(data)))
-    rng.shuffle(idx)
+    if weights:  # hard-example oversampling (sampling with replacement)
+        w = [weights.get(d["name"], 1.0) for d in data]
+        idx = rng.choices(idx, weights=w, k=len(idx))
+    else:
+        rng.shuffle(idx)
     for i in range(0, len(idx), bs):
         items = [data[j] for j in idx[i:i + bs]]
         T = min(d["mix"].shape[-1] for d in items)
@@ -162,6 +179,70 @@ def evaluate(model, data):
     return float(a[:, 0].mean()), float(a[:, 1].mean())
 
 
+FAILURE_OF_CLASS = {"piano": "piano_leak", "keys": "piano_leak", "electric_clean": "electric_leak",
+                    "electric_dist": "electric_leak", "electric_guitar": "electric_leak",
+                    "vocals": "vocal_leak", "drums": "drum_leak", "percussion": "drum_leak",
+                    "violin": "strings_winds_leak", "strings": "strings_winds_leak",
+                    "winds": "strings_winds_leak", "brass": "strings_winds_leak",
+                    "plucked_other": "plucked_leak", "bass": "bass_leak", "synth": "synth_leak"}
+SCENARIOS_FOR_FAILURE = {"piano_leak": ["piano", "piano_band"], "electric_leak": ["clean_electric", "electric_band"],
+                         "vocal_leak": ["female_vocal", "band_pop"], "drum_leak": ["cymbal_drums"],
+                         "strings_winds_leak": ["strings", "winds", "chamber_frevo"],
+                         "plucked_leak": ["plucked"], "guitar_removed": ["buried", "dense"],
+                         "bass_leak": ["band_pop"], "synth_leak": ["dense"]}
+
+
+def cmd_mine(a):
+    """Hard-example mining on TRAINING clips: classify each clip's dominant failure."""
+    from acoustic_separator.evaluation import evaluate_estimate
+
+    data = load_training_set(a.pos, a.neg)
+    model = None
+    if a.refiner:
+        ck = torch.load(a.refiner, map_location="cpu", weights_only=False)
+        model = MaskRefiner(**ck["model_kwargs"])
+        model.load_state_dict(ck["state_dict"])
+        model.eval()
+    report = {}
+    for d in data:
+        t = lambda x: torch.from_numpy(x)[None]  # noqa: E731
+        with torch.no_grad():
+            feat, X, base = features(t(d["mix"]), [t(p) for p in d["pos"]], [t(n) for n in d["neg"]])
+            m = model(feat, base).reshape(1, 2, *X.shape[-2:]) if model else base
+            est = istft(X * m, d["mix"].shape[-1])[0].numpy()
+        stems = {p.stem: load_audio(p)[0] for p in sorted((CLIPS / d["name"] / "stems").glob("*.wav"))}
+        mm = evaluate_estimate(d["ref"], est, d["mix"], stems, with_bss=False)
+        leaks = {k[5:-3]: v for k, v in mm.items() if k.startswith("leak_") and k.endswith("_db")}
+        worst_cls = max(leaks, key=leaks.get) if leaks else None
+        if mm["target_retention"] < a.retention_floor:
+            failure = "guitar_removed"
+        elif worst_cls:
+            failure = FAILURE_OF_CLASS.get(worst_cls.rstrip("0123456789"), "other_leak")
+        else:
+            failure = "other"
+        report[d["name"]] = {"sdr": mm["sdr"], "retention": mm["target_retention"],
+                             "worst_leak_class": worst_cls, "worst_leak_db": leaks.get(worst_cls),
+                             "failure": failure}
+    sdrs = np.array([r["sdr"] for r in report.values()])
+    cut = np.percentile(sdrs, a.hard_percentile)
+    hard = {k: v for k, v in report.items() if v["sdr"] <= cut}
+    counts = {}
+    for v in hard.values():
+        counts[v["failure"]] = counts.get(v["failure"], 0) + 1
+    weights = {k: (a.hard_weight if k in hard else 1.0) for k in report}
+    scen_w = {}
+    for f, c in counts.items():
+        for sc in SCENARIOS_FOR_FAILURE.get(f, []):
+            scen_w[sc] = scen_w.get(sc, 1.0) + c
+    out = Path(a.out)
+    out.write_text(json.dumps({"clips": report, "hard_threshold_sdr": float(cut),
+                               "hard_failure_counts": counts, "sample_weights": weights,
+                               "scenario_weights": scen_w}, indent=1))
+    (out.parent / (out.stem + "_scenario_weights.json")).write_text(json.dumps(scen_w, indent=1))
+    print(f"mean SDR {sdrs.mean():.2f}; hard (<= {cut:.2f} dB) failures: {counts}")
+    print(f"scenario weights for the next prepare: {scen_w}")
+
+
 def cmd_fit(a):
     torch.manual_seed(a.seed)
     rng = random.Random(a.seed)
@@ -184,10 +265,11 @@ def cmd_fit(a):
     torch.save({"state_dict": model.state_dict(), "model_kwargs": kwargs, "pos": a.pos, "neg": a.neg,
                 "epoch": 0, "hold_sdr": h_sdr}, out / "model.pt")
     crop = int(a.crop_s * 44100)
+    sample_w = json.loads(Path(a.weights).read_text())["sample_weights"] if a.weights else None
     for ep in range(1, a.epochs + 1):
         model.train()
         t0, losses = time.time(), []
-        for mix, ref, pos, neg in batches(train, a.batch, crop, rng):
+        for mix, ref, pos, neg in batches(train, a.batch, crop, rng, sample_w):
             feat, X, base = features(mix, pos, neg)
             m = model(feat, base).reshape(*X.shape)
             est = istft(X * m, mix.shape[-1])
@@ -221,7 +303,9 @@ def main() -> int:
     p.add_argument("--n-syn", type=int, default=90)
     p.add_argument("--seconds", type=float, default=6.0)
     p.add_argument("--seed", type=int, default=77)
-    for name in ("candidates", "fit"):
+    p.add_argument("--scenario-weights", default=None, help="JSON {scenario: weight} (from mine)")
+    p.add_argument("--tag", default="", help="suffix for synthetic clip names (new batches)")
+    for name in ("candidates", "fit", "mine"):
         q = sub.add_parser(name)
         q.add_argument("--pos", nargs="+", required=True)
         q.add_argument("--neg", nargs="*", default=[])
@@ -234,8 +318,15 @@ def main() -> int:
             q.add_argument("--width", type=int, default=32)
             q.add_argument("--depth", type=int, default=6)
             q.add_argument("--out", required=True)
+            q.add_argument("--weights", default=None, help="mining JSON with sample_weights")
+        if name == "mine":
+            q.add_argument("--refiner", default=None)
+            q.add_argument("--retention-floor", type=float, default=0.5)
+            q.add_argument("--hard-percentile", type=float, default=25)
+            q.add_argument("--hard-weight", type=float, default=3.0)
+            q.add_argument("--out", default=str(CLIPS / "mining.json"))
     a = ap.parse_args()
-    {"prepare": cmd_prepare, "candidates": cmd_candidates, "fit": cmd_fit}[a.cmd](a)
+    {"prepare": cmd_prepare, "candidates": cmd_candidates, "fit": cmd_fit, "mine": cmd_mine}[a.cmd](a)
     return 0
 
 

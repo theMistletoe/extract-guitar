@@ -48,6 +48,28 @@ def _hash_array(a: np.ndarray) -> str:
     return hashlib.sha1(np.ascontiguousarray(a, dtype=np.float32).tobytes()).hexdigest()[:16]
 
 
+def write_cached_stems(folder: Path, stems: dict[str, np.ndarray]) -> None:
+    """24-bit FLAC scaled to the stem's peak (quantisation error ~-138 dB re peak)."""
+    import soundfile as sf
+
+    scales = {}
+    for k, v in stems.items():
+        scale = float(np.abs(v).max()) * 1.001 + 1e-12
+        sf.write(str(folder / f"{k}.flac"), (v / scale).T, 44100, subtype="PCM_24")
+        scales[k] = scale
+    (folder / "scales.json").write_text(json.dumps(scales))
+
+
+def read_cached_stems(folder: Path) -> dict[str, np.ndarray]:
+    import soundfile as sf
+
+    if (folder / "scales.json").exists():
+        scales = json.loads((folder / "scales.json").read_text())
+        return {k: np.ascontiguousarray(sf.read(str(folder / f"{k}.flac"), dtype="float32")[0].T * sc,
+                                        dtype=np.float32) for k, sc in scales.items()}
+    return {p.stem: np.load(p) for p in folder.glob("*.npy")}
+
+
 class ModelPool:
     """Keeps at most ``capacity`` models in memory."""
 
@@ -89,15 +111,14 @@ class PipelineRunner:
         key = hashlib.sha1(key_src.encode()).hexdigest()[:20]
         folder = self.stem_cache / key
         if self.use_cache and (folder / "done").exists():
-            return {p.stem: np.load(p) for p in folder.glob("*.npy")}, 0.0, True
+            return read_cached_stems(folder), 0.0, True
         sep = self.pool.get(model)
         t = time.perf_counter()
         out = sep.separate(audio, sr, params, progress=self.progress)
         dt = time.perf_counter() - t
         if self.use_cache:
             folder.mkdir(parents=True, exist_ok=True)
-            for k, v in out.items():
-                np.save(folder / f"{k}.npy", v)
+            write_cached_stems(folder, out)
             (folder / "meta.json").write_text(key_src)
             (folder / "done").write_text(str(dt))
         return out, dt, False

@@ -1,0 +1,1 @@
+{"song": "David_Youngs - Technomantra", "start_s": 280.0, "classes": {"acoustic_guitar": {"level_rel_guitar_db": 0.0, "fx": {"eq": true, "bandlimit": true, "pan": 0.6, "haas": true, "reverb": true}}}, "guitar_to_rest_db": 103.22, "hard": false, "scenario": "multitrack"}

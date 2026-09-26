@@ -46,8 +46,8 @@ def environment_info() -> dict:
         "python": sys.version.split()[0],
         "platform": platform.platform(),
         "processor": platform.processor() or platform.machine(),
-        "torch": torch.__version__,
-        "numpy": numpy.__version__,
+        "torch": str(torch.__version__),
+        "numpy": str(numpy.__version__),
         "cuda": torch.cuda.is_available(),
         "threads": torch.get_num_threads(),
     }
@@ -84,8 +84,9 @@ def write_experiment(exp_id: str, config: dict, metrics: dict, notes: str,
         "seed": config.get("seed", 0),
         "hardware": {k: v for k, v in environment_info().items() if k != "packages"},
     }
+    config = json.loads(json.dumps(config, default=str))  # plain types only (yaml.safe_dump)
     (d / "config.yaml").write_text(yaml.safe_dump(config, sort_keys=False, allow_unicode=True))
-    (d / "metrics.json").write_text(json.dumps(metrics, indent=2, ensure_ascii=False))
+    (d / "metrics.json").write_text(json.dumps(metrics, indent=2, ensure_ascii=False, default=float))
     (d / "notes.md").write_text(notes)
     env = environment_info()
     (d / "environment.txt").write_text("\n".join(env.pop("packages", [])) + "\n")
