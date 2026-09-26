@@ -1,0 +1,6 @@
+- pipeline: R_r3_c6
+  slug: R_r3_c6
+  strategy: "D+gain-refiner+HEM"
+  hypothesis: "The refiner was trained on member outputs computed with 6 s chunks; computing the members the same way at inference removes the train/inference mismatch that cost ~0.35 dB on training hold-out."
+  change: "R_r3 with chunk_size 264600 (6 s) for HTDemucs-ft, Mega and SW"
+  next: "final render"

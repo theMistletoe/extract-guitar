@@ -158,3 +158,7 @@ model dominates: their failures are on different clips.
   leakage/preservation frontier instead of sliding along it. Paired vs exp023: **+0.53 dB,
   95% CI [+0.18, +0.86], wins 32/41 clips**. Training: 168 disjoint clips (hard-example
   weighted), 6 epochs, best hold-out 6.28 dB from 5.23 at init.
+* Target-song spectrogram check, 92–118 s (the passage with violin/clarinet glissandi): the
+  smooth arcs (≈0.5–1 kHz at 95–100 s and 108–113 s) are clearly present in exp023 and are
+  weaker but **still visible** in exp030; guitar onsets are preserved in both. Residual
+  bowed/wind glissandi are therefore a known remaining artifact of the Champion.
