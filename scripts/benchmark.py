@@ -53,13 +53,14 @@ def run_validation(runner: PipelineRunner, pipeline: dict, val_dir: Path, limit:
         mix, ref, interf, meta, sr = load_clip(d)
         t = time.perf_counter()
         res = runner.run(pipeline, mix, sr)
-        runtime += time.perf_counter() - t
+        dt = time.perf_counter() - t
+        runtime += dt
         m = evaluate_estimate(ref, res["output"], mix, interf, with_bss=with_bss)
         m.update({"clip": d.name, "category": meta.get("category", ""),
                   "hard": int(bool(meta.get("hard", False)))})
         rows.append(m)
         print(f"  [{i + 1}/{len(clips)}] {d.name:40s} sdr={m['sdr']:6.2f} si_sdr={m['si_sdr']:6.2f} "
-              f"ret={m['target_retention']:.2f} leak={m['leakage_db']:6.1f}", flush=True)
+              f"ret={m['target_retention']:.2f} leak={m['leakage_db']:6.1f} ({dt:.0f}s)", flush=True)
     return rows, runtime
 
 

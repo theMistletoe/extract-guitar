@@ -1,0 +1,29 @@
+{
+ "song": "Bolz__Knecht - Summertime",
+ "start_s": 68.5,
+ "classes": {
+  "acoustic_guitar": {
+   "level_rel_guitar_db": 0.0,
+   "fx": {
+    "pan": -0.48,
+    "haas": true
+   }
+  },
+  "winds": {
+   "level_rel_guitar_db": 0.67,
+   "fx": {
+    "eq": true,
+    "pan": -0.67,
+    "reverb": true
+   }
+  }
+ },
+ "guitar_to_rest_db": 1.2300000190734863,
+ "hard": true,
+ "scenario": "multitrack",
+ "source_ids": [
+  "ms_Bolz_Knecht_Summertime"
+ ],
+ "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+ "category": "multitrack"
+}

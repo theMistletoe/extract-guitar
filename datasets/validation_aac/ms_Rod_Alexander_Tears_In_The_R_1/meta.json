@@ -1,0 +1,53 @@
+{
+ "song": "Rod_Alexander - Tears_In_The_Rain",
+ "start_s": 87.5,
+ "classes": {
+  "bass": {
+   "level_rel_guitar_db": 2.97,
+   "fx": {
+    "eq": true,
+    "pan": 0.04,
+    "haas": true
+   }
+  },
+  "acoustic_guitar": {
+   "level_rel_guitar_db": 0.0,
+   "fx": {
+    "eq": true,
+    "pan": 0.52
+   }
+  },
+  "electric_guitar": {
+   "level_rel_guitar_db": 2.03,
+   "fx": {
+    "pan": -0.6,
+    "reverb": true
+   }
+  },
+  "drums": {
+   "level_rel_guitar_db": 3.19,
+   "fx": {
+    "compress": true,
+    "saturate": true,
+    "pan": -0.46,
+    "reverb": true
+   }
+  },
+  "percussion": {
+   "level_rel_guitar_db": -1.63,
+   "fx": {
+    "compress": true,
+    "pan": 0.65,
+    "reverb": true
+   }
+  }
+ },
+ "guitar_to_rest_db": -8.1899995803833,
+ "hard": true,
+ "scenario": "multitrack",
+ "source_ids": [
+  "ms_Rod_Alexander_Tears_In_The_Rain"
+ ],
+ "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+ "category": "multitrack"
+}

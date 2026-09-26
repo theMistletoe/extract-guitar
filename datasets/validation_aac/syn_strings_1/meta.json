@@ -1,0 +1,42 @@
+{
+ "scenario": "strings",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gaps_112_mf1wc",
+   "path": "/home/user/extract-guitar/data/raw/GAPS/audio/112_mf1wc.wav",
+   "cls": "acoustic_guitar",
+   "license": "research use (MIT card; audio from YouTube performances)",
+   "dataset": "GAPS (xavriley/GAPS, test split)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 75.573,
+   "fx": {
+    "compress": true,
+    "pan": -0.58
+   }
+  },
+  {
+   "id": "msneg_Barnstar_You_Dont_Know_Orch_STR_Violin_C12_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Barnstar - You_Dont_Know/Orch/STR/Violin-C12.flac",
+   "cls": "violin",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 172.888,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "saturate": true,
+    "pan": -0.4,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 0.23
+  }
+ ],
+ "guitar_to_rest_db": -0.47999998927116394,
+ "category": "strings"
+}

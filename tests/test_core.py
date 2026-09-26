@@ -77,3 +77,39 @@ def test_untrained_refiner_equals_mask_mean():
     np.testing.assert_allclose(m.detach().numpy(), base.clamp(1e-4, 1 - 1e-4).numpy(), atol=1e-5)
     y = istft(X * m, mix.shape[-1])
     assert y.shape == (1, 2, mix.shape[-1])
+
+
+def test_pipeline_cascade_ops_with_fake_models(monkeypatch, tmp_path):
+    from acoustic_separator import pipeline as P
+    from acoustic_separator.models.loader import ModelSpec
+
+    g, v, d = _sig(seconds=1.0)
+    mix = g + v + d
+    catalog = {
+        "fake_gtr": ModelSpec("fake_gtr", "x", None, "c", "none", ["guitar"], target_stem="guitar"),
+        "fake_multi": ModelSpec("fake_multi", "x", None, "c", "none", ["guitar", "violin", "other"],
+                                target_stem="guitar"),
+    }
+
+    def fake_separate(self, model, audio, sr, params):
+        # a perfect oracle that answers from the known components
+        if model == "fake_gtr":
+            return {"guitar": g * (np.abs(audio).sum() > 0)}, 0.0, False
+        return {"guitar": g, "violin": v, "other": audio - g - v}, 0.0, False
+
+    monkeypatch.setattr(P, "load_catalog", lambda: catalog)
+    monkeypatch.setattr(P, "cache_dir", lambda: tmp_path)
+    monkeypatch.setattr(P.PipelineRunner, "_separate", fake_separate)
+    runner = P.PipelineRunner(use_cache=False)
+    pipe = {"name": "t", "steps": [
+        {"id": "a", "model": "fake_multi", "input": "mix", "take": "guitar+other"},
+        {"id": "b", "model": "fake_multi", "input": "a", "take": "~violin"},
+        {"id": "c", "model": "fake_gtr", "input": "b"},
+        {"id": "e", "ensemble": ["c", "a.guitar"], "method": "wave_mean"},
+        {"id": "r", "op": "sub", "a": "mix", "b": "e"},
+    ], "output": "e"}
+    res = runner.run(pipe, mix, 44100)
+    np.testing.assert_allclose(res["values"]["a"], g + d, atol=1e-6)
+    np.testing.assert_allclose(res["values"]["b"], g + d - v, atol=1e-6)  # input minus violin estimate
+    np.testing.assert_allclose(res["output"], g, atol=1e-6)
+    np.testing.assert_allclose(res["output"] + res["residual"], mix, atol=1e-6)

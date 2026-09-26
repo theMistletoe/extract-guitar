@@ -1,0 +1,50 @@
+{
+ "song": "Wolfs_Head__Vixen_Morris_Band - Lament",
+ "start_s": 32.5,
+ "classes": {
+  "plucked_other": {
+   "level_rel_guitar_db": -0.26,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.03,
+    "reverb": true
+   }
+  },
+  "acoustic_guitar": {
+   "level_rel_guitar_db": 0.0,
+   "fx": {
+    "pan": 0.4
+   }
+  },
+  "strings": {
+   "level_rel_guitar_db": -1.73,
+   "fx": {
+    "pan": 0.07
+   }
+  },
+  "winds": {
+   "level_rel_guitar_db": 2.97,
+   "fx": {
+    "compress": true,
+    "pan": -0.05,
+    "haas": true
+   }
+  },
+  "drums": {
+   "level_rel_guitar_db": -0.65,
+   "fx": {
+    "compress": true,
+    "pan": -0.64
+   }
+  }
+ },
+ "guitar_to_rest_db": -6.440000057220459,
+ "hard": true,
+ "scenario": "multitrack",
+ "source_ids": [
+  "ms_Wolfs_Head_Vixen_Morris_Band_Lament"
+ ],
+ "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+ "category": "multitrack"
+}

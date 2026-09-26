@@ -1,0 +1,44 @@
+{
+ "scenario": "clean_electric",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gaps_375_1w1wc",
+   "path": "/home/user/extract-guitar/data/raw/GAPS/audio/375_1w1wc.wav",
+   "cls": "acoustic_guitar",
+   "license": "research use (MIT card; audio from YouTube performances)",
+   "dataset": "GAPS (xavriley/GAPS, test split)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 101.368,
+   "fx": {
+    "eq": true,
+    "pan": 0.58,
+    "reverb": true
+   }
+  },
+  {
+   "id": "gjam_411",
+   "path": "/home/user/extract-guitar/data/raw/GuitarJam/guitar_jam/train/411.wav",
+   "cls": "electric_clean",
+   "license": "CC0-1.0",
+   "dataset": "GuitarJam (HF Julian-br/GuitarJam)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 7.596,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "saturate": true,
+    "pan": -0.59,
+    "haas": true,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 5.16
+  }
+ ],
+ "guitar_to_rest_db": -7.150000095367432,
+ "category": "clean_electric"
+}

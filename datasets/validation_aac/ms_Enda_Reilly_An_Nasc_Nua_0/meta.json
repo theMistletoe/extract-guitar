@@ -1,0 +1,45 @@
+{
+ "song": "Enda_Reilly - An_Nasc_Nua",
+ "start_s": 83.0,
+ "classes": {
+  "bass": {
+   "level_rel_guitar_db": -0.89,
+   "fx": {
+    "eq": true,
+    "saturate": true,
+    "pan": -0.65
+   }
+  },
+  "acoustic_guitar": {
+   "level_rel_guitar_db": 0.0,
+   "fx": {
+    "eq": true,
+    "pan": -0.5,
+    "reverb": true
+   }
+  },
+  "strings": {
+   "level_rel_guitar_db": 1.13,
+   "fx": {
+    "compress": true,
+    "pan": 0.2,
+    "reverb": true
+   }
+  },
+  "vocals": {
+   "level_rel_guitar_db": 2.79,
+   "fx": {
+    "bandlimit": true,
+    "pan": 0.04
+   }
+  }
+ },
+ "guitar_to_rest_db": -5.260000228881836,
+ "hard": true,
+ "scenario": "multitrack",
+ "source_ids": [
+  "ms_Enda_Reilly_An_Nasc_Nua"
+ ],
+ "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+ "category": "multitrack"
+}

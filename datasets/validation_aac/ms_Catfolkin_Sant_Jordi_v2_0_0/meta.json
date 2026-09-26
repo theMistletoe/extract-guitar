@@ -1,0 +1,76 @@
+{
+ "song": "Catfolkin - Sant_Jordi_v2.0",
+ "start_s": 124.0,
+ "classes": {
+  "bass": {
+   "level_rel_guitar_db": -1.68,
+   "fx": {
+    "eq": true,
+    "pan": -0.04,
+    "haas": true
+   }
+  },
+  "acoustic_guitar": {
+   "level_rel_guitar_db": 0.0,
+   "fx": {
+    "pan": 0.68,
+    "echo": true,
+    "reverb": true
+   }
+  },
+  "electric_guitar": {
+   "level_rel_guitar_db": 0.26,
+   "fx": {
+    "pan": 0.34,
+    "haas": true,
+    "reverb": true
+   }
+  },
+  "keys": {
+   "level_rel_guitar_db": -0.42,
+   "fx": {
+    "eq": true,
+    "pan": -0.17
+   }
+  },
+  "strings": {
+   "level_rel_guitar_db": 2.75,
+   "fx": {
+    "compress": true,
+    "pan": -0.25,
+    "reverb": true
+   }
+  },
+  "winds": {
+   "level_rel_guitar_db": -0.14,
+   "fx": {
+    "eq": true,
+    "pan": 0.23,
+    "echo": true
+   }
+  },
+  "drums": {
+   "level_rel_guitar_db": 0.95,
+   "fx": {
+    "pan": -0.16,
+    "reverb": true
+   }
+  },
+  "vocals": {
+   "level_rel_guitar_db": 0.93,
+   "fx": {
+    "eq": true,
+    "pan": -0.23,
+    "reverb": true
+   }
+  }
+ },
+ "guitar_to_rest_db": -7.840000152587891,
+ "hard": true,
+ "scenario": "multitrack",
+ "source_ids": [
+  "ms_Catfolkin_Sant_Jordi_v2_0"
+ ],
+ "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+ "category": "multitrack"
+}

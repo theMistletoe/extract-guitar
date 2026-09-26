@@ -1,0 +1,99 @@
+{
+ "scenario": "chamber_frevo",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gs_05_Funk1-114-Ab_solo_mic",
+   "path": "/home/user/extract-guitar/data/raw/guitarset/mic/05_Funk1-114-Ab_solo_mic.wav",
+   "cls": "acoustic_guitar",
+   "license": "CC-BY-4.0",
+   "dataset": "GuitarSet (Xi et al. 2018, zenodo 3371780)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 0.229,
+   "fx": {
+    "eq": true,
+    "pan": 0.31,
+    "reverb": true
+   }
+  },
+  {
+   "id": "urmp_AuSep_1_vn_02_Sonata",
+   "path": "/home/user/extract-guitar/data/raw/URMP/02_Sonata_vn_vn/AuSep_1_vn_02_Sonata.wav",
+   "cls": "violin",
+   "license": "research use only (no explicit licence)",
+   "dataset": "URMP (HF Eredis02/URMP)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 11.086,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.1,
+    "haas": true,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 0.58
+  },
+  {
+   "id": "msneg_Lindy_Hip_Big_Band_The_Opener_Orch_WW_13_SaxTenor01_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Lindy_Hip_Big_Band - The_Opener/Orch/WW/13_SaxTenor01.flac",
+   "cls": "winds",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 33.157,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": 0.13,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 0.74
+  },
+  {
+   "id": "msneg_Don_Camillo_Choir_The_Marsh_Marigolds_Song_Bass_11_BassCloseMic5_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Don_Camillo_Choir - The_Marsh_Marigolds_Song/Bass/11_BassCloseMic5.flac",
+   "cls": "bass",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 82.432,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "bandlimit": true,
+    "pan": 0.21,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 0.15
+  },
+  {
+   "id": "msneg_The_Travelling_Band_Quicksand_Rhy_PERC_12_Tambourine_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/The_Travelling_Band - Quicksand/Rhy/PERC/12_Tambourine.flac",
+   "cls": "percussion",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 131.271,
+   "fx": {
+    "eq": true,
+    "saturate": true,
+    "pan": 0.05,
+    "haas": true,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 4.35
+  }
+ ],
+ "guitar_to_rest_db": -10.649999618530273,
+ "category": "chamber_frevo"
+}

@@ -1,0 +1,42 @@
+{
+ "scenario": "piano",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gaps_019_Vpswc",
+   "path": "/home/user/extract-guitar/data/raw/GAPS/audio/019_Vpswc.wav",
+   "cls": "acoustic_guitar",
+   "license": "research use (MIT card; audio from YouTube performances)",
+   "dataset": "GAPS (xavriley/GAPS, test split)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 94.505,
+   "fx": {
+    "eq": true,
+    "bandlimit": true,
+    "pan": 0.14,
+    "reverb": true
+   }
+  },
+  {
+   "id": "msneg_Szymon_Skiba_Death_Metal_Sucks_Kbs_PN_21_Piano_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Szymon_Skiba - Death_Metal_Sucks/Kbs/PN/21_Piano.flac",
+   "cls": "piano",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 213.159,
+   "fx": {
+    "bandlimit": true,
+    "pan": 0.41,
+    "echo": true
+   },
+   "level_rel_guitar_db": -0.65
+  }
+ ],
+ "guitar_to_rest_db": 2.3499999046325684,
+ "category": "piano"
+}

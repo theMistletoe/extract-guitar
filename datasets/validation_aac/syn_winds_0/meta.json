@@ -1,0 +1,42 @@
+{
+ "scenario": "winds",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gaps_112_mf1wc",
+   "path": "/home/user/extract-guitar/data/raw/GAPS/audio/112_mf1wc.wav",
+   "cls": "acoustic_guitar",
+   "license": "research use (MIT card; audio from YouTube performances)",
+   "dataset": "GAPS (xavriley/GAPS, test split)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 217.869,
+   "fx": {
+    "eq": true,
+    "pan": -0.36,
+    "haas": true,
+    "reverb": true
+   }
+  },
+  {
+   "id": "msneg_Chad_Hollister_Band_Eyes_Orch_WW_Horns_Sax2_M82_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Chad_Hollister_Band - Eyes/Orch/WW/Horns-Sax2-M82.flac",
+   "cls": "winds",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 199.162,
+   "fx": {
+    "pan": 0.19,
+    "haas": true,
+    "echo": true
+   },
+   "level_rel_guitar_db": -2.07
+  }
+ ],
+ "guitar_to_rest_db": 4.460000038146973,
+ "category": "winds"
+}

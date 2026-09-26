@@ -1,0 +1,78 @@
+{
+ "scenario": "piano_band",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gs_05_Jazz3-137-Eb_comp_mic",
+   "path": "/home/user/extract-guitar/data/raw/guitarset/mic/05_Jazz3-137-Eb_comp_mic.wav",
+   "cls": "acoustic_guitar",
+   "license": "CC-BY-4.0",
+   "dataset": "GuitarSet (Xi et al. 2018, zenodo 3371780)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 4.282,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.09,
+    "haas": true,
+    "reverb": true
+   }
+  },
+  {
+   "id": "msneg_Szymon_Skiba_Death_Metal_Sucks_Kbs_PN_21_Piano_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Szymon_Skiba - Death_Metal_Sucks/Kbs/PN/21_Piano.flac",
+   "cls": "piano",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 99.027,
+   "fx": {
+    "eq": true,
+    "pan": 0.09,
+    "echo": true,
+    "reverb": true
+   },
+   "level_rel_guitar_db": -2.05
+  },
+  {
+   "id": "msneg_Human_Radio_You_Me_The_Radio_Rhy_DK_DRUMS_OH_L_AR_01_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Human_Radio - You__Me__The_Radio/Rhy/DK/DRUMS -OH L AR_01.flac",
+   "cls": "drums",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 116.476,
+   "fx": {
+    "compress": true,
+    "pan": 0.13,
+    "reverb": true
+   },
+   "level_rel_guitar_db": -1.01
+  },
+  {
+   "id": "msneg_Don_Camillo_Choir_The_Marsh_Marigolds_Song_Bass_11_BassCloseMic5_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Don_Camillo_Choir - The_Marsh_Marigolds_Song/Bass/11_BassCloseMic5.flac",
+   "cls": "bass",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 130.802,
+   "fx": {
+    "eq": true,
+    "saturate": true,
+    "pan": 0.29
+   },
+   "level_rel_guitar_db": -1.68
+  }
+ ],
+ "guitar_to_rest_db": -1.8799999952316284,
+ "category": "piano_band"
+}
