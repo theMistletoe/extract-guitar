@@ -1,0 +1,188 @@
+{
+  "experiment": "exp005_A_sw6",
+  "validation": {
+    "hard_mean": 0.8780487804878049,
+    "hard_median": 1.0,
+    "leak_bass_db_mean": -16.442739721231217,
+    "leak_bass_db_median": -17.099406167180753,
+    "leak_drums_db_mean": -18.93361387330983,
+    "leak_drums_db_median": -19.55516929106452,
+    "leak_electric_clean_db_mean": -2.338564749031527,
+    "leak_electric_clean_db_median": -2.193854097081184,
+    "leak_electric_dist_db_mean": 2.48974780986713,
+    "leak_electric_dist_db_median": 2.48974780986713,
+    "leak_electric_guitar_db_mean": -4.840266177541361,
+    "leak_electric_guitar_db_median": -4.9203108764972905,
+    "leak_keys_db_mean": -15.839611549448449,
+    "leak_keys_db_median": -14.56958877719182,
+    "leak_percussion_db_mean": -36.050545220170164,
+    "leak_percussion_db_median": -30.83967748406641,
+    "leak_piano_db_mean": -20.06324695180147,
+    "leak_piano_db_median": -20.632668664417917,
+    "leak_plucked_other_db_mean": -2.0101474500468615,
+    "leak_plucked_other_db_median": -0.9768985903525762,
+    "leak_strings_db_mean": -21.36643401702335,
+    "leak_strings_db_median": -19.11234653675162,
+    "leak_synth_db_mean": -12.789200197106304,
+    "leak_synth_db_median": -13.126430377272868,
+    "leak_violin_db_mean": -21.5596813901042,
+    "leak_violin_db_median": -22.134760622528834,
+    "leak_vocals_db_mean": -19.587488788750225,
+    "leak_vocals_db_median": -19.5762964077172,
+    "leak_winds_db_mean": -23.833185315137705,
+    "leak_winds_db_median": -22.710647152332363,
+    "leakage_db_mean": -10.354485221422387,
+    "leakage_db_median": -5.54286447850383,
+    "mrstft_mean": 2.5569641098761346,
+    "mrstft_median": 2.470028172566256,
+    "sar_bss_mean": 8.397993751711502,
+    "sar_bss_median": 5.536224748283136,
+    "sdr_mean": 3.1171205800947726,
+    "sdr_median": 0.7474651206037385,
+    "sdr_bss_mean": 0.23468862351992545,
+    "sdr_bss_median": -0.9901216769307857,
+    "sdr_mix_mean": -5.485459733736509,
+    "sdr_mix_median": -6.810412325482974,
+    "sdri_mean": 8.60258031383128,
+    "sdri_median": 8.593001138482403,
+    "si_sdr_mean": -0.5252081704709023,
+    "si_sdr_median": -1.646139308682652,
+    "sir_bss_mean": 6.469678826477739,
+    "sir_bss_median": 2.925629432853731,
+    "target_retention_mean": 0.5954427933305843,
+    "target_retention_median": 0.6370508656869989,
+    "n_clips": 41,
+    "hard_sdr_mean": 3.293751993506786,
+    "sdr_ms_mean": 1.6857282170220107,
+    "si_sdr_ms_mean": -2.7407124002252665,
+    "target_retention_ms_mean": 0.5131131913259575,
+    "leakage_db_ms_mean": -8.626208772569976,
+    "sir_bss_ms_mean": 3.9371374876554923,
+    "sar_bss_ms_mean": 3.8798449820617584,
+    "sdr_syn_mean": 4.353323075475794,
+    "si_sdr_syn_mean": 1.3881818461351396,
+    "target_retention_syn_mean": 0.6665456314254894,
+    "leakage_db_syn_mean": -11.847087609067653,
+    "sir_bss_syn_mean": 8.65687361909695,
+    "sar_bss_syn_mean": 12.300031325499917,
+    "by_category": {
+      "band_pop": {
+        "sdr": 0.15345714886183007,
+        "si_sdr": -11.811538231005352,
+        "target_retention": 0.07304403521156097,
+        "leakage_db": -3.0834231071591214
+      },
+      "buried": {
+        "sdr": -1.9831724305905702,
+        "si_sdr": -11.965881162352773,
+        "target_retention": 0.24653680347922657,
+        "leakage_db": -1.869254527081818
+      },
+      "chamber_frevo": {
+        "sdr": 6.658218882485002,
+        "si_sdr": 5.334397232360547,
+        "target_retention": 0.7098329627264275,
+        "leakage_db": -13.355734001417721
+      },
+      "clean_electric": {
+        "sdr": -1.3647285254619197,
+        "si_sdr": -0.9923526021443076,
+        "target_retention": 0.9712894960632794,
+        "leakage_db": -3.6010552177718784
+      },
+      "cymbal_drums": {
+        "sdr": 1.5898886848618496,
+        "si_sdr": -3.6358651400613646,
+        "target_retention": 0.27555956185426234,
+        "leakage_db": -22.004309468049993
+      },
+      "dense": {
+        "sdr": -2.5901838536879174,
+        "si_sdr": -16.78939163831545,
+        "target_retention": 0.14535501641306517,
+        "leakage_db": -1.3164992007064509
+      },
+      "distorted_electric": {
+        "sdr": -4.987495867725783,
+        "si_sdr": -7.184174333559076,
+        "target_retention": 0.7509908198116199,
+        "leakage_db": -1.663832023788547
+      },
+      "electric_band": {
+        "sdr": -1.8269172787742898,
+        "si_sdr": -5.552600952444826,
+        "target_retention": 0.6873761767202964,
+        "leakage_db": -2.705987291306867
+      },
+      "female_vocal": {
+        "sdr": 10.701413669957747,
+        "si_sdr": 10.188347278346065,
+        "target_retention": 0.7643313794810388,
+        "leakage_db": -20.947125558344588
+      },
+      "multitrack": {
+        "sdr": 1.6857282170220107,
+        "si_sdr": -2.7407124002252665,
+        "target_retention": 0.5131131913259575,
+        "leakage_db": -8.626208772569976
+      },
+      "piano": {
+        "sdr": 15.26986112129401,
+        "si_sdr": 14.849376545216987,
+        "target_retention": 0.8957484060861038,
+        "leakage_db": -25.30565067108394
+      },
+      "piano_band": {
+        "sdr": 7.9562193990585515,
+        "si_sdr": 7.638725103349607,
+        "target_retention": 0.6202832864793923,
+        "leakage_db": -21.20414928003678
+      },
+      "plucked": {
+        "sdr": -0.47577599249283364,
+        "si_sdr": 0.22730245190931253,
+        "target_retention": 0.9425052056860036,
+        "leakage_db": -3.312582605853489
+      },
+      "strings": {
+        "sdr": 5.720176109272174,
+        "si_sdr": 3.9519400765524164,
+        "target_retention": 0.6371286861663399,
+        "leakage_db": -14.491817152706822
+      },
+      "winds": {
+        "sdr": 15.234674273209379,
+        "si_sdr": 14.771268106609273,
+        "target_retention": 0.9155737661241703,
+        "leakage_db": -25.24133955842347
+      }
+    },
+    "runtime_s": 2163.829855447005
+  },
+  "target": {
+    "runtime_s": 667.8116312450002,
+    "model_runtime_s": 667.8116312450002,
+    "step_times": {
+      "guitar": {
+        "seconds": 667.8116312450002,
+        "cached": false
+      }
+    },
+    "proxy": {
+      "guitar_prob": 0.141195610165596,
+      "residual_guitar_prob": 0.01426885649561882,
+      "leak_vocal_prob": 0.02851535938680172,
+      "leak_drums_prob": 0.0024607591331005096,
+      "leak_bass_prob": 0.0157289020717144,
+      "leak_piano_prob": 0.0020072078332304955,
+      "leak_electric_guitar_prob": 0.014542734250426292,
+      "leak_strings_prob": 0.030199822038412094,
+      "leak_winds_prob": 0.0010053343139588833,
+      "leak_synth_prob": 0.0010242888238281012,
+      "leak_prob_max": 0.030199822038412094,
+      "leak_prob_sum": 0.0954844078514725,
+      "stem_energy_db": -6.966330528259277
+    }
+  },
+  "is_champion": false
+}

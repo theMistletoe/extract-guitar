@@ -1,0 +1,21 @@
+name: D_htft_xl_mag_max
+description: 'Strategy D: mag_max of A_htdemucs6s_ft, A_xlance'
+steps:
+- id: m0_guitar
+  model: htdemucs6s_gtrft
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: m1_guitar
+  model: xlance_gtr
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: ens
+  ensemble:
+  - m0_guitar
+  - m1_guitar
+  method: mag_max
+output: ens

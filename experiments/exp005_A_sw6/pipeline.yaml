@@ -1,0 +1,11 @@
+name: A_sw6
+description: 'Strategy A (direct): BS-RoFormer SW 6-stem, guitar stem applied to the
+  full mix'
+steps:
+- id: guitar
+  model: sw6
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+output: guitar

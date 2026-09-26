@@ -19,7 +19,8 @@
   HTDemucs-ft is 10–18 dB better → strong complementarity (ensemble candidate).
 * **Finding:** `gtr_mss.pth` (X-LANCE) is bit-identical to SW's trunk + guitar head
   (max |Δw| = 0.0). The two "models" are one; exp005 (SW guitar) reproduces exp004 exactly,
-  so SW/X-LANCE are treated as a single ensemble member from here on.
+  so SW/X-LANCE are treated as a single ensemble member from here on (confirmed: exp005
+  reproduces every exp004 metric exactly — 3.117 dB mean, 0.747 median, SIR 6.47, SAR 8.40).
 
 ### Phase 5 — ensembles (Strategy D), first round
 
@@ -48,3 +49,8 @@ saturated.
   mask from the ensemble's own target/residual PSDs sharpens it and removes guitar energy.
 * exp013/014 weight search (35:65 / 65:35): 3.62 / 3.58 dB — equal weights stay best; the
   optimum is flat, so no fine weight tuning on the validation set is warranted.
+* Failure analysis of the Champion (reports/failure_modes.md): 13/41 clips `guitar_removed`
+  (retention < 0.4), 9 clips electric-guitar leakage, 3 plucked-instrument leakage, 12 ok.
+  The SDR-optimal per-clip gain has median 0.82 and a global gain > 1 lowers SDR, so the
+  missing guitar is *local* (time-frequency holes), not a level problem, while other regions
+  leak — a TF-local correction (refiner) is needed rather than a gain/threshold change.
