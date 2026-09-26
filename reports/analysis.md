@@ -86,3 +86,15 @@ model dominates: their failures are on different clips.
   27/41), +0.97 vs SW (CI [−0.06, +1.92], wins 31/41), +1.01 vs HTDemucs-ft (CI [+0.04, +1.92],
   wins 29/41). exp019 vs the 2-member exp006: +0.45 dB (CI [−0.02, +0.89], wins 27/41) — a
   consistent but only borderline-significant step.
+
+### Phase 5 — ensembles, third round (member selection)
+
+* exp022 SW + Mega acoustic: 3.60 dB. exp024 four members (+ stock HTDemucs): 4.03 dB.
+* exp023 **HTDemucs-ft + Mega acoustic** (pair): **4.16 dB** (real 2.43, synthetic 5.65), SIR 8.4,
+  SAR 6.6, leakage −13.2 dB, retention 0.43 → Champion (+0.07 dB over exp019, i.e. within
+  noise, but it is cheaper — no SW pass — and trades a little retention for less leakage,
+  which matches the PRD priority order: leakage reduction (2) before loss reduction (3)).
+  The two members are the most *dissimilar* pair (hybrid waveform/spectrogram vs. band-split
+  transformer; full vs. clean operating point), which is why they combine best.
+* exp025/026 weights 60:40 / 40:60 for the pair: 4.10 / 4.14 dB — equal weights (4.16) stay best;
+  again a flat optimum, so no weight tuning on the validation set is adopted.

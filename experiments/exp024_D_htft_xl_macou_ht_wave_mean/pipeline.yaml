@@ -1,0 +1,37 @@
+name: D_htft_xl_macou_ht_wave_mean
+description: 'Strategy D: wave_mean of A_htdemucs6s_ft, A_xlance, A_mega_acoustic,
+  A_htdemucs6s'
+steps:
+- id: m0_guitar
+  model: htdemucs6s_gtrft
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: m1_guitar
+  model: xlance_gtr
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: m2_guitar
+  model: mega_multi
+  input: mix
+  take: acoustic-guitar
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: m3_guitar
+  model: htdemucs6s
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: ens
+  ensemble:
+  - m0_guitar
+  - m1_guitar
+  - m2_guitar
+  - m3_guitar
+  method: wave_mean
+output: ens

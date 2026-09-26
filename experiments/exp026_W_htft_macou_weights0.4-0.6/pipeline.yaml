@@ -1,5 +1,6 @@
-name: D_htft_macou_wave_mean
-description: 'Strategy D: wave_mean of A_htdemucs6s_ft, A_mega_acoustic'
+name: W_htft_macou__weights0.4-0.6
+description: 'Strategy D: wave_mean of A_htdemucs6s_ft, A_mega_acoustic | sweep {''ens.weights'':
+  [0.4, 0.6]}'
 steps:
 - id: m0_guitar
   model: htdemucs6s_gtrft
@@ -19,4 +20,7 @@ steps:
   - m0_guitar
   - m1_guitar
   method: wave_mean
+  weights:
+  - 0.4
+  - 0.6
 output: ens

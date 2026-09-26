@@ -1,40 +1,6 @@
 {
   "experiment": "exp023_D_htft_macou_wave_mean",
-  "pipeline": {
-    "name": "D_htft_macou_wave_mean",
-    "description": "Strategy D: wave_mean of A_htdemucs6s_ft, A_mega_acoustic",
-    "steps": [
-      {
-        "id": "m0_guitar",
-        "model": "htdemucs6s_gtrft",
-        "input": "mix",
-        "params": {
-          "num_overlap": 2,
-          "precision": "bf16"
-        }
-      },
-      {
-        "id": "m1_guitar",
-        "model": "mega_multi",
-        "input": "mix",
-        "take": "acoustic-guitar",
-        "params": {
-          "num_overlap": 2,
-          "precision": "bf16"
-        }
-      },
-      {
-        "id": "ens",
-        "ensemble": [
-          "m0_guitar",
-          "m1_guitar"
-        ],
-        "method": "wave_mean"
-      }
-    ],
-    "output": "ens"
-  },
-  "metrics": {
+  "validation": {
     "hard_mean": 0.8780487804878049,
     "hard_median": 1.0,
     "leak_bass_db_mean": -18.82368818458006,
@@ -193,7 +159,34 @@
     },
     "runtime_s": 2580.563415935002
   },
-  "promoted_at": "2026-09-26T19:01:12",
-  "git_commit": "bc4f737ccf145f670e0507f927479c3f50179db4",
-  "previous": "exp019_D_htft_xl_macou_wave_mean"
+  "target": {
+    "runtime_s": 922.4376028999993,
+    "model_runtime_s": 922.4376028999993,
+    "step_times": {
+      "m0_guitar": {
+        "seconds": 48.606110727999976,
+        "cached": true
+      },
+      "m1_guitar": {
+        "seconds": 873.8314921719993,
+        "cached": true
+      }
+    },
+    "proxy": {
+      "guitar_prob": 0.13715067505836487,
+      "residual_guitar_prob": 0.01719740778207779,
+      "leak_vocal_prob": 0.029296981170773506,
+      "leak_drums_prob": 0.0015785747673362494,
+      "leak_bass_prob": 0.00952084083110094,
+      "leak_piano_prob": 0.001600694376975298,
+      "leak_electric_guitar_prob": 0.012337591499090195,
+      "leak_strings_prob": 0.04164803400635719,
+      "leak_winds_prob": 0.0028080898337066174,
+      "leak_synth_prob": 0.0006656799232587218,
+      "leak_prob_max": 0.04164803400635719,
+      "leak_prob_sum": 0.09945648640859872,
+      "stem_energy_db": -9.34496784210205
+    }
+  },
+  "is_champion": true
 }
