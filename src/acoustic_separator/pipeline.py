@@ -141,9 +141,10 @@ class PipelineRunner:
             ck = torch.load(str(path), map_location="cpu", weights_only=False)
             model = MaskRefiner(**ck["model_kwargs"])
             model.load_state_dict(ck["state_dict"])
-            self._refiners[key] = model
-        return apply_refiner(self._refiners[key], mix, [ref(r) for r in step["positives"]],
-                             [ref(r) for r in step.get("negatives", [])])
+            self._refiners[key] = (model, ck.get("base_members"))
+        model, base_members = self._refiners[key]
+        return apply_refiner(model, mix, [ref(r) for r in step["positives"]],
+                             [ref(r) for r in step.get("negatives", [])], base_members=base_members)
 
     def run(self, pipeline: dict, mix: np.ndarray, sr: int) -> dict:
         """Returns {"output": acoustic, "values": all step outputs, "runtime": seconds, ...}."""

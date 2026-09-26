@@ -162,16 +162,16 @@ def batches(data, bs, crop, rng, weights=None):
                [t([n[k] for n in out["neg"]]) for k in range(len(out["neg"][0]))])
 
 
-def evaluate(model, data):
+def evaluate(model, data, base_members=None):
     model.eval()
     sdrs = []
     with torch.no_grad():
         for d in data:
             t = lambda a: torch.from_numpy(a)[None]  # noqa: E731
-            feat, X, base = features(t(d["mix"]), [t(p) for p in d["pos"]], [t(n) for n in d["neg"]])
-            m = model(feat, base).reshape(1, 2, *X.shape[-2:])
-            y = istft(X * m, d["mix"].shape[-1])[0].numpy()
-            b = istft(X * base, d["mix"].shape[-1])[0].numpy()
+            feat, X, base = features(t(d["mix"]), [t(p) for p in d["pos"]], [t(n) for n in d["neg"]],
+                                     base_members)
+            y = istft(model.apply(feat, X, base), d["mix"].shape[-1])[0].numpy()
+            b = istft(base if base_members is not None else X * base, d["mix"].shape[-1])[0].numpy()
             r = d["ref"]
             sd = lambda e: 10 * np.log10((r ** 2).sum() / (((r - e) ** 2).sum() + 1e-10) + 1e-10)  # noqa: E731
             sdrs.append((sd(y), sd(b)))
@@ -197,19 +197,23 @@ def cmd_mine(a):
     from acoustic_separator.evaluation import evaluate_estimate
 
     data = load_training_set(a.pos, a.neg)
-    model = None
+    model, bm = None, None
     if a.refiner:
         ck = torch.load(a.refiner, map_location="cpu", weights_only=False)
         model = MaskRefiner(**ck["model_kwargs"])
         model.load_state_dict(ck["state_dict"])
         model.eval()
+        bm = ck.get("base_members")
     report = {}
     for d in data:
         t = lambda x: torch.from_numpy(x)[None]  # noqa: E731
         with torch.no_grad():
-            feat, X, base = features(t(d["mix"]), [t(p) for p in d["pos"]], [t(n) for n in d["neg"]])
-            m = model(feat, base).reshape(1, 2, *X.shape[-2:]) if model else base
-            est = istft(X * m, d["mix"].shape[-1])[0].numpy()
+            feat, X, base = features(t(d["mix"]), [t(p) for p in d["pos"]], [t(n) for n in d["neg"]], bm)
+            if model is not None:
+                spec = model.apply(feat, X, base)
+            else:
+                spec = X * base
+            est = istft(spec, d["mix"].shape[-1])[0].numpy()
         stems = {p.stem: load_audio(p)[0] for p in sorted((CLIPS / d["name"] / "stems").glob("*.wav"))}
         mm = evaluate_estimate(d["ref"], est, d["mix"], stems, with_bss=False)
         leaks = {k[5:-3]: v for k, v in mm.items() if k.startswith("leak_") and k.endswith("_db")}
@@ -250,43 +254,46 @@ def cmd_fit(a):
     rng.shuffle(data)
     n_hold = max(4, int(len(data) * 0.12))
     hold, train = data[:n_hold], data[n_hold:]
-    in_ch = 2 + len(a.pos) + len(a.neg) + (1 if len(a.pos) > 1 else 0)
-    kwargs = {"in_ch": in_ch, "width": a.width, "depth": a.depth}
+    bm = a.base_members if a.mode == "gain" else None
+    if bm is None:
+        in_ch = 2 + len(a.pos) + len(a.neg) + (1 if len(a.pos) > 1 else 0)
+    else:
+        in_ch = 3 + len(a.pos) + len(a.neg)
+    kwargs = {"in_ch": in_ch, "width": a.width, "depth": a.depth, "mode": a.mode}
     model = MaskRefiner(**kwargs)
     print(f"{len(train)} train / {len(hold)} held-out clips; params "
           f"{sum(p.numel() for p in model.parameters()) / 1e3:.0f}k", flush=True)
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=1e-4)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
-    h_sdr, b_sdr = evaluate(model, hold)
+    h_sdr, b_sdr = evaluate(model, hold, bm)
     log = [{"epoch": 0, "hold_sdr": h_sdr, "hold_base_sdr": b_sdr}]
-    print(f"epoch 0 hold-out SDR {h_sdr:.3f} (mask-mean base {b_sdr:.3f})", flush=True)
+    print(f"epoch 0 hold-out SDR {h_sdr:.3f} (base {b_sdr:.3f})", flush=True)
     best = h_sdr
     torch.save({"state_dict": model.state_dict(), "model_kwargs": kwargs, "pos": a.pos, "neg": a.neg,
-                "epoch": 0, "hold_sdr": h_sdr}, out / "model.pt")
+                "base_members": bm, "epoch": 0, "hold_sdr": h_sdr}, out / "model.pt")
     crop = int(a.crop_s * 44100)
     sample_w = json.loads(Path(a.weights).read_text())["sample_weights"] if a.weights else None
     for ep in range(1, a.epochs + 1):
         model.train()
         t0, losses = time.time(), []
         for mix, ref, pos, neg in batches(train, a.batch, crop, rng, sample_w):
-            feat, X, base = features(mix, pos, neg)
-            m = model(feat, base).reshape(*X.shape)
-            est = istft(X * m, mix.shape[-1])
+            feat, X, base = features(mix, pos, neg, bm)
+            est = istft(model.apply(feat, X, base), mix.shape[-1])
             loss = refiner_loss(est, ref)
             opt.zero_grad()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             opt.step()
             losses.append(float(loss))
-        h_sdr, _ = evaluate(model, hold)
+        h_sdr, _ = evaluate(model, hold, bm)
         log.append({"epoch": ep, "train_loss": float(np.mean(losses)), "hold_sdr": h_sdr})
         flag = ""
         if h_sdr > best:
             best = h_sdr
             flag = " *"
             torch.save({"state_dict": model.state_dict(), "model_kwargs": kwargs, "pos": a.pos,
-                        "neg": a.neg, "epoch": ep, "hold_sdr": h_sdr}, out / "model.pt")
+                        "neg": a.neg, "base_members": bm, "epoch": ep, "hold_sdr": h_sdr}, out / "model.pt")
         print(f"epoch {ep} loss {np.mean(losses):.4f} hold-out SDR {h_sdr:.3f}{flag} "
               f"({time.time() - t0:.0f}s)", flush=True)
     (out / "train_log.json").write_text(json.dumps({"args": vars(a), "log": log,
@@ -319,6 +326,10 @@ def main() -> int:
             q.add_argument("--depth", type=int, default=6)
             q.add_argument("--out", required=True)
             q.add_argument("--weights", default=None, help="mining JSON with sample_weights")
+            q.add_argument("--mode", choices=["mask", "gain"], default="mask",
+                           help="mask: re-mask the mixture; gain: 0..2 TF gain on the plain ensemble")
+            q.add_argument("--base-members", nargs="*", type=int, default=[0, 1],
+                           help="gain mode: indices into --pos averaged as the base ensemble")
         if name == "mine":
             q.add_argument("--refiner", default=None)
             q.add_argument("--retention-floor", type=float, default=0.5)

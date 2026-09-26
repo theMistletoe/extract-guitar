@@ -108,3 +108,15 @@ model dominates: their failures are on different clips.
   (20 s for Mega), so the members behave differently; (b) the training songs are mostly pop
   with electric guitar, where the acoustic-only head is favoured. The same risk applies to the
   refiner, so its validation result is the real test.
+
+### Phase 7 — learned mask refiner (stacking)
+
+* Candidates on 120 training clips (6 s, 44 min SW + 2 min HTDemucs-ft + 24 min Mega; one Mega
+  pass yields all 8 heads). Refiner r1 (69 k params) hold-out SDR on *training-distribution*
+  clips: 4.44 dB at init (= mask mean) → 4.70 (epoch 1) → 5.05 (epoch 2)…
+* Early transfer check (r1 snapshot, epoch 4, not a recorded experiment): validation SDR 4.00 dB
+  vs 3.58 for its own starting point (mask mean of the 4 positives) → **+0.42 dB of learned
+  correction transfers to the validation set**, but the mask-mean starting point is weaker than
+  the Champion's waveform mean (4.16). Design change → **gain refiner (r3)**: a 0..2 TF gain
+  applied to the Champion ensemble's complex STFT (identity at init, so it starts at 4.16 dB),
+  trained with the r1 hard-example weights.

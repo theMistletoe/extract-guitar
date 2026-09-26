@@ -39,18 +39,31 @@ def istft(X: torch.Tensor, length: int) -> torch.Tensor:
     return y.reshape(*shape[:-2], length)
 
 
-def features(mix: torch.Tensor, pos: list[torch.Tensor], neg: list[torch.Tensor]):
-    """mix/pos/neg: (B, 2, T). Returns (feat (B*2, C, F, N), X (B, 2, F, N), base_mask)."""
+def features(mix: torch.Tensor, pos: list[torch.Tensor], neg: list[torch.Tensor],
+             base_members: list[int] | None = None):
+    """mix/pos/neg: (B, 2, T). Returns (feat (B*2, C, F, N), X (B, 2, F, N), base).
+
+    mask mode (base_members None): base = mean positive ratio mask (in [0, 1]).
+    gain mode: base = complex STFT of the waveform mean of pos[base_members] (the plain
+    ensemble), and its magnitude ratio is added as a feature."""
     X = stft(mix)
     ax = X.abs() + EPS
-    pm = [(stft(p).abs() / ax).clamp(0, 1) for p in pos]
+    P = [stft(p) for p in pos]
+    pm = [(Pi.abs() / ax).clamp(0, 1) for Pi in P]
     nm = [(stft(n).abs() / ax).clamp(0, 1) for n in neg]
-    base = torch.stack(pm).mean(0)
+    if base_members is None:
+        base = torch.stack(pm).mean(0)
+    else:
+        base = torch.stack([P[i] for i in base_members]).mean(0)  # complex
+        pm = [(base.abs() / ax).clamp(0, 2) / 2] + pm
     lx = torch.log(ax)
     lx = (lx - lx.mean(dim=(-2, -1), keepdim=True)) / (lx.std(dim=(-2, -1), keepdim=True) + EPS)
-    chans = [lx, base] + pm + nm
-    if len(pm) > 1:
-        chans.append(torch.stack(pm).std(0))  # model disagreement
+    if base_members is None:
+        chans = [lx, base] + pm + nm
+        if len(pm) > 1:
+            chans.append(torch.stack(pm).std(0))  # model disagreement
+    else:
+        chans = [lx] + pm + nm + [torch.stack(pm[1:]).std(0)]
     feat = torch.stack(chans, dim=2)  # (B, 2, C, F, N)
     B, S, C, Fq, N = feat.shape
     return feat.reshape(B * S, C, Fq, N), X, base
@@ -71,8 +84,9 @@ class MaskRefiner(nn.Module):
     resolution (and a further /4 pyramid level) to keep CPU training affordable."""
 
     def __init__(self, in_ch: int, width: int = 24, depth: int = 6, freq_emb: int = 8,
-                 n_freq: int = N_FFT // 2 + 1):
+                 n_freq: int = N_FFT // 2 + 1, mode: str = "mask"):
         super().__init__()
+        self.mode = mode  # "mask": sigmoid mask on the mixture; "gain": 0..2 gain on the base
         self.freq_emb = nn.Parameter(torch.zeros(freq_emb, n_freq, 1))
         self.inp = nn.Conv2d(in_ch + freq_emb, width, 3, padding=1)
         self.down2 = nn.Conv2d(width, width, (4, 1), stride=(2, 1), padding=(1, 0))
@@ -103,12 +117,19 @@ class MaskRefiner(nn.Module):
         u = F.pad(u, (0, 0, 0, max(0, Fq - u.shape[2])))[:, :, :Fq]
         h = F.gelu(self.fuse(u + h0))
         delta = self.out(h).squeeze(1)  # (BS, F, N)
+        if self.mode == "gain":
+            return 2 * torch.sigmoid(delta)  # 1.0 at init: output == plain ensemble
         b = base.reshape(BS, Fq, N).clamp(1e-4, 1 - 1e-4)
         return torch.sigmoid(torch.logit(b) + delta)
 
+    def apply(self, feat, X, base):
+        """Complex output spectrogram (B, 2, F, N)."""
+        m = self(feat, base).reshape(*X.shape)
+        return m * (base if self.mode == "gain" else X)
+
 
 def apply_refiner(model: MaskRefiner, mix: np.ndarray, pos: list[np.ndarray], neg: list[np.ndarray],
-                  seg_s: float = 12.0, sr: int = 44100) -> np.ndarray:
+                  seg_s: float = 12.0, sr: int = 44100, base_members: list[int] | None = None) -> np.ndarray:
     """Full-track inference in overlapping segments (numpy in/out, (2, T))."""
     model.eval()
     T = mix.shape[-1]
@@ -123,9 +144,8 @@ def apply_refiner(model: MaskRefiner, mix: np.ndarray, pos: list[np.ndarray], ne
         sl = slice(s, e)
         t = lambda a: torch.from_numpy(np.ascontiguousarray(a[:, sl], dtype=np.float32))[None]  # noqa: E731
         with torch.no_grad():
-            feat, X, base = features(t(mix), [t(p) for p in pos], [t(n) for n in neg])
-            m = model(feat, base).reshape(1, 2, *X.shape[-2:])
-            y = istft(X * m, e - s)[0].numpy()
+            feat, X, base = features(t(mix), [t(p) for p in pos], [t(n) for n in neg], base_members)
+            y = istft(model.apply(feat, X, base), e - s)[0].numpy()
         w = win[: e - s] if (e - s) == seg else np.hanning(e - s).astype(np.float32).clip(1e-3)
         if s == 0:
             w[: (e - s) // 2] = 1.0
