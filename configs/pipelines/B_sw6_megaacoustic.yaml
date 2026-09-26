@@ -1,0 +1,6 @@
+name: B_sw6_megaacoustic
+description: "Strategy B (two-stage): SW guitar stem, then MVSep Mega acoustic-guitar head"
+steps:
+  - {id: g, model: sw6, input: mix, params: {num_overlap: 2, precision: bf16}}
+  - {id: ag, model: mega_acoustic, input: g, params: {num_overlap: 2, precision: bf16}}
+output: ag

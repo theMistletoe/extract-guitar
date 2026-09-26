@@ -31,3 +31,5 @@ datasets/train/
 outputs/**/*.wav
 artifacts/**/*.wav
 experiments/**/*.wav
+experiments_*.log
+fetch_train.log

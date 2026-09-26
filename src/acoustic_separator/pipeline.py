@@ -76,6 +76,7 @@ class PipelineRunner:
         self.stem_cache = cache_dir() / "stems"
         self.stem_cache.mkdir(parents=True, exist_ok=True)
         self.timings: dict[str, float] = {}
+        self._refiners: dict = {}
 
     # -- separator step with disk cache -------------------------------------------------
     def _separate(self, model: str, audio: np.ndarray, sr: int, params: InferenceParams):
@@ -100,6 +101,23 @@ class PipelineRunner:
             (folder / "meta.json").write_text(key_src)
             (folder / "done").write_text(str(dt))
         return out, dt, False
+
+    def _refine(self, step: dict, mix: np.ndarray, ref) -> np.ndarray:
+        import torch
+
+        from .refiner import MaskRefiner, apply_refiner
+
+        path = Path(step["refiner"])
+        if not path.is_absolute():
+            path = REPO_ROOT / path
+        key = str(path)
+        if key not in self._refiners:
+            ck = torch.load(str(path), map_location="cpu", weights_only=False)
+            model = MaskRefiner(**ck["model_kwargs"])
+            model.load_state_dict(ck["state_dict"])
+            self._refiners[key] = model
+        return apply_refiner(self._refiners[key], mix, [ref(r) for r in step["positives"]],
+                             [ref(r) for r in step.get("negatives", [])])
 
     def run(self, pipeline: dict, mix: np.ndarray, sr: int) -> dict:
         """Returns {"output": acoustic, "values": all step outputs, "runtime": seconds, ...}."""
@@ -137,6 +155,8 @@ class PipelineRunner:
                 fn = ens.POSTPROCESS[step["post"]]
                 kw = {k: v for k, v in step.items() if k not in ("id", "post", "input", "mix_ref")}
                 vals[sid] = fn(ref(step["input"]), ref(step.get("mix_ref", "mix")), **kw)
+            elif "refiner" in step:
+                vals[sid] = self._refine(step, mix, ref)
             elif step.get("op") == "sub":
                 vals[sid] = ref(step["a"]) - ref(step["b"])
             elif step.get("op") == "sum":

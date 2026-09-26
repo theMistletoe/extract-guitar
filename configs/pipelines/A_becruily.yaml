@@ -1,5 +1,5 @@
-name: direct_becruily
-description: "Strategy A: becruily Mel-Band RoFormer guitar model applied to the full mix"
+name: A_becruily
+description: "Strategy A (direct): Mel-Band RoFormer guitar (becruily) applied to the full mix"
 steps:
   - id: guitar
     model: becruily_guitar

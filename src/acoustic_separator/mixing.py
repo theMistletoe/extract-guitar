@@ -8,6 +8,7 @@ is exactly the mixture.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -34,7 +35,7 @@ class Source:
 # Scenario = which interferer classes to draw and at what relative level.
 # Levels are dB of each interferer's active RMS relative to the acoustic guitar.
 SCENARIOS: dict[str, dict] = {
-    "band_pop": {"classes": ["vocals", "drums", "bass", "other_band"], "level": (-3, 6)},
+    "band_pop": {"classes": ["vocals", "drums", "bass", "electric_clean"], "level": (-3, 6)},
     "piano": {"classes": ["piano"], "level": (-3, 6), "hard": True},
     "piano_band": {"classes": ["piano", "drums", "bass"], "level": (-3, 5), "hard": True},
     "clean_electric": {"classes": ["electric_clean"], "level": (-3, 6), "hard": True},
@@ -153,4 +154,113 @@ def write_clip(out_dir: Path, clip: dict, category: str) -> None:
             save_audio(out_dir / "stems" / f"{k}.wav", v, SR)
     meta = dict(clip["info"])
     meta["category"] = category
-    (out_dir / "meta.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False))
+    (out_dir / "meta.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False, default=float))
+
+
+# --- coherent multitrack songs (RawStems / Mixing Secrets layout) ----------------------
+NON_GUITAR_PLUCKED = re.compile(r"mandolin|mando|banjo|uke|ukelele|ukulele|guitalele|bazouki|"
+                                r"bouzouki|dobro|autoharp|sitar|marimba", re.I)
+EXCLUDE_STEM = re.compile(r"room|bleed|click|plusvox|ambien|crowd|talkback", re.I)
+CATEGORY_CLASS = {
+    "Voc": "vocals", "Rhy/DK": "drums", "Rhy/PERC": "percussion", "Bass": "bass",
+    "Kbs/PN": "piano", "Kbs/OR": "keys", "Kbs/EP": "keys", "Kbs": "keys",
+    "Gtr/EG": "electric_guitar", "Orch/STR": "strings", "Orch/WW": "winds",
+    "Orch/BR": "brass", "Synth": "synth",
+}
+# nominal mix level of each class relative to the acoustic guitar (dB), jittered per clip
+CLASS_LEVEL_DB = {"vocals": 3, "drums": 2, "percussion": -3, "bass": 0, "piano": 0, "keys": -2,
+                  "electric_guitar": 0, "strings": 0, "winds": 0, "brass": -1, "synth": -2,
+                  "plucked_other": -1}
+
+
+def classify_stem(rel_path: str) -> str | None:
+    """Map 'Cat/Sub/NN_Name.flac' (path inside a song folder) to a class; None = skip."""
+    name = rel_path.rsplit("/", 1)[-1]
+    if EXCLUDE_STEM.search(name) or rel_path.startswith("Misc"):
+        return None
+    if rel_path.startswith("Gtr/AG"):
+        return "plucked_other" if NON_GUITAR_PLUCKED.search(name) else "acoustic_guitar"
+    for prefix in sorted(CATEGORY_CLASS, key=len, reverse=True):
+        if rel_path.startswith(prefix):
+            return CATEGORY_CLASS[prefix]
+    return None
+
+
+def load_song_groups(song_dir: Path) -> dict[str, np.ndarray]:
+    groups: dict[str, np.ndarray] = {}
+    files = {}
+    for p in sorted(song_dir.rglob("*.flac")) + sorted(song_dir.rglob("*.wav")):
+        cls = classify_stem(str(p.relative_to(song_dir)))
+        if cls is None:
+            continue
+        files.setdefault(cls, []).append(p)
+    length = None
+    for cls, paths in files.items():
+        acc = None
+        for p in paths:
+            x, _ = load_audio(p, sr=SR)
+            if acc is None:
+                acc = x
+            else:
+                n = max(acc.shape[1], x.shape[1])
+                acc = np.pad(acc, ((0, 0), (0, n - acc.shape[1]))) + np.pad(x, ((0, 0), (0, n - x.shape[1])))
+        groups[cls] = acc
+        length = max(length or 0, acc.shape[1])
+    return {k: np.pad(v, ((0, 0), (0, length - v.shape[1]))) for k, v in groups.items()}
+
+
+def _frame_energy(x: np.ndarray, hop: int) -> np.ndarray:
+    m = np.mean(x ** 2, axis=0)
+    n = len(m) // hop
+    return m[: n * hop].reshape(n, hop).mean(1)
+
+
+def pick_window(groups: dict[str, np.ndarray], seconds: float, rng: np.random.Generator,
+                exclude: list[tuple[int, int]] = ()) -> int:
+    """Start sample of a window where the guitar is active and many other classes play."""
+    hop = SR // 2
+    n = int(seconds * SR)
+    g = _frame_energy(groups["acoustic_guitar"], hop)
+    g_act = g > (np.percentile(g, 95) * 10 ** (-30 / 10))
+    others = [k for k in groups if k != "acoustic_guitar"]
+    o_act = [(_frame_energy(groups[k], hop) > np.percentile(_frame_energy(groups[k], hop), 95) * 1e-3)
+             for k in others]
+    w = int(seconds * 2)
+    best, best_score = 0, -1
+    for s in range(0, len(g) - w):
+        start = s * hop
+        if any(a <= start < b or a < start + n <= b for a, b in exclude):
+            continue
+        score = g_act[s:s + w].mean() * 4 + sum(o[s:s + w].mean() for o in o_act) + rng.uniform(0, 0.3)
+        if score > best_score:
+            best, best_score = start, score
+    return best
+
+
+def make_multitrack_clip(song_dir: Path, rng: np.random.Generator, seconds: float = 12.0,
+                         groups: dict | None = None, exclude=(), strength: float = 0.6,
+                         level_jitter_db: float = 3.0) -> dict:
+    groups = groups or load_song_groups(song_dir)
+    if "acoustic_guitar" not in groups:
+        raise ValueError(f"{song_dir} has no acoustic guitar stem")
+    start = pick_window(groups, seconds, rng, exclude)
+    n = int(seconds * SR)
+    stems = {k: v[:, start:start + n].astype(np.float32) for k, v in groups.items()}
+    stems = {k: v for k, v in stems.items() if A.rms(v) > 1e-5}
+    ref = A.active_rms(stems["acoustic_guitar"], SR)
+    info = {"song": song_dir.name, "start_s": round(start / SR, 2), "classes": {}}
+    out = {}
+    for k, v in stems.items():
+        v, fx = process_stem(v, rng, k, strength) if strength > 0 else (v, {})
+        lvl = 0.0 if k == "acoustic_guitar" else CLASS_LEVEL_DB.get(k, 0) + rng.uniform(-level_jitter_db, level_jitter_db)
+        v = v * (ref / (A.active_rms(v, SR) + 1e-9)) * A.db2lin(lvl)
+        out[k] = v.astype(np.float32)
+        info["classes"][k] = {"level_rel_guitar_db": round(lvl, 2), "fx": fx}
+    out = A.mastering(out, SR, rng)
+    mix = sum(out.values()).astype(np.float32)
+    interf = sum(v for k, v in out.items() if k != "acoustic_guitar")
+    info["guitar_to_rest_db"] = round(10 * np.log10(np.mean(out["acoustic_guitar"] ** 2) /
+                                                     (np.mean(interf ** 2) + 1e-12)), 2)
+    info["hard"] = any(k in out for k in ("strings", "winds", "piano", "plucked_other", "electric_guitar"))
+    info["scenario"] = "multitrack"
+    return {"mixture": mix, "stems": out, "info": info, "start": start}

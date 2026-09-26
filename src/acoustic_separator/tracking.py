@@ -22,7 +22,7 @@ PRIMARY_METRIC = "sdr_mean"
 CSV_FIELDS = [
     "experiment", "timestamp", "strategy", "pipeline", "models", "checkpoints", "chunk",
     "overlap", "tta", "sdr", "si_sdr", "sdri", "sir", "sar", "target_retention", "leakage",
-    "mrstft", "hard_sdr", "target_guitar_prob", "target_leak_prob", "runtime_val_s",
+    "mrstft", "hard_sdr", "sdr_ms", "sdr_syn", "target_guitar_prob", "target_leak_prob", "runtime_val_s",
     "runtime_target_s", "is_champion", "git_commit",
 ]
 
@@ -94,6 +94,12 @@ def write_experiment(exp_id: str, config: dict, metrics: dict, notes: str,
 
 def append_results(row: dict) -> None:
     EXPERIMENTS.mkdir(parents=True, exist_ok=True)
+    rows = read_results()
+    if rows and list(rows[0].keys()) != CSV_FIELDS:  # schema changed: rewrite with new header
+        with open(RESULTS_CSV, "w", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=CSV_FIELDS, extrasaction="ignore")
+            w.writeheader()
+            w.writerows(rows)
     new = not RESULTS_CSV.exists()
     with open(RESULTS_CSV, "a", newline="") as f:
         w = csv.DictWriter(f, fieldnames=CSV_FIELDS, extrasaction="ignore")

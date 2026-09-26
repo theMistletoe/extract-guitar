@@ -1,0 +1,243 @@
+#!/usr/bin/env python
+"""Train the learned mask refiner (stacking ensemble) on TRAINING data only.
+
+The benchmark validation set (datasets/validation) is never touched here; early stopping
+uses a held-out slice of the training clips. The resulting checkpoint is then evaluated by
+scripts/benchmark.py like any other challenger.
+
+    python scripts/train.py prepare --clips-per-song 6 --n-syn 90 --seconds 6
+    python scripts/train.py candidates --pos xlance_gtr sw6 mega_acoustic --neg mega_violin mega_woodwind
+    python scripts/train.py fit --pos xlance_gtr sw6 mega_acoustic --neg mega_violin mega_woodwind \
+        --epochs 30 --out artifacts/refiner/r001
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import random
+import sys
+import time
+from pathlib import Path
+
+import numpy as np
+import torch
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from acoustic_separator.audio import load_audio, save_audio  # noqa: E402
+from acoustic_separator.inference import InferenceParams  # noqa: E402
+from acoustic_separator.mixing import (SCENARIOS, Source, load_song_groups, make_mixture,  # noqa: E402
+                                       make_multitrack_clip)
+from acoustic_separator.pipeline import ModelPool, PipelineRunner  # noqa: E402
+from acoustic_separator.refiner import MaskRefiner, features, istft, refiner_loss  # noqa: E402
+
+CLIPS = ROOT / "datasets" / "train_clips"
+MANIFEST = ROOT / "datasets" / "manifest.csv"
+PARAMS = {"num_overlap": 2, "precision": "bf16"}
+
+
+def train_pool():
+    pool, songs = {}, []
+    with open(MANIFEST) as f:
+        for r in csv.DictReader(f):
+            if r["split"] != "train":
+                continue
+            p = ROOT / r["path"]
+            if not p.exists():
+                continue
+            if r["type"] == "multitrack_song":
+                songs.append(p)
+            else:
+                pool.setdefault(r["instrument"], []).append(
+                    Source(id=r["id"], path=str(p), cls=r["instrument"], license=r["license"],
+                           dataset=r["source"], split="train"))
+    return pool, songs
+
+
+def cmd_prepare(a):
+    pool, songs = train_pool()
+    rng = np.random.default_rng(a.seed)
+    CLIPS.mkdir(parents=True, exist_ok=True)
+    n = 0
+    for song in songs:
+        groups = load_song_groups(song)
+        if "acoustic_guitar" not in groups:
+            continue
+        used = []
+        for k in range(a.clips_per_song):
+            clip = make_multitrack_clip(song, rng, a.seconds, groups=groups, exclude=used, strength=0.8)
+            used.append((clip["start"], clip["start"] + int(a.seconds * 44100)))
+            _write(CLIPS / f"ms_{song.name[:30].replace(' ', '_')}_{k}", clip)
+            n += 1
+    print({k: len(v) for k, v in pool.items()})
+    scen = [s for s, d in SCENARIOS.items() if any(pool.get(c) for c in d["classes"])]
+    for k in range(a.n_syn):
+        sc = scen[k % len(scen)]
+        clip = make_mixture(pool, sc, rng, seconds=a.seconds)
+        _write(CLIPS / f"syn_{sc}_{k:03d}", clip)
+        n += 1
+    print(f"{n} training clips in {CLIPS}")
+
+
+def _write(d: Path, clip: dict):
+    d.mkdir(parents=True, exist_ok=True)
+    save_audio(d / "mixture.wav", clip["mixture"], 44100)
+    save_audio(d / "acoustic_guitar.wav", clip["stems"]["acoustic_guitar"], 44100)
+    (d / "meta.json").write_text(json.dumps(clip["info"], default=str)[:20000])
+
+
+def _spec(s: str):
+    """'model' -> (model, None) ; 'model:stem' -> (model, stem)."""
+    return tuple(s.split(":", 1)) if ":" in s else (s, None)
+
+
+def _run(runner, spec, mix):
+    model, stem = _spec(spec)
+    out, _, _ = runner._separate(model, mix, 44100, InferenceParams(**PARAMS))
+    cat = runner.catalog[model]
+    return out[stem or cat.target_stem or cat.stems[0]]
+
+
+def cmd_candidates(a):
+    runner = PipelineRunner(ModelPool(capacity=1))
+    clips = sorted(p for p in CLIPS.iterdir() if (p / "mixture.wav").exists())
+    for spec in a.pos + a.neg:  # model-major order keeps a single model in memory
+        t = time.time()
+        for c in clips:
+            mix, _ = load_audio(c / "mixture.wav")
+            _run(runner, spec, mix)
+        print(f"{spec}: {len(clips)} clips in {time.time() - t:.0f}s", flush=True)
+
+
+def load_training_set(pos, neg):
+    runner = PipelineRunner(ModelPool(capacity=1))
+    data = []
+    for c in sorted(p for p in CLIPS.iterdir() if (p / "mixture.wav").exists()):
+        mix, _ = load_audio(c / "mixture.wav")
+        ref, _ = load_audio(c / "acoustic_guitar.wav")
+        data.append({"name": c.name, "mix": mix, "ref": ref,
+                     "pos": [_run(runner, s, mix) for s in pos],
+                     "neg": [_run(runner, s, mix) for s in neg]})
+    return data
+
+
+def batches(data, bs, crop, rng):
+    idx = list(range(len(data)))
+    rng.shuffle(idx)
+    for i in range(0, len(idx), bs):
+        items = [data[j] for j in idx[i:i + bs]]
+        T = min(d["mix"].shape[-1] for d in items)
+        L = min(crop, T)
+        out = {"mix": [], "ref": [], "pos": [], "neg": []}
+        for d in items:
+            s = rng.randint(0, T - L)
+            g = rng.uniform(0.5, 1.5)
+            out["mix"].append(d["mix"][:, s:s + L] * g)
+            out["ref"].append(d["ref"][:, s:s + L] * g)
+            out["pos"].append([p[:, s:s + L] * g for p in d["pos"]])
+            out["neg"].append([n[:, s:s + L] * g for n in d["neg"]])
+        t = lambda x: torch.from_numpy(np.stack(x).astype(np.float32))  # noqa: E731
+        yield (t(out["mix"]), t(out["ref"]),
+               [t([p[k] for p in out["pos"]]) for k in range(len(out["pos"][0]))],
+               [t([n[k] for n in out["neg"]]) for k in range(len(out["neg"][0]))])
+
+
+def evaluate(model, data):
+    model.eval()
+    sdrs = []
+    with torch.no_grad():
+        for d in data:
+            t = lambda a: torch.from_numpy(a)[None]  # noqa: E731
+            feat, X, base = features(t(d["mix"]), [t(p) for p in d["pos"]], [t(n) for n in d["neg"]])
+            m = model(feat, base).reshape(1, 2, *X.shape[-2:])
+            y = istft(X * m, d["mix"].shape[-1])[0].numpy()
+            b = istft(X * base, d["mix"].shape[-1])[0].numpy()
+            r = d["ref"]
+            sd = lambda e: 10 * np.log10((r ** 2).sum() / (((r - e) ** 2).sum() + 1e-10) + 1e-10)  # noqa: E731
+            sdrs.append((sd(y), sd(b)))
+    a = np.array(sdrs)
+    return float(a[:, 0].mean()), float(a[:, 1].mean())
+
+
+def cmd_fit(a):
+    torch.manual_seed(a.seed)
+    rng = random.Random(a.seed)
+    data = load_training_set(a.pos, a.neg)
+    rng.shuffle(data)
+    n_hold = max(4, int(len(data) * 0.12))
+    hold, train = data[:n_hold], data[n_hold:]
+    in_ch = 2 + len(a.pos) + len(a.neg) + (1 if len(a.pos) > 1 else 0)
+    kwargs = {"in_ch": in_ch, "width": a.width, "depth": a.depth}
+    model = MaskRefiner(**kwargs)
+    print(f"{len(train)} train / {len(hold)} held-out clips; params "
+          f"{sum(p.numel() for p in model.parameters()) / 1e3:.0f}k", flush=True)
+    opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=1e-4)
+    out = Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    h_sdr, b_sdr = evaluate(model, hold)
+    log = [{"epoch": 0, "hold_sdr": h_sdr, "hold_base_sdr": b_sdr}]
+    print(f"epoch 0 hold-out SDR {h_sdr:.3f} (mask-mean base {b_sdr:.3f})", flush=True)
+    best = h_sdr
+    torch.save({"state_dict": model.state_dict(), "model_kwargs": kwargs, "pos": a.pos, "neg": a.neg,
+                "epoch": 0, "hold_sdr": h_sdr}, out / "model.pt")
+    crop = int(a.crop_s * 44100)
+    for ep in range(1, a.epochs + 1):
+        model.train()
+        t0, losses = time.time(), []
+        for mix, ref, pos, neg in batches(train, a.batch, crop, rng):
+            feat, X, base = features(mix, pos, neg)
+            m = model(feat, base).reshape(*X.shape)
+            est = istft(X * m, mix.shape[-1])
+            loss = refiner_loss(est, ref)
+            opt.zero_grad()
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            opt.step()
+            losses.append(float(loss))
+        h_sdr, _ = evaluate(model, hold)
+        log.append({"epoch": ep, "train_loss": float(np.mean(losses)), "hold_sdr": h_sdr})
+        flag = ""
+        if h_sdr > best:
+            best = h_sdr
+            flag = " *"
+            torch.save({"state_dict": model.state_dict(), "model_kwargs": kwargs, "pos": a.pos,
+                        "neg": a.neg, "epoch": ep, "hold_sdr": h_sdr}, out / "model.pt")
+        print(f"epoch {ep} loss {np.mean(losses):.4f} hold-out SDR {h_sdr:.3f}{flag} "
+              f"({time.time() - t0:.0f}s)", flush=True)
+    (out / "train_log.json").write_text(json.dumps({"args": vars(a), "log": log,
+                                                    "train_clips": [d["name"] for d in train],
+                                                    "holdout_clips": [d["name"] for d in hold]}, indent=1))
+    print(f"best hold-out SDR {best:.3f} (base {b_sdr:.3f}) -> {out / 'model.pt'}")
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    p = sub.add_parser("prepare")
+    p.add_argument("--clips-per-song", type=int, default=6)
+    p.add_argument("--n-syn", type=int, default=90)
+    p.add_argument("--seconds", type=float, default=6.0)
+    p.add_argument("--seed", type=int, default=77)
+    for name in ("candidates", "fit"):
+        q = sub.add_parser(name)
+        q.add_argument("--pos", nargs="+", required=True)
+        q.add_argument("--neg", nargs="*", default=[])
+        q.add_argument("--seed", type=int, default=0)
+        if name == "fit":
+            q.add_argument("--epochs", type=int, default=30)
+            q.add_argument("--batch", type=int, default=4)
+            q.add_argument("--crop-s", type=float, default=4.0)
+            q.add_argument("--lr", type=float, default=1e-3)
+            q.add_argument("--width", type=int, default=32)
+            q.add_argument("--depth", type=int, default=6)
+            q.add_argument("--out", required=True)
+    a = ap.parse_args()
+    {"prepare": cmd_prepare, "candidates": cmd_candidates, "fit": cmd_fit}[a.cmd](a)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

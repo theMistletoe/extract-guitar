@@ -1,0 +1,6 @@
+name: B_xlance_minus_electric
+description: "Strategy B (two-stage): X-LANCE all-guitar stem, then remove electric guitar (Mega electric head) from it"
+steps:
+  - {id: g, model: xlance_gtr, input: mix, params: {num_overlap: 2, precision: bf16}}
+  - {id: ag, model: mega_electric, input: g, take: "~electric-guitar", params: {num_overlap: 2, precision: bf16}}
+output: ag

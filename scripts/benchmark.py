@@ -68,6 +68,13 @@ def summarize(rows: list[dict]) -> dict:
     hard = [r for r in rows if r.get("hard")]
     if hard:
         agg["hard_sdr_mean"] = float(np.mean([r["sdr"] for r in hard]))
+    for fam in ("ms", "syn"):
+        fr = [r for r in rows if r.get("clip", "").startswith(fam + "_")]
+        if fr:
+            for k in ("sdr", "si_sdr", "target_retention", "leakage_db", "sir_bss", "sar_bss"):
+                vals = [r[k] for r in fr if k in r and np.isfinite(r[k])]
+                if vals:
+                    agg[f"{k}_{fam}_mean"] = float(np.mean(vals))
     cats = sorted({r["category"] for r in rows if r.get("category")})
     agg["by_category"] = {c: {k: float(np.mean([r[k] for r in rows if r["category"] == c]))
                               for k in ("sdr", "si_sdr", "target_retention", "leakage_db")}
@@ -158,6 +165,8 @@ def main() -> int:
               f"{v.get('sdr_median', float('nan')):.3f} dB, SI-SDR mean {v.get('si_sdr_mean', float('nan')):.3f}, "
               f"SDRi {v.get('sdri_mean', float('nan')):.3f}\n"
               f"- SIR/SAR (BSS): {v.get('sir_bss_mean', float('nan')):.2f} / {v.get('sar_bss_mean', float('nan')):.2f} dB\n"
+              f"- by family: ms_* (real multitracks) SDR {v.get('sdr_ms_mean', float('nan')):.3f}, "
+              f"syn_* (synthetic) SDR {v.get('sdr_syn_mean', float('nan')):.3f}\n"
               f"- target retention {v.get('target_retention_mean', float('nan')):.3f}, "
               f"leakage {v.get('leakage_db_mean', float('nan')):.2f} dB, hard-case SDR "
               f"{v.get('hard_sdr_mean', float('nan')):.3f}\n"
@@ -185,6 +194,7 @@ def main() -> int:
         "sir": v.get("sir_bss_mean"), "sar": v.get("sar_bss_mean"),
         "target_retention": v.get("target_retention_mean"), "leakage": v.get("leakage_db_mean"),
         "mrstft": v.get("mrstft_mean"), "hard_sdr": v.get("hard_sdr_mean"),
+        "sdr_ms": v.get("sdr_ms_mean"), "sdr_syn": v.get("sdr_syn_mean"),
         "target_guitar_prob": p.get("guitar_prob"), "target_leak_prob": p.get("leak_prob_max"),
         "runtime_val_s": v.get("runtime_s"), "runtime_target_s": tgt_rt,
         "is_champion": int(promoted), "git_commit": tracking.git_commit(),

@@ -60,3 +60,20 @@ def test_wiener_refine_is_mix_consistent():
     est = ensemble.wiener_refine(g + 0.2 * v, mix)
     assert est.shape == mix.shape
     assert sdr(g, est) > sdr(g, mix)
+
+
+def test_untrained_refiner_equals_mask_mean():
+    import torch
+
+    from acoustic_separator.refiner import MaskRefiner, features, istft
+
+    g, v, d = _sig(seconds=2.0)
+    mix = g + v + d
+    pos = [g + 0.1 * v, g + 0.2 * d]
+    t = lambda a: torch.from_numpy(a)[None]  # noqa: E731
+    feat, X, base = features(t(mix), [t(p) for p in pos], [t(v)])
+    model = MaskRefiner(in_ch=feat.shape[1])
+    m = model(feat, base).reshape(1, 2, *X.shape[-2:])
+    np.testing.assert_allclose(m.detach().numpy(), base.clamp(1e-4, 1 - 1e-4).numpy(), atol=1e-5)
+    y = istft(X * m, mix.shape[-1])
+    assert y.shape == (1, 2, mix.shape[-1])
