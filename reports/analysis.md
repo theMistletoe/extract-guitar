@@ -54,3 +54,9 @@ saturated.
   The SDR-optimal per-clip gain has median 0.82 and a global gain > 1 lowers SDR, so the
   missing guitar is *local* (time-frequency holes), not a level problem, while other regions
   leak — a TF-local correction (refiner) is needed rather than a gain/threshold change.
+* exp016 magnitude **max** of the two members: retention 0.77 (vs 0.60) but leakage −8.4 dB
+  (vs −10.4) → SDR 2.86 dB (−0.78). Simply keeping more energy trades the "holes" for leakage;
+  the PRD §17 trade-off is real and symmetric here.
+* exp017 magnitude **min** (keep only what both members agree on): cleanest output so far
+  (leakage −14.0 dB) but retention 0.45 → SDR 3.27 dB (−0.37). Too aggressive for the
+  transcription use case (PRD §17), so the waveform mean remains the operating point.
