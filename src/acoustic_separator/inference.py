@@ -122,6 +122,7 @@ class Separator:
         self.config = config
         self.device = device
         self.demucs_mode = spec.arch == "htdemucs"
+        self.demucs_pkg = spec.arch == "demucs_pkg"
 
     @property
     def samplerate(self) -> int:
@@ -132,6 +133,8 @@ class Separator:
         return list(self.spec.stems)
 
     def default_chunk(self) -> int:
+        if self.demucs_pkg:
+            return int(float(self.model.segment) * self.model.samplerate)
         cfg = self.config
         if self.demucs_mode:
             return int(cfg.training.samplerate * cfg.training.segment)
@@ -150,6 +153,11 @@ class Separator:
         """audio: (2, T) at ``sr``. Returns {stem: (2, T) at ``sr``}."""
         params = params or InferenceParams()
         x = resample(audio, sr, self.samplerate)
+        norm = None
+        if self.demucs_pkg:  # track-level normalisation as in demucs.separate
+            ref = x.mean(0)
+            norm = (float(ref.mean()), float(ref.std()) + 1e-8)
+            x = (x - norm[0]) / norm[1]
         mix = torch.from_numpy(np.ascontiguousarray(x, dtype=np.float32))
         rng = np.random.default_rng(params.seed)
         views = [("id", mix)]
@@ -174,6 +182,8 @@ class Separator:
                 acc = est if acc is None else acc + est
                 n += 1
         est = (acc / n).numpy()
+        if norm is not None:
+            est = est * norm[1] + norm[0] / len(self.stems)
         out = {}
         for i, name in enumerate(self.stems):
             y = resample(est[i], self.samplerate, sr)

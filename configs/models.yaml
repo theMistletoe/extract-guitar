@@ -1,7 +1,10 @@
 # Model catalog. Weights are downloaded from Hugging Face into
-# ~/.cache/acoustic-separator (override with ACOUSTIC_SEPARATOR_CACHE) and checksummed.
-# arch = model_type in ZFTurbo/Music-Source-Separation-Training.
+# ~/.cache/acoustic-separator (override with ACOUSTIC_SEPARATOR_CACHE) and checksummed
+# (sha256 recorded in <cache>/checksums.json and in every experiment's config.yaml).
+# arch = model_type in ZFTurbo/Music-Source-Separation-Training (MSST), or demucs_pkg.
+# Provenance / licence notes: see docs/research.md. Weights are never redistributed here.
 models:
+  # --- guitar separators ---------------------------------------------------------------
   becruily_guitar:
     arch: mel_band_roformer
     repo: becruily/mel-band-roformer-guitar
@@ -9,4 +12,139 @@ models:
     config: hf:config_guitar_becruily.yaml
     stems: [guitar]
     target_stem: guitar
-    license: see model card (community release)
+    license: none stated (community release); training data undisclosed
+
+  sw6:
+    # BS-RoFormer "SW" 6 stems. Best public guitar (9.01) and piano (7.80) SDR on MVSep.
+    arch: bs_roformer
+    repo: enerjazzer/BS-ROFO-SW-Fixed
+    checkpoint: BS-Rofo-SW-Fixed.ckpt
+    config: hf:BS-Rofo-SW-Fixed.yaml
+    stems: [bass, drums, other, vocals, guitar, piano]
+    target_stem: guitar
+    sha256: 24e7d35ee9c64415673d3fd33e06a67cac2c103c5df6267ba1576459c775916e
+    license: unknown (anonymous; likely derived from Logic Pro Stem Splitter) - private use only
+
+  xlance_gtr:
+    # X-LANCE MSR Challenge 2025 guitar model, fine-tuned from SW on RawStems + MoisesDB.
+    arch: bs_roformer
+    repo: chenxie95/xlance-msr-ckpt
+    checkpoint: gtr_mss.pth
+    config: hf://noblebarkrr/mvsepless_resources/bs_roformer/bs_gtr_xlancer_config.yaml
+    stems: [guitar]
+    target_stem: guitar
+    license: MIT (HF); training data MoisesDB (non-commercial research)
+
+  mega_acoustic:
+    # MVSep Mega 53-stem BS-RoFormer, acoustic-guitar head (only public acoustic-specific model)
+    arch: bs_roformer
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: v1/bs_mega_53stem_acoustic-guitar_mvsep.ckpt
+    config: hf:v1/bs_mega_53stem_acoustic-guitar_mvsep_config.yaml
+    stems: [acoustic-guitar]
+    target_stem: acoustic-guitar
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+
+  mega_guitar:
+    arch: bs_roformer
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: v1/bs_mega_53stem_guitar_mvsep.ckpt
+    config: hf:v1/bs_mega_53stem_guitar_mvsep_config.yaml
+    stems: [guitar]
+    target_stem: guitar
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+
+  mega_electric:
+    arch: bs_roformer
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: v1/bs_mega_53stem_electric-guitar_mvsep.ckpt
+    config: hf:v1/bs_mega_53stem_electric-guitar_mvsep_config.yaml
+    stems: [electric-guitar]
+    target_stem: electric-guitar
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+
+  htdemucs6s:
+    # Official Meta HTDemucs 6 sources, loaded by demucs>=4.1 from HF (adefossez/HTDemucs-6s)
+    arch: demucs_pkg
+    repo: null
+    checkpoint: htdemucs_6s
+    config: none
+    stems: [drums, bass, other, vocals, guitar, piano]
+    target_stem: guitar
+    license: MIT
+
+  htdemucs6s_gtrft:
+    arch: demucs_pkg
+    repo: null
+    checkpoint: htdemucs_6s
+    config: none
+    finetune: "adityalakhani/htdemucs-6s-guitar-ft:guitar_htdemucs_6s.pt"
+    stems: [drums, bass, other, vocals, guitar, piano]
+    target_stem: guitar
+    license: Apache-2.0 (fine-tune on MoisesDB)
+
+  # --- interferer removers (cascades / two-stage cleanup) -------------------------------
+  mega_violin:
+    arch: bs_roformer
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: v1/bs_mega_53stem_violin_mvsep.ckpt
+    config: hf:v1/bs_mega_53stem_violin_mvsep_config.yaml
+    stems: [violin]
+    target_stem: violin
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+
+  mega_bowed:
+    arch: bs_roformer
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: v1/bs_mega_53stem_bowed_strings_mvsep.ckpt
+    config: hf:v1/bs_mega_53stem_bowed_strings_mvsep_config.yaml
+    stems: [bowed_strings]
+    target_stem: bowed_strings
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+
+  mega_clarinet:
+    arch: bs_roformer
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: v1/bs_mega_53stem_clarinet_mvsep.ckpt
+    config: hf:v1/bs_mega_53stem_clarinet_mvsep_config.yaml
+    stems: [clarinet]
+    target_stem: clarinet
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+
+  mega_woodwind:
+    arch: bs_roformer
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: v1/bs_mega_53stem_woodwind_mvsep.ckpt
+    config: hf:v1/bs_mega_53stem_woodwind_mvsep_config.yaml
+    stems: [woodwind]
+    target_stem: woodwind
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+
+  mega_percussion:
+    arch: bs_roformer
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: v1/bs_mega_53stem_percussion_mvsep.ckpt
+    config: hf:v1/bs_mega_53stem_percussion_mvsep_config.yaml
+    stems: [percussion]
+    target_stem: percussion
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+
+  gilliaan_strings:
+    # Best public bowed-strings model (MVSep strings SDR 4.69)
+    arch: bs_roformer
+    repo: gilliaan/Stem-Separation-Models
+    checkpoint: BowedStrings/BandSplitRoformer/gilliaan_bsroformer_bowedstrings_v2.ckpt
+    config: hf:BowedStrings/BandSplitRoformer/gilliaan_bsroformer_bowedstrings_v2.yaml
+    stems: [strings, other]
+    target_stem: strings
+    license: none stated
+
+  xlance_orch:
+    # X-LANCE orchestral (strings + winds) remover
+    arch: bs_roformer
+    repo: chenxie95/xlance-msr-ckpt
+    checkpoint: orch_mss.pth
+    config: hf://noblebarkrr/mvsepless_resources/bs_roformer/bs_orch_xlancer_config.yaml
+    stems: [orch]
+    target_stem: orch
+    license: MIT (HF); training data MoisesDB/RawStems (non-commercial research)

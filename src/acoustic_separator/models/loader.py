@@ -58,14 +58,22 @@ def _hf_download(repo: str, filename: str, revision: str | None) -> Path:
 
 def resolve_files(spec: ModelSpec) -> tuple[Path, Path]:
     """Download (once) checkpoint + config, verify/record checksum."""
+    if spec.arch == "demucs_pkg":
+        spec.extra.setdefault("resolved_sha256", f"demucs:{spec.checkpoint}:{spec.extra.get('finetune', '')}")
+        return Path(spec.checkpoint), None
     if spec.repo:
         ckpt = _hf_download(spec.repo, spec.checkpoint, spec.revision)
     else:
         ckpt = Path(spec.checkpoint)
         if not ckpt.is_absolute():
             ckpt = REPO_ROOT / ckpt
-    if spec.config.startswith("hf:"):
+    if spec.config.startswith("hf://"):  # config hosted in another HF repo
+        owner, name, *rest = spec.config[5:].split("/")
+        cfg = _hf_download(f"{owner}/{name}", "/".join(rest), None)
+    elif spec.config.startswith("hf:"):
         cfg = _hf_download(spec.repo, spec.config[3:], spec.revision)
+    elif spec.config == "none":
+        cfg = None
     else:
         cfg = MODEL_CONFIG_DIR / spec.config
     sums_path = cache_dir() / "checksums.json"
@@ -85,6 +93,8 @@ def resolve_files(spec: ModelSpec) -> tuple[Path, Path]:
 
 
 def load_config(arch: str, cfg_path: Path):
+    if cfg_path is None:
+        return None
     if arch == "htdemucs":
         from omegaconf import OmegaConf
 
@@ -135,6 +145,8 @@ def load_separator(name_or_spec, device=None):
 
     spec = name_or_spec if isinstance(name_or_spec, ModelSpec) else load_catalog()[name_or_spec]
     device = device or pick_device()
+    if spec.arch == "demucs_pkg":
+        return _load_demucs_pkg(spec, device)
     ckpt, cfg_path = resolve_files(spec)
     config = load_config(spec.arch, cfg_path)
     for k, v in spec.extra.get("config_overrides", {}).items():
@@ -151,3 +163,26 @@ def load_separator(name_or_spec, device=None):
         raise RuntimeError(f"{spec.name}: missing={missing[:5]} unexpected={unexpected[:5]}")
     model.eval().to(device)
     return Separator(spec, model, config, device)
+
+
+def _load_demucs_pkg(spec: ModelSpec, device):
+    """Official Demucs checkpoints via the ``demucs`` package (weights from HF)."""
+    from demucs.pretrained import get_model
+
+    from ..inference import Separator
+
+    os.environ.setdefault("HF_HOME", str(cache_dir() / "hf_home"))
+    bag = get_model(spec.checkpoint)
+    model = bag.models[0] if hasattr(bag, "models") else bag
+    if spec.extra.get("finetune"):  # e.g. repo:file of a fine-tuned state dict
+        repo, fname = spec.extra["finetune"].split(":", 1)
+        path = _hf_download(repo, fname, None)
+        sd = _state_dict(torch.load(str(path), map_location="cpu", weights_only=False))
+        sd = {k.replace("models.0.", "", 1): v for k, v in sd.items()}
+        model.load_state_dict(sd, strict=True)
+        spec.extra["resolved_sha256"] = file_sha256(path)
+    else:
+        spec.extra["resolved_sha256"] = f"demucs:{spec.checkpoint}"
+    spec.extra["resolved_checkpoint"] = spec.checkpoint
+    model.eval().to(device)
+    return Separator(spec, model, None, device)

@@ -1,0 +1,72 @@
+# extract-guitar — acoustic guitar stem extraction
+
+完成済みのステレオ楽曲から **アコースティックギターだけ** を高精度に抽出するローカルツールです。
+既存の最新 Music Source Separation モデル (BS-RoFormer / Mel-Band RoFormer / HTDemucs ほか) を
+Direct・Two-stage・Cascade・Ensemble の各方式で組み合わせ、正解 stem 付きの合成検証セットで
+客観評価して最良のパイプライン (Champion) を選びます。
+
+* PRD: [`docs/PRD.md`](docs/PRD.md)
+* 調査: [`docs/research.md`](docs/research.md)
+* 設計: [`docs/architecture.md`](docs/architecture.md)
+* 実験履歴: [`docs/experiments.md`](docs/experiments.md), [`experiments/results.csv`](experiments/results.csv)
+* 最終レポート: [`reports/final_report.md`](reports/final_report.md)
+
+## Quick start (1 command)
+
+```bash
+# 1. install (uv, Python 3.10–3.12). Choose the PyTorch build:
+uv sync --extra cpu        # CPU / Apple Silicon (MPS)
+# uv sync --extra cu126    # NVIDIA CUDA 12.6
+
+# 2. separate (file or URL). --quality max = current Champion pipeline, fp32
+uv run --no-sync python -m acoustic_separator --input "<youtube-url-or-audio-file>" --quality max
+```
+
+Outputs (float32 WAV, original sample rate):
+
+```text
+outputs/<track-id>/
+  original.wav
+  acoustic_guitar.wav        # extracted acoustic guitar
+  non_acoustic_guitar.wav    # everything else (= original − acoustic_guitar, exact)
+  run.json                   # models, checkpoint sha256, parameters, runtime
+```
+
+Options: `--output DIR`, `--pipeline NAME|PATH.yaml` (any file in `configs/pipelines/`),
+`--device auto|cpu|cuda|mps`, `--save-candidates` (write every intermediate stem),
+`--no-cache`.
+
+URL input uses `yt-dlp` and is optional/decoupled (`src/acoustic_separator/fetch.py`).
+If a site blocks the download (terms of use, DRM, region, bot checks), obtain the audio
+legally and pass the local file (WAV / MP3 / M4A / FLAC / MP4 …).
+
+Model weights are downloaded once from Hugging Face into `~/.cache/acoustic-separator/`
+(override with `ACOUSTIC_SEPARATOR_CACHE`) and their sha256 is recorded. Weights, datasets
+and audio are never committed to git.
+
+## Reproducing the experiments
+
+```bash
+uv sync --extra cpu --extra dev
+python scripts/download_models.py               # fetch + checksum every catalog model
+python scripts/prepare_dataset.py --split val   # build the ground-truth validation set
+python scripts/benchmark.py --pipeline configs/pipelines/<name>.yaml --slug <name>
+python scripts/run_target.py                    # target-song candidates + report.html
+```
+
+See `docs/experiments.md` for the full list of commands that produced every experiment.
+
+## Repository layout
+
+```text
+configs/models.yaml        model catalog (HF repo, file, sha256, licence)
+configs/pipelines/         direct / two-stage / cascade / ensemble pipelines
+src/acoustic_separator/    cli, audio, inference, pipeline, ensemble, evaluation, proxy,
+                           mixing/augment (synthetic data), report, tracking, models/
+scripts/                   benchmark, download_models, prepare_dataset, train, evaluate, run_target
+datasets/manifest.csv      every source file used, with licence and split
+experiments/               one folder per experiment + results.csv
+artifacts/champion/        current Champion (history.jsonl keeps every past Champion)
+outputs/target/            target-song candidates, best/, report.html
+reports/final_report.md    final evaluation
+```
