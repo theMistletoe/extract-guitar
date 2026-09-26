@@ -1,0 +1,12 @@
+# Model catalog. Weights are downloaded from Hugging Face into
+# ~/.cache/acoustic-separator (override with ACOUSTIC_SEPARATOR_CACHE) and checksummed.
+# arch = model_type in ZFTurbo/Music-Source-Separation-Training.
+models:
+  becruily_guitar:
+    arch: mel_band_roformer
+    repo: becruily/mel-band-roformer-guitar
+    checkpoint: becruily_guitar.ckpt
+    config: hf:config_guitar_becruily.yaml
+    stems: [guitar]
+    target_stem: guitar
+    license: see model card (community release)
