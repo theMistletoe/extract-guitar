@@ -51,9 +51,9 @@ def run_validation(runner: PipelineRunner, pipeline: dict, val_dir: Path, limit:
         clips = clips[:limit]
     for i, d in enumerate(clips):
         mix, ref, interf, meta, sr = load_clip(d)
-        t = time.perf_counter()
         res = runner.run(pipeline, mix, sr)
-        dt = time.perf_counter() - t
+        # separation compute time; cached steps count with the time measured when computed
+        dt = res["runtime"]
         runtime += dt
         m = evaluate_estimate(ref, res["output"], mix, interf, with_bss=with_bss)
         m.update({"clip": d.name, "category": meta.get("category", ""),
@@ -123,9 +123,8 @@ def main() -> int:
     tgt_rt = None
     if not args.no_target and TARGET.exists():
         mix, sr = load_audio(TARGET)
-        t = time.perf_counter()
         res = runner.run(pipeline, mix, sr)
-        tgt_rt = time.perf_counter() - t
+        tgt_rt = res["runtime"]
         cand_dir = ROOT / "outputs" / "target" / "candidates"
         save_audio(cand_dir / f"{exp_id}.wav", res["output"], sr)
         save_audio(cand_dir / f"{exp_id}_residual.wav", res["residual"], sr)

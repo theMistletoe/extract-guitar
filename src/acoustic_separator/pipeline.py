@@ -111,7 +111,12 @@ class PipelineRunner:
         key = hashlib.sha1(key_src.encode()).hexdigest()[:20]
         folder = self.stem_cache / key
         if self.use_cache and (folder / "done").exists():
-            return read_cached_stems(folder), 0.0, True
+            # report the compute time measured when the entry was created
+            try:
+                dt = float((folder / "done").read_text())
+            except ValueError:
+                dt = float("nan")
+            return read_cached_stems(folder), dt, True
         sep = self.pool.get(model)
         t = time.perf_counter()
         out = sep.separate(audio, sr, params, progress=self.progress)
