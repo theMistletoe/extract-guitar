@@ -60,3 +60,13 @@ saturated.
 * exp017 magnitude **min** (keep only what both members agree on): cleanest output so far
   (leakage −14.0 dB) but retention 0.45 → SDR 3.27 dB (−0.37). Too aggressive for the
   transcription use case (PRD §17), so the waveform mean remains the operating point.
+* exp015 Mega-53 acoustic-guitar head: val SDR 3.13 dB (real 1.39, synthetic 4.63) with an
+  extreme operating point — **SIR 14.8 dB** (by far the least interference) but SAR 1.2 dB and
+  retention 0.33 (much of the guitar removed). The acoustic-specific head is precise but
+  conservative: useful as "clean evidence" for an ensemble/refiner, not alone.
+* exp018 Mega-53 all-guitar head: 2.55 dB (SIR 8.9, SAR 2.8, retention 0.41) — *lower* than the
+  acoustic head on the same trunk (3.13), because electric guitar counts as interference here.
+
+**Phase 2 summary (single models, same settings):** Mega acoustic 3.13 ≈ SW/X-LANCE 3.12 ≈
+HTDemucs-6s guitar-FT 3.07 > HTDemucs-6s 2.58 ≈ Mega guitar 2.55 > becruily 2.10 dB. No single
+model dominates: their failures are on different clips.
