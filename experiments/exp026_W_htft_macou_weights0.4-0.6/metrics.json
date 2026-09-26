@@ -159,5 +159,34 @@
     },
     "runtime_s": 2580.563415935002
   },
-  "is_champion": false
+  "is_champion": false,
+  "target": {
+    "runtime_s": 10.7205938900006,
+    "model_runtime_s": 922.4376028999993,
+    "step_times": {
+      "m0_guitar": {
+        "seconds": 48.606110727999976,
+        "cached": true
+      },
+      "m1_guitar": {
+        "seconds": 873.8314921719993,
+        "cached": true
+      }
+    },
+    "proxy": {
+      "guitar_prob": 0.14228177070617676,
+      "residual_guitar_prob": 0.018492260947823524,
+      "leak_vocal_prob": 0.02851938270032406,
+      "leak_drums_prob": 0.0015357740921899676,
+      "leak_bass_prob": 0.009834351018071175,
+      "leak_piano_prob": 0.0016184280393645167,
+      "leak_electric_guitar_prob": 0.014012540690600872,
+      "leak_strings_prob": 0.04024047404527664,
+      "leak_winds_prob": 0.0025914241559803486,
+      "leak_synth_prob": 0.0006971488473936915,
+      "leak_prob_max": 0.04024047404527664,
+      "leak_prob_sum": 0.09904952358920127,
+      "stem_energy_db": -10.591442108154297
+    }
+  }
 }

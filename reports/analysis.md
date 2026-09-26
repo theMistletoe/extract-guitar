@@ -98,3 +98,13 @@ model dominates: their failures are on different clips.
   transformer; full vs. clean operating point), which is why they combine best.
 * exp025/026 weights 60:40 / 40:60 for the pair: 4.10 / 4.14 dB — equal weights (4.16) stay best;
   again a flat optimum, so no weight tuning on the validation set is adopted.
+* Band-wise least-squares weights fitted on the 120 disjoint training clips
+  (artifacts/band_weights_htft_macou.json): Mega acoustic 0.81–0.98 and HTDemucs-ft 0.01–0.24
+  below 9.6 kHz, 0.66 / 0.38 above. Evaluated as challenger `D_bandw_htft_macou` (weights
+  never see the validation set).
+* `D_bandw_htft_macou` (training-fitted band weights): 3.81 dB (−0.35 vs equal weights). The
+  weights learned on the training clips do **not** transfer. Two suspects: (a) training
+  candidates were computed with 6 s chunks while inference uses each model's default chunk
+  (20 s for Mega), so the members behave differently; (b) the training songs are mostly pop
+  with electric guitar, where the acoustic-only head is favoured. The same risk applies to the
+  refiner, so its validation result is the real test.

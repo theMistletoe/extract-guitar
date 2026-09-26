@@ -49,11 +49,23 @@ def load_catalog(path: Path = CATALOG_PATH) -> dict[str, ModelSpec]:
     return out
 
 
+_HF_PATHS: dict = {}
+
+
 def _hf_download(repo: str, filename: str, revision: str | None) -> Path:
+    """Resolve a Hub file, preferring the local cache (no network round-trip once cached)."""
     from huggingface_hub import hf_hub_download
 
-    return Path(hf_hub_download(repo_id=repo, filename=filename, revision=revision,
-                                cache_dir=str(cache_dir() / "hf")))
+    key = (repo, filename, revision)
+    if key in _HF_PATHS:
+        return _HF_PATHS[key]
+    kw = dict(repo_id=repo, filename=filename, revision=revision, cache_dir=str(cache_dir() / "hf"))
+    try:
+        path = Path(hf_hub_download(local_files_only=True, **kw))
+    except Exception:  # noqa: BLE001 - not cached yet
+        path = Path(hf_hub_download(**kw))
+    _HF_PATHS[key] = path
+    return path
 
 
 def resolve_files(spec: ModelSpec) -> tuple[Path, Path]:
