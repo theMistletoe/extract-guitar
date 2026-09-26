@@ -1,0 +1,40 @@
+name: R_r2
+description: Phase 7 learned mask refiner (r2) on SW guitar + HTDemucs-ft + Mega acoustic/guitar
+  (positive evidence) and SW other/piano/vocals/bass/drums + Mega violin/woodwind/electric
+  (negative evidence)
+steps:
+- id: sw
+  model: sw6
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: ht
+  model: htdemucs6s_gtrft
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: mm
+  model: mega_multi
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: ref
+  refiner: artifacts/refiner/r2/model.pt
+  positives:
+  - sw.guitar
+  - ht.guitar
+  - mm.acoustic-guitar
+  - mm.guitar
+  negatives:
+  - sw.other
+  - sw.piano
+  - sw.vocals
+  - sw.bass
+  - sw.drums
+  - mm.violin
+  - mm.woodwind
+  - mm.electric-guitar
+output: ref

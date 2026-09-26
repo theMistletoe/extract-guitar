@@ -144,3 +144,10 @@ model dominates: their failures are on different clips.
   and the validation songs. Consequences: (1) refine the *Champion* instead of a mask mean
   (gain mode, r3); (2) limit training to 6 epochs as regularisation against that shift — this
   choice uses the r1 validation curve (epoch 4 > 9) and is therefore disclosed here.
+* exp028 **R_r1** (mask refiner, recorded benchmark): 3.89 dB (real 2.24, synthetic 5.32), SIR 9.4,
+  SAR 4.1, leakage −15.3 dB, retention 0.41 → not promoted (−0.26 dB). The refiner moves the
+  operating point toward "clean" (like the Mega head) rather than lifting the guitar holes.
+* exp029 **R_r2** (mask refiner + hard-example mining round): 3.88 dB (median 3.02 vs 2.69 for r1),
+  SIR 6.8, SAR 5.1 (r1: 9.4 / 4.1), leakage −13.9 dB → not promoted. Mining shifted the refiner
+  away from over-cleaning (higher SAR, better median) but the mean did not move: the mask-mode
+  refiner is capped by its weak starting point (mask mean of the candidates, 3.58 dB).

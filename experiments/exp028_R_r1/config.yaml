@@ -1,0 +1,84 @@
+experiment: exp028_R_r1
+strategy: D+refiner
+pipeline:
+  name: R_r1
+  description: Phase 7 learned mask refiner (r1) on SW guitar + HTDemucs-ft + Mega
+    acoustic/guitar (positive evidence) and SW other/piano/vocals/bass/drums + Mega
+    violin/woodwind/electric (negative evidence)
+  steps:
+  - id: sw
+    model: sw6
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: ht
+    model: htdemucs6s_gtrft
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: mm
+    model: mega_multi
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: ref
+    refiner: artifacts/refiner/r1/model.pt
+    positives:
+    - sw.guitar
+    - ht.guitar
+    - mm.acoustic-guitar
+    - mm.guitar
+    negatives:
+    - sw.other
+    - sw.piano
+    - sw.vocals
+    - sw.bass
+    - sw.drums
+    - mm.violin
+    - mm.woodwind
+    - mm.electric-guitar
+  output: ref
+models:
+  sw6:
+    repo: enerjazzer/BS-ROFO-SW-Fixed
+    checkpoint: BS-Rofo-SW-Fixed.ckpt
+    sha256: 24e7d35ee9c64415673d3fd33e06a67cac2c103c5df6267ba1576459c775916e
+    arch: bs_roformer
+    license: unknown (anonymous; likely derived from Logic Pro Stem Splitter) - private
+      use only
+  htdemucs6s_gtrft:
+    repo: null
+    checkpoint: htdemucs_6s
+    sha256: demucs:htdemucs_6s:adityalakhani/htdemucs-6s-guitar-ft:guitar_htdemucs_6s.pt
+    arch: demucs_pkg
+    license: Apache-2.0 (fine-tune on MoisesDB)
+  mega_multi:
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: multihead
+    sha256: 1ce0838f692246a31637c08b43128ed5b574c3d2b6cd9b8572fae1b85a40711d
+    arch: bs_roformer_multihead
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+seed: 0
+reproducibility:
+  git_commit: d40d2373379fec10ff55dc3ccdcc225b6fc51cb9
+  command: /home/user/extract-guitar/scripts/benchmark.py --pipeline R_r1 --slug R_r1
+    --strategy D+refiner --hypothesis A small mask refiner trained on disjoint training
+    clips, fed with the positive (guitar) and negative (violin/woodwind/electric/other)
+    estimates of the pretrained models, removes leakage the plain average keeps. --change
+    refiner round 1 (mask mode, uniform sampling, best hold-out epoch 9), 4 positive
+    + 8 negative evidence stems --next hard-example mining round (r2); gain-mode refiner
+    on the Champion (r3)
+  timestamp: '2026-09-26T23:09:00'
+  seed: 0
+  hardware:
+    python: 3.11.15
+    platform: Linux-6.18.44-fc-v37-x86_64-with-glibc2.39
+    processor: x86_64
+    torch: 2.14.0+cpu
+    numpy: 2.4.6
+    cuda: false
+    threads: 1
+    cpu_count: 4
