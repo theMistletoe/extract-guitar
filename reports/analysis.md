@@ -120,3 +120,8 @@ model dominates: their failures are on different clips.
   the Champion's waveform mean (4.16). Design change → **gain refiner (r3)**: a 0..2 TF gain
   applied to the Champion ensemble's complex STFT (identity at init, so it starts at 4.16 dB),
   trained with the r1 hard-example weights.
+* `reports/tradeoff.png` (leakage vs retention, colour = SDR): all experiments lie on one
+  diagonal frontier from mag-max (−8.4 dB leak, 0.77 retention) to the Mega acoustic head
+  (−17.3 dB, 0.33); the best SDRs sit in the middle (−12…−13 dB leakage, 0.43–0.48 retention).
+  Moving *along* the frontier (gains, max/min, Wiener) does not help; the refiner's job is to
+  move the frontier itself.

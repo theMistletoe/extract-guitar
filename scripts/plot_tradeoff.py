@@ -32,7 +32,7 @@ def main() -> int:
     sc = ax.scatter(x, y, c=c, cmap="viridis", s=60, edgecolor="k", linewidth=0.5)
     champ = tracking.current_champion()
     for r, xi, yi in zip(rows, x, y):
-        lab = r["experiment"][:5] + " " + r["pipeline"][:26]
+        lab = r["experiment"][:6] + " " + r["pipeline"].replace("_wave_mean", "")[:22]
         bold = champ and champ["experiment"] == r["experiment"]
         ax.annotate(lab + (" ★" if bold else ""), (xi, yi), fontsize=6.5, xytext=(3, 3),
                     textcoords="offset points", weight="bold" if bold else "normal")
