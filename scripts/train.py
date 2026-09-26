@@ -312,10 +312,10 @@ def main() -> int:
         q.add_argument("--seed", type=int, default=0)
         if name == "fit":
             q.add_argument("--epochs", type=int, default=30)
-            q.add_argument("--batch", type=int, default=4)
-            q.add_argument("--crop-s", type=float, default=4.0)
+            q.add_argument("--batch", type=int, default=2)
+            q.add_argument("--crop-s", type=float, default=3.0)
             q.add_argument("--lr", type=float, default=1e-3)
-            q.add_argument("--width", type=int, default=32)
+            q.add_argument("--width", type=int, default=24)
             q.add_argument("--depth", type=int, default=6)
             q.add_argument("--out", required=True)
             q.add_argument("--weights", default=None, help="mining JSON with sample_weights")

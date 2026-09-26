@@ -11,7 +11,7 @@ cd "$(dirname "$0")/.."
 PY=${PY:-.venv/bin/python}
 POS=${POS:-"sw6:guitar htdemucs6s_gtrft:guitar mega_multi:acoustic-guitar mega_multi:guitar"}
 NEG=${NEG:-"sw6:other sw6:piano sw6:vocals sw6:bass sw6:drums mega_multi:violin mega_multi:woodwind mega_multi:electric-guitar"}
-EPOCHS=${EPOCHS:-25}
+EPOCHS=${EPOCHS:-16}
 
 [ -d datasets/train_clips ] || $PY scripts/train.py prepare --clips-per-song 4 --n-syn 64 --seconds 6
 $PY scripts/train.py candidates --pos $POS --neg $NEG

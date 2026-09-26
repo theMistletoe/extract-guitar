@@ -17,6 +17,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.utils.checkpoint
 
 N_FFT = 2048
 HOP = 512
@@ -66,30 +67,41 @@ class ConvBlock(nn.Module):
 
 
 class MaskRefiner(nn.Module):
-    def __init__(self, in_ch: int, width: int = 32, depth: int = 6, freq_emb: int = 8,
+    """Full-resolution input/output convs; dilated residual blocks run at half frequency
+    resolution (and a further /4 pyramid level) to keep CPU training affordable."""
+
+    def __init__(self, in_ch: int, width: int = 24, depth: int = 6, freq_emb: int = 8,
                  n_freq: int = N_FFT // 2 + 1):
         super().__init__()
         self.freq_emb = nn.Parameter(torch.zeros(freq_emb, n_freq, 1))
         self.inp = nn.Conv2d(in_ch + freq_emb, width, 3, padding=1)
+        self.down2 = nn.Conv2d(width, width, (4, 1), stride=(2, 1), padding=(1, 0))
         self.blocks = nn.ModuleList([ConvBlock(width, 2 ** (i % 4)) for i in range(depth)])
-        # frequency mixing: a GRU across frequency would be heavier; use a strided conv pyramid
         self.down = nn.Conv2d(width, width, (4, 1), stride=(4, 1))
         self.mid = nn.Sequential(ConvBlock(width, 1), ConvBlock(width, 2))
         self.up = nn.ConvTranspose2d(width, width, (4, 1), stride=(4, 1))
+        self.up2 = nn.ConvTranspose2d(width, width, (2, 1), stride=(2, 1))
+        self.fuse = nn.Conv2d(width, width, 3, padding=1)
         self.out = nn.Conv2d(width, 1, 1)
         nn.init.zeros_(self.out.weight)
         nn.init.zeros_(self.out.bias)
 
+    def _core(self, h: torch.Tensor) -> torch.Tensor:
+        ckpt = self.training and torch.is_grad_enabled()
+        for b in self.blocks:
+            h = torch.utils.checkpoint.checkpoint(b, h, use_reentrant=False) if ckpt else b(h)
+        f4 = (h.shape[2] // 4) * 4
+        d = self.mid(F.gelu(self.down(h[:, :, :f4])))
+        return h + F.pad(self.up(d), (0, 0, 0, h.shape[2] - f4))
+
     def forward(self, feat: torch.Tensor, base: torch.Tensor) -> torch.Tensor:
         BS, C, Fq, N = feat.shape
         fe = self.freq_emb[:, :Fq].unsqueeze(0).expand(BS, -1, -1, N)
-        h = F.gelu(self.inp(torch.cat([feat, fe], 1)))
-        for b in self.blocks:
-            h = b(h)
-        f4 = (Fq // 4) * 4
-        d = self.mid(F.gelu(self.down(h[:, :, :f4])))
-        u = self.up(d)
-        h = h + F.pad(u, (0, 0, 0, Fq - f4))
+        h0 = F.gelu(self.inp(torch.cat([feat, fe], 1)))
+        h = self._core(F.gelu(self.down2(h0)))
+        u = self.up2(h)
+        u = F.pad(u, (0, 0, 0, max(0, Fq - u.shape[2])))[:, :, :Fq]
+        h = F.gelu(self.fuse(u + h0))
         delta = self.out(h).squeeze(1)  # (BS, F, N)
         b = base.reshape(BS, Fq, N).clamp(1e-4, 1 - 1e-4)
         return torch.sigmoid(torch.logit(b) + delta)
