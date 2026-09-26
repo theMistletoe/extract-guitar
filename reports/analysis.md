@@ -70,3 +70,10 @@ saturated.
 **Phase 2 summary (single models, same settings):** Mega acoustic 3.13 ≈ SW/X-LANCE 3.12 ≈
 HTDemucs-6s guitar-FT 3.07 > HTDemucs-6s 2.58 ≈ Mega guitar 2.55 > becruily 2.10 dB. No single
 model dominates: their failures are on different clips.
+
+### Phase 5 — ensembles, second round (with the Mega acoustic head)
+
+* exp019 waveform mean of **HTDemucs-ft + SW + Mega acoustic**: val SDR **4.09 dB** (real 2.50,
+  synthetic 5.46), SIR 7.2, SAR 7.6, leakage −12.4 dB → Champion (+0.45 dB). The clean but
+  conservative acoustic head (SIR 14.8) pulls leakage down while the two fuller models keep
+  the guitar — three different operating points average better than any pair.

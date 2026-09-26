@@ -48,11 +48,20 @@ and audio are never committed to git.
 
 ```bash
 uv sync --extra cpu --extra dev
-python scripts/download_models.py               # fetch + checksum every catalog model
-python scripts/prepare_dataset.py --split val   # build the ground-truth validation set
-python scripts/benchmark.py --pipeline configs/pipelines/<name>.yaml --slug <name>
-python scripts/run_target.py                    # target-song candidates + report.html
+python scripts/download_models.py                 # fetch + checksum every catalog model
+python scripts/fetch_datasets.py                  # raw sources (HF / Zenodo) -> data/raw/
+python scripts/build_manifest.py                  # datasets/manifest.csv (licence, split)
+python scripts/prepare_dataset.py --clean         # 41-clip ground-truth validation set
+python scripts/make_codec_valset.py               # AAC-128k variant (codec robustness)
+python scripts/run_queue.py configs/queues/phase2_baselines.yaml   # etc. for every queue
+python scripts/sweep.py configs/sweeps/<sweep>.yaml
+bash   scripts/phase7_refiner.sh                  # training clips, refiner, hard-example mining
+python scripts/run_target.py --render-best        # Champion in fp32 -> outputs/target/best + report.html
+python scripts/summarize_experiments.py && python scripts/make_final_report.py
 ```
+
+The raw multitrack songs are deleted after the clips are rendered (disk budget); the
+scripts above re-download and re-render them deterministically (fixed seeds).
 
 See `docs/experiments.md` for the full list of commands that produced every experiment.
 

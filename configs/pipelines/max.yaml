@@ -1,6 +1,6 @@
 name: max
-description: '[preset max] Champion exp006_D_htft_xl_wave_mean (val SDR 3.64 dB),
-  fp32 | Strategy D: wave_mean of A_htdemucs6s_ft, A_xlance'
+description: '[preset max] Champion exp019_D_htft_xl_macou_wave_mean (val SDR 4.09
+  dB), fp32 | Strategy D: wave_mean of A_htdemucs6s_ft, A_xlance, A_mega_acoustic'
 steps:
 - id: m0_guitar
   model: htdemucs6s_gtrft
@@ -14,9 +14,17 @@ steps:
   params:
     num_overlap: 2
     precision: fp32
+- id: m2_guitar
+  model: mega_multi
+  input: mix
+  take: acoustic-guitar
+  params:
+    num_overlap: 2
+    precision: fp32
 - id: ens
   ensemble:
   - m0_guitar
   - m1_guitar
+  - m2_guitar
   method: wave_mean
 output: ens
