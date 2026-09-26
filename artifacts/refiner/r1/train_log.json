@@ -1,0 +1,241 @@
+{
+ "args": {
+  "cmd": "fit",
+  "pos": [
+   "sw6:guitar",
+   "htdemucs6s_gtrft:guitar",
+   "mega_multi:acoustic-guitar",
+   "mega_multi:guitar"
+  ],
+  "neg": [
+   "sw6:other",
+   "sw6:piano",
+   "sw6:vocals",
+   "sw6:bass",
+   "sw6:drums",
+   "mega_multi:violin",
+   "mega_multi:woodwind",
+   "mega_multi:electric-guitar"
+  ],
+  "seed": 0,
+  "epochs": 16,
+  "batch": 2,
+  "crop_s": 3.0,
+  "lr": 0.001,
+  "width": 24,
+  "depth": 6,
+  "out": "artifacts/refiner/r1",
+  "weights": null
+ },
+ "log": [
+  {
+   "epoch": 0,
+   "hold_sdr": 4.443533897399902,
+   "hold_base_sdr": 4.443560600280762
+  },
+  {
+   "epoch": 1,
+   "train_loss": -0.04586603787710082,
+   "hold_sdr": 4.7005815505981445
+  },
+  {
+   "epoch": 2,
+   "train_loss": -0.24396099965527374,
+   "hold_sdr": 5.045834064483643
+  },
+  {
+   "epoch": 3,
+   "train_loss": -0.33479164737575456,
+   "hold_sdr": 5.028877258300781
+  },
+  {
+   "epoch": 4,
+   "train_loss": -0.45789414812933726,
+   "hold_sdr": 5.117361545562744
+  },
+  {
+   "epoch": 5,
+   "train_loss": -0.5830214512798021,
+   "hold_sdr": 5.155869483947754
+  },
+  {
+   "epoch": 6,
+   "train_loss": -0.6088343403249417,
+   "hold_sdr": 5.278002738952637
+  },
+  {
+   "epoch": 7,
+   "train_loss": -0.6446918676484306,
+   "hold_sdr": 5.346375465393066
+  },
+  {
+   "epoch": 8,
+   "train_loss": -0.6150754712662607,
+   "hold_sdr": 5.211941242218018
+  },
+  {
+   "epoch": 9,
+   "train_loss": -0.7791296918437166,
+   "hold_sdr": 5.582123279571533
+  },
+  {
+   "epoch": 10,
+   "train_loss": -0.6854765302730057,
+   "hold_sdr": 5.428699016571045
+  },
+  {
+   "epoch": 11,
+   "train_loss": -0.7756686368078556,
+   "hold_sdr": 5.477363109588623
+  },
+  {
+   "epoch": 12,
+   "train_loss": -0.8223556060836,
+   "hold_sdr": 5.432663917541504
+  },
+  {
+   "epoch": 13,
+   "train_loss": -0.8830589314676681,
+   "hold_sdr": 5.417112827301025
+  },
+  {
+   "epoch": 14,
+   "train_loss": -0.7972870300400932,
+   "hold_sdr": 5.524125099182129
+  },
+  {
+   "epoch": 15,
+   "train_loss": -0.844343919236705,
+   "hold_sdr": 5.346311092376709
+  },
+  {
+   "epoch": 16,
+   "train_loss": -0.7873606968600795,
+   "hold_sdr": 5.158015727996826
+  }
+ ],
+ "train_clips": [
+  "syn_cymbal_drums_024",
+  "ms_David_Youngs_-_Technomantra_0",
+  "syn_distorted_electric_047",
+  "ms_Jesse_Joy_-_Nearly_There_1",
+  "ms_Anna_Blanton_-_Waves_2",
+  "syn_cymbal_drums_038",
+  "ms_Brian_C_Cai_Fei_Hong_-_Hold_Me_0",
+  "syn_plucked_026",
+  "ms_The_Long_Wait_-_Lookout_Mounta_3",
+  "syn_distorted_electric_033",
+  "syn_piano_029",
+  "ms_Triviul_-_Gimme_0",
+  "ms_Triviul_-_Gimme_2",
+  "syn_winds_007",
+  "syn_dense_041",
+  "ms_Rubblebucket_-_Carousel_Ride_1",
+  "ms_Brian_C_Cai_Fei_Hong_-_Hold_Me_2",
+  "ms_Jamie_Kent_-_All_American_Mutt_0",
+  "ms_Wesley_Morgan_-_Flesh_And_Bone_0",
+  "ms_Wesley_Morgan_-_Flesh_And_Bone_2",
+  "syn_piano_band_044",
+  "syn_female_vocal_023",
+  "ms_David_Youngs_-_Dust_You_And_Me_1",
+  "ms_oxeye_-_Sorry_0",
+  "ms_Diesel13_-_Roar_1",
+  "syn_strings_034",
+  "syn_clean_electric_045",
+  "syn_electric_band_060",
+  "ms_Nova_One_Studio_-_Four_Graham_3",
+  "ms_David_Youngs_-_Technomantra_3",
+  "ms_Benjamin_John_-_Better_Way_2",
+  "syn_piano_band_016",
+  "syn_female_vocal_051",
+  "ms_Diesel13_-_Roar_0",
+  "syn_winds_049",
+  "syn_strings_062",
+  "ms_Jesse_Joy_-_Nearly_There_0",
+  "ms_Nova_One_Studio_-_Four_Graham_2",
+  "ms_oxeye_-_Sorry_2",
+  "syn_electric_band_018",
+  "syn_female_vocal_037",
+  "ms_David_Youngs_-_Dust_You_And_Me_3",
+  "ms_David_Youngs_-_Dust_You_And_Me_2",
+  "syn_plucked_054",
+  "syn_band_pop_028",
+  "syn_distorted_electric_019",
+  "ms_Benjamin_John_-_Better_Way_0",
+  "syn_dense_055",
+  "syn_distorted_electric_005",
+  "ms_The_Long_Wait_-_Lookout_Mounta_1",
+  "ms_Jesse_Joy_-_Nearly_There_3",
+  "syn_distorted_electric_061",
+  "syn_buried_039",
+  "ms_Anna_Blanton_-_Waves_0",
+  "syn_strings_006",
+  "ms_Brian_C_Cai_Fei_Hong_-_Hold_Me_3",
+  "ms_Anna_Blanton_-_Waves_1",
+  "syn_female_vocal_009",
+  "ms_Benjamin_John_-_Better_Way_3",
+  "syn_winds_021",
+  "syn_chamber_frevo_022",
+  "syn_band_pop_000",
+  "syn_winds_063",
+  "syn_clean_electric_017",
+  "ms_Jamie_Kent_-_All_American_Mutt_2",
+  "syn_dense_013",
+  "ms_The_Long_Wait_-_Lookout_Mounta_0",
+  "ms_oxeye_-_Sorry_3",
+  "syn_piano_band_058",
+  "syn_electric_band_032",
+  "syn_clean_electric_031",
+  "syn_band_pop_056",
+  "ms_The_Long_Wait_-_Lookout_Mounta_2",
+  "syn_electric_band_004",
+  "ms_Brian_C_Cai_Fei_Hong_-_Hold_Me_1",
+  "syn_winds_035",
+  "ms_Rubblebucket_-_Carousel_Ride_3",
+  "ms_David_Youngs_-_Technomantra_2",
+  "syn_cymbal_drums_052",
+  "syn_electric_band_046",
+  "syn_chamber_frevo_050",
+  "ms_Nova_One_Studio_-_Four_Graham_0",
+  "syn_dense_027",
+  "ms_David_Youngs_-_Dust_You_And_Me_0",
+  "syn_piano_001",
+  "syn_piano_band_002",
+  "ms_Rubblebucket_-_Carousel_Ride_0",
+  "ms_David_Youngs_-_Technomantra_1",
+  "syn_buried_053",
+  "ms_Jamie_Kent_-_All_American_Mutt_3",
+  "syn_cymbal_drums_010",
+  "ms_Triviul_-_Gimme_1",
+  "syn_buried_011",
+  "ms_Rubblebucket_-_Carousel_Ride_2",
+  "syn_plucked_012",
+  "syn_piano_057",
+  "ms_Wesley_Morgan_-_Flesh_And_Bone_3",
+  "syn_buried_025",
+  "syn_chamber_frevo_008",
+  "ms_Nova_One_Studio_-_Four_Graham_1",
+  "ms_Benjamin_John_-_Better_Way_1",
+  "ms_oxeye_-_Sorry_1",
+  "syn_strings_048",
+  "syn_piano_015",
+  "ms_Wesley_Morgan_-_Flesh_And_Bone_1",
+  "syn_plucked_040"
+ ],
+ "holdout_clips": [
+  "syn_band_pop_014",
+  "syn_piano_band_030",
+  "syn_piano_043",
+  "ms_Anna_Blanton_-_Waves_3",
+  "syn_strings_020",
+  "syn_band_pop_042",
+  "syn_clean_electric_059",
+  "ms_Diesel13_-_Roar_2",
+  "ms_Jesse_Joy_-_Nearly_There_2",
+  "ms_Jamie_Kent_-_All_American_Mutt_1",
+  "ms_Triviul_-_Gimme_3",
+  "syn_clean_electric_003",
+  "ms_Diesel13_-_Roar_3",
+  "syn_chamber_frevo_036"
+ ]
+}

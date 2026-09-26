@@ -125,3 +125,9 @@ model dominates: their failures are on different clips.
   (−17.3 dB, 0.33); the best SDRs sit in the middle (−12…−13 dB leakage, 0.43–0.48 retention).
   Moving *along* the frontier (gains, max/min, Wiener) does not help; the refiner's job is to
   move the frontier itself.
+* r1 finished: best hold-out SDR 5.58 dB at epoch 9 (start 4.44, +1.14 dB on held-out
+  training-distribution clips); later epochs fluctuate 5.4–5.5 (early stopping keeps epoch 9).
+* Hard-example mining with r1 on the training clips (PRD §23): the worst quartile
+  (SDR ≤ 2.4 dB, 30 clips) is 29× `guitar_removed` + 1× electric leakage — the same dominant
+  failure as on validation. Next round: 48 new clips drawn with scenario weights
+  buried 30 / dense 30 / clean_electric 2 / electric_band 2, and hard clips oversampled 3×.
