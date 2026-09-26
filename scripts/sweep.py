@@ -12,6 +12,10 @@ A sweep file (configs/sweeps/*.yaml):
       guitar.params.num_overlap: [2, 4, 8]
       guitar.params.tta: [[], [swap, invert]]
     # keys are <step id>.<field>[.<subfield>]; a list of values per key
+    # or, instead of grid, one-factor-at-a-time variants:
+    # variants:
+    #   - {guitar.params.num_overlap: 4}
+    #   - {guitar.params.shifts: 2}
 
     python scripts/sweep.py configs/sweeps/xlance_overlap.yaml
 """
@@ -53,10 +57,14 @@ def short(v) -> str:
 def main(sweep_file: str) -> int:
     sw = yaml.safe_load(Path(sweep_file).read_text())
     base = load_pipeline(sw["base"])
-    keys = list(sw["grid"])
     GEN.mkdir(parents=True, exist_ok=True)
     done = []
-    for combo in itertools.product(*[sw["grid"][k] for k in keys]):
+    if "variants" in sw:  # one-factor-at-a-time: explicit list of {key: value} overrides
+        points = [(list(v), list(v.values())) for v in sw["variants"]]
+    else:
+        keys = list(sw["grid"])
+        points = [(keys, list(c)) for c in itertools.product(*[sw["grid"][k] for k in keys])]
+    for keys, combo in points:
         pipe = copy.deepcopy(base)
         tag = "_".join(f"{k.split('.')[-1]}{short(v)}" for k, v in zip(keys, combo))
         pipe["name"] = f"{sw['slug']}__{tag}"

@@ -1,0 +1,12 @@
+# Phase 4: test-time settings for the HTDemucs-ft ensemble member (cheap model).
+base: A_htdemucs6s_ft
+slug: T_htft
+strategy: "A+tuning"
+target: best
+hypothesis: "Denser overlap, random time shifts (Demucs 'shifts') and L/R + polarity TTA average out chunk-boundary and model variance, improving SDR without training."
+next: "Apply the best setting inside the ensemble; test the same on SW."
+variants:
+  - {guitar.params.num_overlap: 4}
+  - {guitar.params.shifts: 3}
+  - {guitar.params.tta: [swap, invert]}
+  - {guitar.params.precision: fp32}

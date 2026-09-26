@@ -1,0 +1,88 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Acoustic guitar extraction — target song report</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;margin:24px;max-width:1400px;color:#222}
+h1{font-size:22px} h2{font-size:18px;margin-top:36px;border-bottom:1px solid #ddd;padding-bottom:4px}
+table{border-collapse:collapse;font-size:13px;margin:8px 0} td,th{border:1px solid #ddd;padding:4px 8px;text-align:right}
+th{background:#f4f4f4} td:first-child,th:first-child{text-align:left}
+.best{background:#fff4e0;font-weight:600}
+.cand{margin:18px 0 30px} .players{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:13px}
+.spec{position:relative} .spec img{width:100%;display:block;cursor:crosshair}
+.cursor{position:absolute;top:0;bottom:0;width:2px;background:#0f0;pointer-events:none}
+code{background:#f4f4f4;padding:1px 4px} .muted{color:#777;font-size:12px}
+</style><script>
+function syncGroup(g){
+  const auds=[...document.querySelectorAll('audio[data-g="'+g+'"]')];
+  let active=null;
+  auds.forEach(a=>{
+    a.addEventListener('play',()=>{active=a;auds.forEach(b=>{if(b!==a){b.muted=true;b.currentTime=a.currentTime;b.play();}});a.muted=false;});
+    a.addEventListener('pause',()=>{if(active===a)auds.forEach(b=>{if(b!==a)b.pause();});});
+    a.addEventListener('timeupdate',()=>{document.querySelectorAll('.cursor[data-g="'+g+'"]').forEach(c=>{const img=c.parentElement.querySelector('img');c.style.left=(a.currentTime/a.duration*img.clientWidth*0.93+img.clientWidth*0.045)+'px';});});
+  });
+}
+function solo(g,idx){const auds=[...document.querySelectorAll('audio[data-g="'+g+'"]')];auds.forEach((a,i)=>a.muted=(i!==idx));}
+function seek(ev,g){const img=ev.target;const r=img.getBoundingClientRect();const frac=Math.min(1,Math.max(0,((ev.clientX-r.left)/r.width-0.045)/0.93));
+  document.querySelectorAll('audio[data-g="'+g+'"]').forEach(a=>{a.currentTime=frac*a.duration;});}
+document.addEventListener('DOMContentLoaded',()=>{new Set([...document.querySelectorAll('audio[data-g]')].map(a=>a.dataset.g)).forEach(syncGroup);});
+</script></head><body>
+<h1>Acoustic guitar extraction — target song report</h1>
+<div><p>Target: ko-ko-ya “Frevo!” (user-supplied YouTube audio, AAC 44.1 kHz). No ground-truth stem exists for this song: the table shows ground-truth metrics from the synthetic validation set plus reference-free proxies (AST classifier) on the target. Click a spectrogram to seek; the players of one candidate play in sync (use the solo buttons to switch).</p></div>
+<h2>Candidate comparison</h2><table><tr><th>experiment</th><th>strategy</th><th>val SDR</th><th>val SI-SDR</th><th>SIR</th><th>SAR</th><th>retention</th><th>leak dB</th><th>hard SDR</th><th>tgt guitar p</th><th>tgt max leak p</th><th>runtime s</th><th>_best</th></tr>
+<tr class='best'><td>exp006_D_htft_xl_wave_mean</td><td>D</td><td>3.637</td><td>0.980</td><td>6.120</td><td>8.586</td><td>0.583</td><td>-10.748</td><td>3.702</td><td>0.133</td><td>0.031</td><td>627.935</td><td>True</td></tr>
+<tr><td>exp007_D_htft_xl_mag_mean</td><td>D</td><td>3.608</td><td>0.962</td><td>6.015</td><td>8.604</td><td>0.587</td><td>-10.629</td><td>3.671</td><td>0.133</td><td>0.031</td><td>627.935</td><td>False</td></tr>
+<tr><td>exp004_A_xlance</td><td>A</td><td>3.117</td><td>-0.525</td><td>6.470</td><td>8.398</td><td>0.595</td><td>-10.354</td><td>3.294</td><td>0.141</td><td>0.030</td><td>579.329</td><td>False</td></tr>
+<tr><td>exp003_A_htdemucs6s_ft</td><td>A</td><td>3.072</td><td>0.239</td><td>6.711</td><td>6.772</td><td>0.623</td><td>-9.862</td><td>3.082</td><td>0.139</td><td>0.051</td><td>48.606</td><td>False</td></tr>
+<tr><td>exp001_A_htdemucs6s</td><td>A</td><td>2.579</td><td>-0.676</td><td>5.703</td><td>6.507</td><td>0.614</td><td>-9.601</td><td>2.615</td><td>0.169</td><td>0.041</td><td>50.362</td><td>False</td></tr>
+<tr><td>exp002_A_becruily</td><td>A</td><td>2.100</td><td>-1.841</td><td>3.244</td><td>7.350</td><td>0.521</td><td>-8.255</td><td>1.973</td><td>0.259</td><td>0.192</td><td>286.634</td><td>False</td></tr>
+<tr><td>exp008_D_htft_xl_mask_mean</td><td></td><td>nan</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td><td>False</td></tr>
+</table>
+<h2>Original</h2><div class='spec'><img src='report_assets/original.png'></div><audio controls preload='none' src='original.wav'></audio>
+<div class='cand'><h2>best/ (Champion, final render)</h2>
+<table><tr><th>champion</th><td style='text-align:left'><code>exp006_D_htft_xl_wave_mean</code></td></tr></table>
+<div class='players'><span>original <audio controls preload='none' data-g='best' src='original.wav'></audio></span><span>acoustic <audio controls preload='none' data-g='best' src='best/acoustic_guitar.wav'></audio></span>
+<span>residual <audio controls preload='none' data-g='best' src='best/non_acoustic_guitar.wav'></audio></span>
+<span>solo: <button onclick="solo('best',0)">orig</button><button onclick="solo('best',1)">acoustic</button><button onclick="solo('best',2)">residual</button></span></div>
+<div class='spec'><img onclick="seek(event,'best')" src='report_assets/best_acoustic.png'><div class='cursor' data-g='best'></div></div>
+<div class='spec'><img onclick="seek(event,'best')" src='report_assets/best_residual.png'><div class='cursor' data-g='best'></div></div>
+<img style='width:100%' src='report_assets/best_wave.png'>
+<p class='muted'>Loudest extracted segments (check for leakage): 130s (17.0 dB rel. mix), 44s (-3.1 dB rel. mix), 42s (-3.3 dB rel. mix)</p></div>
+<div class='cand'><h2>exp006_D_htft_xl_wave_mean  ★ Champion</h2>
+<table><tr><th>experiment</th><td style='text-align:left'><code>exp006_D_htft_xl_wave_mean</code></td></tr><tr><th>strategy</th><td style='text-align:left'><code>D</code></td></tr><tr><th>models</th><td style='text-align:left'><code>{&quot;htdemucs6s_gtrft&quot;: {&quot;checkpoint&quot;: &quot;htdemucs_6s&quot;, &quot;sha256&quot;: &quot;demucs:htdemucs_&quot;}, &quot;xlance_gtr&quot;: {&quot;checkpoint&quot;: &quot;gtr_mss.pth&quot;, &quot;sha256&quot;: &quot;813a92bd210e1fc7&quot;}}</code></td></tr><tr><th>pipeline</th><td style='text-align:left'><code>[{&quot;id&quot;: &quot;m0_guitar&quot;, &quot;model&quot;: &quot;htdemucs6s_gtrft&quot;, &quot;input&quot;: &quot;mix&quot;, &quot;params&quot;: {&quot;num_overlap&quot;: 2, &quot;precision&quot;: &quot;bf16&quot;}}, {&quot;id&quot;: &quot;m1_guitar&quot;, &quot;model&quot;: &quot;xlance_gtr&quot;, &quot;input&quot;: &quot;mix&quot;, &quot;params&quot;: {&quot;num_overlap&quot;: 2, &quot;precision&quot;: &quot;bf16&quot;}}, {&quot;id&quot;: &quot;ens&quot;, &quot;ensemble&quot;: [&quot;m0_guitar&quot;, &quot;m1_guitar&quot;], &quot;method&quot;: &quot;wave_mean&quot;}]</code></td></tr><tr><th>runtime_s</th><td style='text-align:left'><code>627.9350414790003</code></td></tr></table>
+<table><tr><th>val SDR</th><th>val SI-SDR</th><th>SIR</th><th>SAR</th><th>retention</th><th>leak dB</th><th>hard SDR</th><th>tgt guitar p</th><th>tgt max leak p</th><th>runtime s</th></tr><tr><td>3.637</td><td>0.980</td><td>6.120</td><td>8.586</td><td>0.583</td><td>-10.748</td><td>3.702</td><td>0.133</td><td>0.031</td><td>627.935</td></tr></table>
+<div class='players'><span>original <audio controls preload='none' data-g='exp006_D_htft_xl_wave_mean' src='original.wav'></audio></span><span>acoustic <audio controls preload='none' data-g='exp006_D_htft_xl_wave_mean' src='candidates/exp006_D_htft_xl_wave_mean.wav'></audio></span>
+<span>residual <audio controls preload='none' data-g='exp006_D_htft_xl_wave_mean' src='candidates/exp006_D_htft_xl_wave_mean_residual.wav'></audio></span>
+<span>solo: <button onclick="solo('exp006_D_htft_xl_wave_mean',0)">orig</button><button onclick="solo('exp006_D_htft_xl_wave_mean',1)">acoustic</button><button onclick="solo('exp006_D_htft_xl_wave_mean',2)">residual</button></span></div>
+<div class='spec'><img onclick="seek(event,'exp006_D_htft_xl_wave_mean')" src='report_assets/exp006_D_htft_xl_wave_mean_acoustic.png'><div class='cursor' data-g='exp006_D_htft_xl_wave_mean'></div></div>
+<div class='spec'><img onclick="seek(event,'exp006_D_htft_xl_wave_mean')" src='report_assets/exp006_D_htft_xl_wave_mean_residual.png'><div class='cursor' data-g='exp006_D_htft_xl_wave_mean'></div></div>
+<img style='width:100%' src='report_assets/exp006_D_htft_xl_wave_mean_wave.png'>
+<p class='muted'>Loudest extracted segments (check for leakage): 130s (17.0 dB rel. mix), 44s (-3.1 dB rel. mix), 42s (-3.3 dB rel. mix)</p></div>
+<div class='cand'><h2>exp007_D_htft_xl_mag_mean</h2>
+<table><tr><th>experiment</th><td style='text-align:left'><code>exp007_D_htft_xl_mag_mean</code></td></tr><tr><th>strategy</th><td style='text-align:left'><code>D</code></td></tr><tr><th>models</th><td style='text-align:left'><code>{&quot;htdemucs6s_gtrft&quot;: {&quot;checkpoint&quot;: &quot;htdemucs_6s&quot;, &quot;sha256&quot;: &quot;demucs:htdemucs_&quot;}, &quot;xlance_gtr&quot;: {&quot;checkpoint&quot;: &quot;gtr_mss.pth&quot;, &quot;sha256&quot;: &quot;813a92bd210e1fc7&quot;}}</code></td></tr><tr><th>pipeline</th><td style='text-align:left'><code>[{&quot;id&quot;: &quot;m0_guitar&quot;, &quot;model&quot;: &quot;htdemucs6s_gtrft&quot;, &quot;input&quot;: &quot;mix&quot;, &quot;params&quot;: {&quot;num_overlap&quot;: 2, &quot;precision&quot;: &quot;bf16&quot;}}, {&quot;id&quot;: &quot;m1_guitar&quot;, &quot;model&quot;: &quot;xlance_gtr&quot;, &quot;input&quot;: &quot;mix&quot;, &quot;params&quot;: {&quot;num_overlap&quot;: 2, &quot;precision&quot;: &quot;bf16&quot;}}, {&quot;id&quot;: &quot;ens&quot;, &quot;ensemble&quot;: [&quot;m0_guitar&quot;, &quot;m1_guitar&quot;], &quot;method&quot;: &quot;mag_mean&quot;}]</code></td></tr><tr><th>runtime_s</th><td style='text-align:left'><code>627.9350414790003</code></td></tr></table>
+<table><tr><th>val SDR</th><th>val SI-SDR</th><th>SIR</th><th>SAR</th><th>retention</th><th>leak dB</th><th>hard SDR</th><th>tgt guitar p</th><th>tgt max leak p</th><th>runtime s</th></tr><tr><td>3.608</td><td>0.962</td><td>6.015</td><td>8.604</td><td>0.587</td><td>-10.629</td><td>3.671</td><td>0.133</td><td>0.031</td><td>627.935</td></tr></table>
+<div class='players'><span>original <audio controls preload='none' data-g='exp007_D_htft_xl_mag_mean' src='original.wav'></audio></span><span>acoustic <audio controls preload='none' data-g='exp007_D_htft_xl_mag_mean' src='candidates/exp007_D_htft_xl_mag_mean.wav'></audio></span>
+<span>residual <audio controls preload='none' data-g='exp007_D_htft_xl_mag_mean' src='candidates/exp007_D_htft_xl_mag_mean_residual.wav'></audio></span>
+<span>solo: <button onclick="solo('exp007_D_htft_xl_mag_mean',0)">orig</button><button onclick="solo('exp007_D_htft_xl_mag_mean',1)">acoustic</button><button onclick="solo('exp007_D_htft_xl_mag_mean',2)">residual</button></span></div>
+<div class='spec'><img onclick="seek(event,'exp007_D_htft_xl_mag_mean')" src='report_assets/exp007_D_htft_xl_mag_mean_acoustic.png'><div class='cursor' data-g='exp007_D_htft_xl_mag_mean'></div></div>
+<div class='spec'><img onclick="seek(event,'exp007_D_htft_xl_mag_mean')" src='report_assets/exp007_D_htft_xl_mag_mean_residual.png'><div class='cursor' data-g='exp007_D_htft_xl_mag_mean'></div></div>
+<img style='width:100%' src='report_assets/exp007_D_htft_xl_mag_mean_wave.png'>
+<p class='muted'>Loudest extracted segments (check for leakage): 130s (17.0 dB rel. mix), 44s (-3.1 dB rel. mix), 42s (-3.3 dB rel. mix)</p></div>
+<div class='cand'><h2>exp004_A_xlance</h2>
+<table><tr><th>experiment</th><td style='text-align:left'><code>exp004_A_xlance</code></td></tr><tr><th>strategy</th><td style='text-align:left'><code>A</code></td></tr><tr><th>models</th><td style='text-align:left'><code>{&quot;xlance_gtr&quot;: {&quot;checkpoint&quot;: &quot;gtr_mss.pth&quot;, &quot;sha256&quot;: &quot;813a92bd210e1fc7&quot;}}</code></td></tr><tr><th>pipeline</th><td style='text-align:left'><code>[{&quot;id&quot;: &quot;guitar&quot;, &quot;model&quot;: &quot;xlance_gtr&quot;, &quot;input&quot;: &quot;mix&quot;, &quot;params&quot;: {&quot;num_overlap&quot;: 2, &quot;precision&quot;: &quot;bf16&quot;}}]</code></td></tr><tr><th>runtime_s</th><td style='text-align:left'><code>579.3289307510004</code></td></tr></table>
+<table><tr><th>val SDR</th><th>val SI-SDR</th><th>SIR</th><th>SAR</th><th>retention</th><th>leak dB</th><th>hard SDR</th><th>tgt guitar p</th><th>tgt max leak p</th><th>runtime s</th></tr><tr><td>3.117</td><td>-0.525</td><td>6.470</td><td>8.398</td><td>0.595</td><td>-10.354</td><td>3.294</td><td>0.141</td><td>0.030</td><td>579.329</td></tr></table>
+<div class='players'><span>original <audio controls preload='none' data-g='exp004_A_xlance' src='original.wav'></audio></span><span>acoustic <audio controls preload='none' data-g='exp004_A_xlance' src='candidates/exp004_A_xlance.wav'></audio></span>
+<span>residual <audio controls preload='none' data-g='exp004_A_xlance' src='candidates/exp004_A_xlance_residual.wav'></audio></span>
+<span>solo: <button onclick="solo('exp004_A_xlance',0)">orig</button><button onclick="solo('exp004_A_xlance',1)">acoustic</button><button onclick="solo('exp004_A_xlance',2)">residual</button></span></div>
+<div class='spec'><img onclick="seek(event,'exp004_A_xlance')" src='report_assets/exp004_A_xlance_acoustic.png'><div class='cursor' data-g='exp004_A_xlance'></div></div>
+<div class='spec'><img onclick="seek(event,'exp004_A_xlance')" src='report_assets/exp004_A_xlance_residual.png'><div class='cursor' data-g='exp004_A_xlance'></div></div>
+<img style='width:100%' src='report_assets/exp004_A_xlance_wave.png'>
+<p class='muted'>Loudest extracted segments (check for leakage): 42s (-2.5 dB rel. mix), 44s (-2.7 dB rel. mix), 40s (-3.0 dB rel. mix)</p></div>
+<div class='cand'><h2>exp003_A_htdemucs6s_ft</h2>
+<table><tr><th>experiment</th><td style='text-align:left'><code>exp003_A_htdemucs6s_ft</code></td></tr><tr><th>strategy</th><td style='text-align:left'><code>A</code></td></tr><tr><th>models</th><td style='text-align:left'><code>{&quot;htdemucs6s_gtrft&quot;: {&quot;checkpoint&quot;: &quot;htdemucs_6s&quot;, &quot;sha256&quot;: &quot;demucs:htdemucs_&quot;}}</code></td></tr><tr><th>pipeline</th><td style='text-align:left'><code>[{&quot;id&quot;: &quot;guitar&quot;, &quot;model&quot;: &quot;htdemucs6s_gtrft&quot;, &quot;input&quot;: &quot;mix&quot;, &quot;params&quot;: {&quot;num_overlap&quot;: 2, &quot;precision&quot;: &quot;bf16&quot;}}]</code></td></tr><tr><th>runtime_s</th><td style='text-align:left'><code>48.606110727999976</code></td></tr></table>
+<table><tr><th>val SDR</th><th>val SI-SDR</th><th>SIR</th><th>SAR</th><th>retention</th><th>leak dB</th><th>hard SDR</th><th>tgt guitar p</th><th>tgt max leak p</th><th>runtime s</th></tr><tr><td>3.072</td><td>0.239</td><td>6.711</td><td>6.772</td><td>0.623</td><td>-9.862</td><td>3.082</td><td>0.139</td><td>0.051</td><td>48.606</td></tr></table>
+<div class='players'><span>original <audio controls preload='none' data-g='exp003_A_htdemucs6s_ft' src='original.wav'></audio></span><span>acoustic <audio controls preload='none' data-g='exp003_A_htdemucs6s_ft' src='candidates/exp003_A_htdemucs6s_ft.wav'></audio></span>
+<span>residual <audio controls preload='none' data-g='exp003_A_htdemucs6s_ft' src='candidates/exp003_A_htdemucs6s_ft_residual.wav'></audio></span>
+<span>solo: <button onclick="solo('exp003_A_htdemucs6s_ft',0)">orig</button><button onclick="solo('exp003_A_htdemucs6s_ft',1)">acoustic</button><button onclick="solo('exp003_A_htdemucs6s_ft',2)">residual</button></span></div>
+<div class='spec'><img onclick="seek(event,'exp003_A_htdemucs6s_ft')" src='report_assets/exp003_A_htdemucs6s_ft_acoustic.png'><div class='cursor' data-g='exp003_A_htdemucs6s_ft'></div></div>
+<div class='spec'><img onclick="seek(event,'exp003_A_htdemucs6s_ft')" src='report_assets/exp003_A_htdemucs6s_ft_residual.png'><div class='cursor' data-g='exp003_A_htdemucs6s_ft'></div></div>
+<img style='width:100%' src='report_assets/exp003_A_htdemucs6s_ft_wave.png'>
+<p class='muted'>Loudest extracted segments (check for leakage): 130s (23.0 dB rel. mix), 110s (-1.9 dB rel. mix), 112s (-2.3 dB rel. mix)</p></div>
+</body></html>

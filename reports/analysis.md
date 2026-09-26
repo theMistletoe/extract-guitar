@@ -20,3 +20,15 @@
 * **Finding:** `gtr_mss.pth` (X-LANCE) is bit-identical to SW's trunk + guitar head
   (max |Δw| = 0.0). The two "models" are one; exp005 (SW guitar) reproduces exp004 exactly,
   so SW/X-LANCE are treated as a single ensemble member from here on.
+
+### Phase 5 — ensembles (Strategy D), first round
+
+* exp006 waveform mean of HTDemucs-ft + SW guitar: val SDR **3.64 dB** (real 1.94, synthetic
+  5.10), median 3.59 → Champion (+0.57 dB over the best single model). The two members fail
+  on different clips, so averaging mostly removes catastrophic per-clip failures (median
+  rises from 2.1/0.7 to 3.6 dB).
+* exp007 magnitude mean (estimate phase): 3.61 dB — no gain over the waveform mean.
+* Target-song inspection of exp006 (report.html): smooth rising arcs at 300–700 Hz around
+  95–115 s look like violin/clarinet glissandi leaking into the guitar stem (a guitar plays
+  discrete pitches). Hypothesis for Phase 7: giving a refiner explicit violin/woodwind
+  estimates as *negative evidence* should remove this class of leakage.
