@@ -151,3 +151,10 @@ model dominates: their failures are on different clips.
   SIR 6.8, SAR 5.1 (r1: 9.4 / 4.1), leakage −13.9 dB → not promoted. Mining shifted the refiner
   away from over-cleaning (higher SAR, better median) but the mean did not move: the mask-mode
   refiner is capped by its weak starting point (mask mean of the candidates, 3.58 dB).
+* **exp030 R_r3 — gain refiner on the Champion ensemble → new Champion**: validation SDR
+  **4.68 dB** (median 3.23; real multitracks 2.93, synthetic 6.19), SI-SDR 1.79, SDRi 10.17,
+  **SIR 9.5 / SAR 6.4**, retention **0.51**, leakage −12.9 dB, hard-case SDR 4.84. It raises
+  retention (0.43 → 0.51) *and* SIR (8.4 → 9.5) at the same time, i.e. it moves the
+  leakage/preservation frontier instead of sliding along it. Paired vs exp023: **+0.53 dB,
+  95% CI [+0.18, +0.86], wins 32/41 clips**. Training: 168 disjoint clips (hard-example
+  weighted), 6 epochs, best hold-out 6.28 dB from 5.23 at init.

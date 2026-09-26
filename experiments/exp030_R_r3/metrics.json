@@ -1,60 +1,6 @@
 {
   "experiment": "exp030_R_r3",
-  "pipeline": {
-    "name": "R_r3",
-    "description": "Phase 7-9 gain refiner (r3): learns a 0..2 time-frequency gain on the Champion ensemble (HTDemucs-ft + Mega acoustic waveform mean), with SW guitar + Mega guitar as extra positive evidence and SW other/piano/vocals/bass/drums + Mega violin/woodwind/electric as negative evidence; hard-example-mined sampling",
-    "steps": [
-      {
-        "id": "ht",
-        "model": "htdemucs6s_gtrft",
-        "input": "mix",
-        "params": {
-          "num_overlap": 2,
-          "precision": "bf16"
-        }
-      },
-      {
-        "id": "mm",
-        "model": "mega_multi",
-        "input": "mix",
-        "params": {
-          "num_overlap": 2,
-          "precision": "bf16"
-        }
-      },
-      {
-        "id": "sw",
-        "model": "sw6",
-        "input": "mix",
-        "params": {
-          "num_overlap": 2,
-          "precision": "bf16"
-        }
-      },
-      {
-        "id": "ref",
-        "refiner": "artifacts/refiner/r3/model.pt",
-        "positives": [
-          "ht.guitar",
-          "mm.acoustic-guitar",
-          "sw.guitar",
-          "mm.guitar"
-        ],
-        "negatives": [
-          "sw.other",
-          "sw.piano",
-          "sw.vocals",
-          "sw.bass",
-          "sw.drums",
-          "mm.violin",
-          "mm.woodwind",
-          "mm.electric-guitar"
-        ]
-      }
-    ],
-    "output": "ref"
-  },
-  "metrics": {
+  "validation": {
     "hard_mean": 0.8780487804878049,
     "hard_median": 1.0,
     "leak_bass_db_mean": -17.34384236328815,
@@ -213,7 +159,38 @@
     },
     "runtime_s": 4744.393271382007
   },
-  "promoted_at": "2026-09-26T23:52:24",
-  "git_commit": "7f24388f73ffcf083b49f5a941811a94f4721813",
-  "previous": "exp023_D_htft_macou_wave_mean"
+  "target": {
+    "runtime_s": 1590.2492341449995,
+    "model_runtime_s": 1590.2492341449995,
+    "step_times": {
+      "ht": {
+        "seconds": 48.606110727999976,
+        "cached": true
+      },
+      "mm": {
+        "seconds": 873.8314921719993,
+        "cached": true
+      },
+      "sw": {
+        "seconds": 667.8116312450002,
+        "cached": true
+      }
+    },
+    "proxy": {
+      "guitar_prob": 0.1455693244934082,
+      "residual_guitar_prob": 0.012974499724805355,
+      "leak_vocal_prob": 0.029215099290013313,
+      "leak_drums_prob": 0.0017912207404151559,
+      "leak_bass_prob": 0.010097422637045383,
+      "leak_piano_prob": 0.0015953441616147757,
+      "leak_electric_guitar_prob": 0.012146340683102608,
+      "leak_strings_prob": 0.022366957738995552,
+      "leak_winds_prob": 0.0020183103624731302,
+      "leak_synth_prob": 0.0007087299600243568,
+      "leak_prob_max": 0.029215099290013313,
+      "leak_prob_sum": 0.07993942557368428,
+      "stem_energy_db": -7.6030402183532715
+    }
+  },
+  "is_champion": true
 }
