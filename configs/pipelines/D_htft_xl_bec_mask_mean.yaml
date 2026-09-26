@@ -1,5 +1,5 @@
-name: D_htft_xl_wave_mean
-description: 'Strategy D: wave_mean of A_htdemucs6s_ft, A_xlance'
+name: D_htft_xl_bec_mask_mean
+description: 'Strategy D: mask_mean of A_htdemucs6s_ft, A_xlance, A_becruily'
 steps:
 - id: m0_guitar
   model: htdemucs6s_gtrft
@@ -13,9 +13,16 @@ steps:
   params:
     num_overlap: 2
     precision: bf16
+- id: m2_guitar
+  model: becruily_guitar
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
 - id: ens
   ensemble:
   - m0_guitar
   - m1_guitar
-  method: wave_mean
+  - m2_guitar
+  method: mask_mean
 output: ens

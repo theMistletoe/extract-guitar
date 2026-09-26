@@ -26,14 +26,16 @@ models:
     license: unknown (anonymous; likely derived from Logic Pro Stem Splitter) - private use only
 
   xlance_gtr:
-    # X-LANCE MSR Challenge 2025 guitar model, fine-tuned from SW on RawStems + MoisesDB.
+    # X-LANCE MSR Challenge 2025 "gtr" model. VERIFIED 2026-09-26: its weights are bit-identical
+    # to sw6's trunk + guitar head (max |diff| = 0.0), i.e. it is SW's guitar stem re-packaged as
+    # a single-stem checkpoint, not an independent fine-tune. Its output equals sw6.guitar.
     arch: bs_roformer
     repo: chenxie95/xlance-msr-ckpt
     checkpoint: gtr_mss.pth
     config: hf://noblebarkrr/mvsepless_resources/bs_roformer/bs_gtr_xlancer_config.yaml
     stems: [guitar]
     target_stem: guitar
-    license: MIT (HF); training data MoisesDB (non-commercial research)
+    license: "MIT tag on HF, but the weights are SW's (unknown provenance) - private use only"
 
   mega_acoustic:
     # MVSep Mega 53-stem BS-RoFormer, acoustic-guitar head (only public acoustic-specific model)
@@ -148,3 +150,41 @@ models:
     stems: [orch]
     target_stem: orch
     license: MIT (HF); training data MoisesDB/RawStems (non-commercial research)
+
+  # --- merged multi-head models (one shared trunk pass -> many stems) -----------------------
+  mega_multi:
+    # All Mega-53 split checkpoints have a bit-identical trunk; merge their heads.
+    arch: bs_roformer_multihead
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: multihead
+    config: from-first-head
+    heads:
+      - {model: mega_acoustic, index: 0}
+      - {model: mega_guitar, index: 0}
+      - {model: mega_electric, index: 0}
+      - {model: mega_violin, index: 0}
+      - {model: mega_bowed, index: 0}
+      - {model: mega_clarinet, index: 0}
+      - {model: mega_woodwind, index: 0}
+      - {model: mega_percussion, index: 0}
+    stems: [acoustic-guitar, guitar, electric-guitar, violin, bowed_strings, clarinet, woodwind, percussion]
+    target_stem: acoustic-guitar
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+
+  sw_multi:
+    # SW 6 stems + X-LANCE orchestral head (same frozen SW trunk, verified bit-identical)
+    arch: bs_roformer_multihead
+    repo: enerjazzer/BS-ROFO-SW-Fixed
+    checkpoint: multihead
+    config: from-first-head
+    heads:
+      - {model: sw6, index: 0}
+      - {model: sw6, index: 1}
+      - {model: sw6, index: 2}
+      - {model: sw6, index: 3}
+      - {model: sw6, index: 4}
+      - {model: sw6, index: 5}
+      - {model: xlance_orch, index: 0}
+    stems: [bass, drums, other, vocals, guitar, piano, orch]
+    target_stem: guitar
+    license: unknown (SW) / MIT tag (X-LANCE orch head) - private use only

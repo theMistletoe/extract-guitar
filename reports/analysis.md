@@ -13,3 +13,10 @@
 * exp003 HTDemucs 6s + MoisesDB guitar fine-tune: val SDR 3.07 dB (real 1.02, synthetic
   4.84), SIR 6.7, SAR 6.8, retention 0.62 → new Champion (+0.49 dB over stock HTDemucs);
   the fine-tune helps on both families, i.e. it is not a MoisesDB-specific artefact.
+* exp004 X-LANCE guitar: val SDR 3.12 dB (real 1.69, synthetic 4.35), SIR 6.5, **SAR 8.4**,
+  lowest target leak proxy (0.03). Very uneven: best model on sax duo / piano / winds /
+  nylon-chamber clips (13–19 dB), poor on plucked / strings / clean-electric clips where
+  HTDemucs-ft is 10–18 dB better → strong complementarity (ensemble candidate).
+* **Finding:** `gtr_mss.pth` (X-LANCE) is bit-identical to SW's trunk + guitar head
+  (max |Δw| = 0.0). The two "models" are one; exp005 (SW guitar) reproduces exp004 exactly,
+  so SW/X-LANCE are treated as a single ensemble member from here on.

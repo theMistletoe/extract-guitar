@@ -1,0 +1,12 @@
+name: standard
+description: '[preset standard] best single model exp003_A_htdemucs6s_ft (val SDR
+  3.07 dB) | Strategy A (direct): HTDemucs 6s guitar fine-tune applied to the full
+  mix'
+steps:
+- id: guitar
+  model: htdemucs6s_gtrft
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+output: guitar

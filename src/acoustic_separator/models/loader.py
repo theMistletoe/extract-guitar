@@ -58,6 +58,21 @@ def _hf_download(repo: str, filename: str, revision: str | None) -> Path:
 
 def resolve_files(spec: ModelSpec) -> tuple[Path, Path]:
     """Download (once) checkpoint + config, verify/record checksum."""
+    if spec.arch == "bs_roformer_multihead":
+        import hashlib
+
+        cat = load_catalog()
+        shas = []
+        for h in spec.extra["heads"]:
+            hs = cat[h["model"]]
+            resolve_files(hs)
+            shas.append(f"{hs.extra['resolved_sha256']}:{h['index']}")
+        cfg_spec = cat[spec.extra["heads"][0]["model"]]
+        _, cfg = resolve_files(cfg_spec)
+        spec.extra["resolved_sha256"] = hashlib.sha256("|".join(shas).encode()).hexdigest()
+        spec.extra["resolved_config"] = str(cfg)
+        spec.extra["head_sha256"] = shas
+        return Path("multihead"), cfg
     if spec.arch == "demucs_pkg":
         spec.extra.setdefault("resolved_sha256", f"demucs:{spec.checkpoint}:{spec.extra.get('finetune', '')}")
         return Path(spec.checkpoint), None
@@ -147,6 +162,8 @@ def load_separator(name_or_spec, device=None):
     device = device or pick_device()
     if spec.arch == "demucs_pkg":
         return _load_demucs_pkg(spec, device)
+    if spec.arch == "bs_roformer_multihead":
+        return _load_multihead(spec, device)
     ckpt, cfg_path = resolve_files(spec)
     config = load_config(spec.arch, cfg_path)
     for k, v in spec.extra.get("config_overrides", {}).items():
@@ -186,3 +203,35 @@ def _load_demucs_pkg(spec: ModelSpec, device):
     spec.extra["resolved_checkpoint"] = spec.checkpoint
     model.eval().to(device)
     return Separator(spec, model, None, device)
+
+
+def _load_multihead(spec: ModelSpec, device):
+    """Several single-stem checkpoints that share one BS-RoFormer trunk (verified bit-identical
+    for the MVSep Mega-53 heads and for SW + X-LANCE heads) are merged into one model with
+    one mask estimator per head: one trunk pass yields every stem, and each stem equals the
+    output of its original checkpoint."""
+    from ..inference import Separator
+
+    _, cfg_path = resolve_files(spec)
+    cat = load_catalog()
+    config = load_config("bs_roformer", cfg_path)
+    config.model.num_stems = len(spec.extra["heads"])
+    config.training.instruments = list(spec.stems)
+    config.training.target_instrument = None
+    model = build_model("bs_roformer", config)
+    merged, trunk_from = {}, None
+    for i, h in enumerate(spec.extra["heads"]):
+        hs = cat[h["model"]]
+        ck, _ = resolve_files(hs)
+        sd = _state_dict(torch.load(str(ck), map_location="cpu", weights_only=False))
+        sd = {k[7:] if k.startswith("module.") else k: v for k, v in sd.items()}
+        if trunk_from is None:
+            merged.update({k: v for k, v in sd.items() if not k.startswith("mask_estimators.")})
+            trunk_from = hs.name
+        pref = f"mask_estimators.{h['index']}."
+        merged.update({f"mask_estimators.{i}." + k[len(pref):]: v for k, v in sd.items() if k.startswith(pref)})
+    missing, unexpected = model.load_state_dict(merged, strict=False)
+    if missing or unexpected:
+        raise RuntimeError(f"{spec.name}: missing={missing[:5]} unexpected={unexpected[:5]}")
+    model.eval().to(device)
+    return Separator(spec, model, config, device)

@@ -76,7 +76,7 @@ validation set and on the target song (PRD §10).
 | Catalog name | HF repo : file | Arch | Stems | Params | Licence / provenance |
 |---|---|---|---|---|---|
 | `sw6` | enerjazzer/BS-ROFO-SW-Fixed : BS-Rofo-SW-Fixed.ckpt | bs_roformer d256×12 | bass, drums, other, vocals, guitar, piano | 175 M | **unknown**, anonymous; very likely derived from Logic Pro's splitter → private use only, never redistributed |
-| `xlance_gtr` | chenxie95/xlance-msr-ckpt : gtr_mss.pth (+ config from noblebarkrr/mvsepless_resources) | bs_roformer d256×12 | guitar | 51 M | MIT on HF; fine-tuned from SW on RawStems + MoisesDB (non-commercial data) |
+| `xlance_gtr` | chenxie95/xlance-msr-ckpt : gtr_mss.pth (+ config from noblebarkrr/mvsepless_resources) | bs_roformer d256×12 | guitar | 51 M | **verified by us: bit-identical to `sw6` trunk + guitar head** (max \|Δw\| = 0.0) — SW's guitar stem re-packaged, not an independent fine-tune; licence therefore = SW's (unknown) |
 | `mega_acoustic` / `mega_guitar` / `mega_electric` | noblebarkrr/BS-Roformer-MVSep-Mega-53-stems : v1/bs_mega_53stem_*.ckpt | bs_roformer d256×12 (shared trunk + one head) | acoustic-guitar / guitar / electric-guitar | 39 M each | unspecified (ZFTurbo/MVSep release v1.0.21, private MVSep data) |
 | `mega_violin`, `mega_bowed`, `mega_clarinet`, `mega_woodwind`, `mega_percussion` | same repo | same | one stem each | 39 M each | same |
 | `becruily_guitar` | becruily/mel-band-roformer-guitar | mel_band_roformer d256×4 | guitar | 22 M | none stated |
@@ -130,9 +130,10 @@ unprocessed sources, not mixture-consistent).
   targets are balanced ≈ 50/50. Randomised gain, EQ, compression, saturation, band-limiting,
   reverb (synthetic RIR), stereo position/width, Haas delay, echo, bus mastering.
 
-**Contamination caveat (PRD §28):** X-LANCE's guitar model was fine-tuned on RawStems, and
-Mixing Secrets songs also appear in MUSDB18/DSD100, so the `ms_*` family may be partly seen
-by some models. Results are therefore always reported for `ms_*` and `syn_*` separately as well
+**Contamination caveat (PRD §28):** Mixing Secrets songs also appear in MUSDB18/DSD100 and
+RawStems was used by the MSR-challenge systems, so the `ms_*` family may be partly seen by
+some models (the X-LANCE guitar checkpoint turned out to be SW's own guitar head, so it was
+*not* fine-tuned on RawStems; SW's training data is undisclosed). Results are therefore always reported for `ms_*` and `syn_*` separately as well
 as combined, and model choices must hold on `syn_*` (GAPS/GuitarSet targets, which none of the
 separators is documented to have used).
 

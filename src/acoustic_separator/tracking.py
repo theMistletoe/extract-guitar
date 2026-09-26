@@ -67,9 +67,23 @@ def environment_info() -> dict:
 
 
 def next_experiment_id(slug: str) -> str:
-    EXPERIMENTS.mkdir(parents=True, exist_ok=True)
+    """Reserve the next free expNNN number atomically (safe with concurrent queues):
+    the number itself is claimed with mkdir experiments/.ids/NNN, which only one process
+    can win."""
+    ids = EXPERIMENTS / ".ids"
+    ids.mkdir(parents=True, exist_ok=True)
     nums = [int(p.name[3:6]) for p in EXPERIMENTS.glob("exp[0-9][0-9][0-9]_*") if p.is_dir()]
-    return f"exp{(max(nums) + 1) if nums else 1:03d}_{slug}"
+    nums += [int(p.name) for p in ids.iterdir() if p.name.isdigit()]
+    n = (max(nums) + 1) if nums else 1
+    while True:
+        try:
+            (ids / f"{n:03d}").mkdir()
+            break
+        except FileExistsError:
+            n += 1
+    exp_id = f"exp{n:03d}_{slug}"
+    (EXPERIMENTS / exp_id).mkdir(exist_ok=True)
+    return exp_id
 
 
 def write_experiment(exp_id: str, config: dict, metrics: dict, notes: str,

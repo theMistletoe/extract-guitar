@@ -1,39 +1,6 @@
 {
   "experiment": "exp006_D_htft_xl_wave_mean",
-  "pipeline": {
-    "name": "D_htft_xl_wave_mean",
-    "description": "Strategy D: wave_mean of A_htdemucs6s_ft, A_xlance",
-    "steps": [
-      {
-        "id": "m0_guitar",
-        "model": "htdemucs6s_gtrft",
-        "input": "mix",
-        "params": {
-          "num_overlap": 2,
-          "precision": "bf16"
-        }
-      },
-      {
-        "id": "m1_guitar",
-        "model": "xlance_gtr",
-        "input": "mix",
-        "params": {
-          "num_overlap": 2,
-          "precision": "bf16"
-        }
-      },
-      {
-        "id": "ens",
-        "ensemble": [
-          "m0_guitar",
-          "m1_guitar"
-        ],
-        "method": "wave_mean"
-      }
-    ],
-    "output": "ens"
-  },
-  "metrics": {
+  "validation": {
     "hard_mean": 0.8780487804878049,
     "hard_median": 1.0,
     "leak_bass_db_mean": -15.153179305363453,
@@ -192,7 +159,34 @@
     },
     "runtime_s": 1410.037023725
   },
-  "promoted_at": "2026-09-26T16:46:28",
-  "git_commit": "875c031a267267ea2f554b9f6f76fbd6d62e2f48-dirty",
-  "previous": "exp003_A_htdemucs6s_ft"
+  "target": {
+    "runtime_s": 627.9350414790003,
+    "model_runtime_s": 627.9350414790003,
+    "step_times": {
+      "m0_guitar": {
+        "seconds": 48.606110727999976,
+        "cached": true
+      },
+      "m1_guitar": {
+        "seconds": 579.3289307510004,
+        "cached": true
+      }
+    },
+    "proxy": {
+      "guitar_prob": 0.13340243697166443,
+      "residual_guitar_prob": 0.012359755113720894,
+      "leak_vocal_prob": 0.029870662838220596,
+      "leak_drums_prob": 0.0020661333110183477,
+      "leak_bass_prob": 0.009911686182022095,
+      "leak_piano_prob": 0.0017540056724101305,
+      "leak_electric_guitar_prob": 0.010244571603834629,
+      "leak_strings_prob": 0.0313081294298172,
+      "leak_winds_prob": 0.0018583032069727778,
+      "leak_synth_prob": 0.0006591735873371363,
+      "leak_prob_max": 0.0313081294298172,
+      "leak_prob_sum": 0.08767266583163291,
+      "stem_energy_db": -6.191272258758545
+    }
+  },
+  "is_champion": true
 }
