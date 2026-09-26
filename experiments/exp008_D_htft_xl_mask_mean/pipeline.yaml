@@ -1,0 +1,21 @@
+name: D_htft_xl_mask_mean
+description: 'Strategy D: mask_mean of A_htdemucs6s_ft, A_xlance'
+steps:
+- id: m0_guitar
+  model: htdemucs6s_gtrft
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: m1_guitar
+  model: xlance_gtr
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: ens
+  ensemble:
+  - m0_guitar
+  - m1_guitar
+  method: mask_mean
+output: ens

@@ -32,3 +32,11 @@
   95–115 s look like violin/clarinet glissandi leaking into the guitar stem (a guitar plays
   discrete pitches). Hypothesis for Phase 7: giving a refiner explicit violin/woodwind
   estimates as *negative evidence* should remove this class of leakage.
+
+### Headroom (reports/oracle_bounds.json)
+
+Oracle masks computed from the ground truth on the same 41 clips: mixture-as-estimate
+−5.49 dB, ideal ratio mask 9.57 dB, ideal Wiener mask 10.70 dB (real 8.22 / synthetic
+12.84). The first ensemble (3.64 dB) is ≈7 dB below the Wiener oracle, so there is real
+headroom — the validation set is hard (guitar 7–14 dB below the rest in many clips) but not
+saturated.

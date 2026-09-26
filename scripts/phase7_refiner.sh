@@ -25,3 +25,13 @@ $PY scripts/train.py mine --pos $POS --neg $NEG --refiner artifacts/refiner/r1/m
     --out datasets/train_clips/mining_r1b.json
 $PY scripts/train.py fit --pos $POS --neg $NEG --epochs "$EPOCHS" --out artifacts/refiner/r2 \
     --weights datasets/train_clips/mining_r1b.json
+
+# benchmark both rounds on the untouched validation set (Champion/Challenger decides)
+$PY scripts/benchmark.py --pipeline R_r1 --slug R_r1 --strategy "D+refiner" \
+    --hypothesis "A small mask refiner trained on disjoint training clips, fed with the positive (guitar) and negative (violin/woodwind/electric/other) estimates of the pretrained models, removes leakage the plain average keeps." \
+    --change "refiner round 1 (uniform sampling), 4 positive + 8 negative evidence stems" \
+    --next "hard-example mining round (r2)" || true
+$PY scripts/benchmark.py --pipeline R_r2 --slug R_r2 --strategy "D+refiner+HEM" \
+    --hypothesis "Oversampling the worst training clips and adding clips of their failure types (hard-example mining) improves the refiner on hard cases." \
+    --change "refiner round 2: mining-weighted sampling + new scenario-weighted clips" \
+    --next "inference tuning / final render" || true
