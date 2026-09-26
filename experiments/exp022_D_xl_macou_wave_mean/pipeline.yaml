@@ -1,0 +1,22 @@
+name: D_xl_macou_wave_mean
+description: 'Strategy D: wave_mean of A_xlance, A_mega_acoustic'
+steps:
+- id: m0_guitar
+  model: xlance_gtr
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: m1_guitar
+  model: mega_multi
+  input: mix
+  take: acoustic-guitar
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: ens
+  ensemble:
+  - m0_guitar
+  - m1_guitar
+  method: wave_mean
+output: ens

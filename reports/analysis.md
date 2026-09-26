@@ -77,3 +77,12 @@ model dominates: their failures are on different clips.
   synthetic 5.46), SIR 7.2, SAR 7.6, leakage −12.4 dB → Champion (+0.45 dB). The clean but
   conservative acoustic head (SIR 14.8) pulls leakage down while the two fuller models keep
   the guitar — three different operating points average better than any pair.
+* exp020 same with the Mega *all-guitar* head instead: 3.71 dB (−0.37 vs exp019) — the
+  acoustic-specific head is the better third member.
+* exp021 HTDemucs-ft + Mega guitar (pair): 3.77 dB — beats the HTDemucs-ft + SW pair (3.64) but
+  not the 3-member Champion.
+* Paired statistics (`scripts/evaluate.py compare`, 5000 bootstrap resamples over the 41 clips):
+  exp019 vs the best single models: +0.96 dB vs Mega acoustic (95% CI [+0.12, +1.75], wins
+  27/41), +0.97 vs SW (CI [−0.06, +1.92], wins 31/41), +1.01 vs HTDemucs-ft (CI [+0.04, +1.92],
+  wins 29/41). exp019 vs the 2-member exp006: +0.45 dB (CI [−0.02, +0.89], wins 27/41) — a
+  consistent but only borderline-significant step.

@@ -99,6 +99,15 @@ def cmd_compare(a):
         sel = [c for c in clips if c.startswith(fam)]
         print(f"{'mean ' + (fam or 'all'):40s} " + " ".join(
             f"{np.mean([table[e][c][key] for c in sel]):18.2f}" for e in a.experiments))
+    # paired comparison of every experiment against the first one
+    rng = np.random.default_rng(0)
+    base = np.array([table[a.experiments[0]][c][key] for c in clips])
+    for e in a.experiments[1:]:
+        d = np.array([table[e][c][key] for c in clips]) - base
+        boots = [rng.choice(d, len(d)).mean() for _ in range(5000)]
+        lo, hi = np.percentile(boots, [2.5, 97.5])
+        print(f"{e} - {a.experiments[0]}: mean diff {d.mean():+.3f} dB, 95% bootstrap CI "
+              f"[{lo:+.3f}, {hi:+.3f}], wins {int((d > 0).sum())}/{len(d)} clips")
 
 
 def main() -> int:
