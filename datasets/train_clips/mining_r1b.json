@@ -1,0 +1,1361 @@
+{
+ "clips": {
+  "ms_Anna_Blanton_-_Waves_0": {
+   "sdr": 0.25548414469777614,
+   "retention": 0.0371998194490454,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -23.763097051425973,
+   "failure": "guitar_removed"
+  },
+  "ms_Anna_Blanton_-_Waves_1": {
+   "sdr": 3.221772918659325,
+   "retention": 0.28394029461344106,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -23.076367046931296,
+   "failure": "guitar_removed"
+  },
+  "ms_Anna_Blanton_-_Waves_2": {
+   "sdr": 3.741895703529263,
+   "retention": 0.3851067304914072,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -24.20180441571155,
+   "failure": "guitar_removed"
+  },
+  "ms_Anna_Blanton_-_Waves_3": {
+   "sdr": 0.7771666325268354,
+   "retention": 0.07329392956652171,
+   "worst_leak_class": "electric_guitar",
+   "worst_leak_db": -27.125856088818914,
+   "failure": "guitar_removed"
+  },
+  "ms_Benjamin_John_-_Better_Way_0": {
+   "sdr": 1.6080714886982481,
+   "retention": 0.3653331000042441,
+   "worst_leak_class": "plucked_other",
+   "worst_leak_db": -15.480001167470252,
+   "failure": "guitar_removed"
+  },
+  "ms_Benjamin_John_-_Better_Way_1": {
+   "sdr": 3.0205773946764443,
+   "retention": 0.4675555685516639,
+   "worst_leak_class": "plucked_other",
+   "worst_leak_db": -16.39473454123123,
+   "failure": "guitar_removed"
+  },
+  "ms_Benjamin_John_-_Better_Way_2": {
+   "sdr": 2.5988193476262693,
+   "retention": 0.4066316511916165,
+   "worst_leak_class": "electric_guitar",
+   "worst_leak_db": -19.12761736738203,
+   "failure": "guitar_removed"
+  },
+  "ms_Benjamin_John_-_Better_Way_3": {
+   "sdr": -2.413319344021883,
+   "retention": 0.49038261446299325,
+   "worst_leak_class": "plucked_other",
+   "worst_leak_db": 0.12304504062992719,
+   "failure": "guitar_removed"
+  },
+  "ms_Brian_C_Cai_Fei_Hong_-_Hold_Me_0": {
+   "sdr": 5.715407117421895,
+   "retention": 0.6039876548111274,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -24.702529110700034,
+   "failure": "vocal_leak"
+  },
+  "ms_Brian_C_Cai_Fei_Hong_-_Hold_Me_1": {
+   "sdr": 4.98063751166704,
+   "retention": 0.4870045801509488,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -26.68819863635474,
+   "failure": "guitar_removed"
+  },
+  "ms_Brian_C_Cai_Fei_Hong_-_Hold_Me_2": {
+   "sdr": 4.93744554473426,
+   "retention": 0.5351066871844078,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -22.1788243485573,
+   "failure": "vocal_leak"
+  },
+  "ms_Brian_C_Cai_Fei_Hong_-_Hold_Me_3": {
+   "sdr": 3.7513756006135965,
+   "retention": 0.4793198871835661,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -14.560844238463948,
+   "failure": "guitar_removed"
+  },
+  "ms_David_Youngs_-_Dust_You_And_Me_0": {
+   "sdr": 34.7898045446241,
+   "retention": 0.9908451792403369,
+   "worst_leak_class": null,
+   "worst_leak_db": null,
+   "failure": "other"
+  },
+  "ms_David_Youngs_-_Dust_You_And_Me_1": {
+   "sdr": 59.064072020131555,
+   "retention": 0.999419886707221,
+   "worst_leak_class": null,
+   "worst_leak_db": null,
+   "failure": "other"
+  },
+  "ms_David_Youngs_-_Dust_You_And_Me_2": {
+   "sdr": 14.597317917671091,
+   "retention": 0.9263064074351784,
+   "worst_leak_class": null,
+   "worst_leak_db": null,
+   "failure": "other"
+  },
+  "ms_David_Youngs_-_Dust_You_And_Me_3": {
+   "sdr": 83.13055605152088,
+   "retention": 0.9999878389209398,
+   "worst_leak_class": null,
+   "worst_leak_db": null,
+   "failure": "other"
+  },
+  "ms_David_Youngs_-_Technomantra_0": {
+   "sdr": 85.02427961206948,
+   "retention": 0.9999972118217847,
+   "worst_leak_class": null,
+   "worst_leak_db": null,
+   "failure": "other"
+  },
+  "ms_David_Youngs_-_Technomantra_1": {
+   "sdr": 48.32134941956134,
+   "retention": 0.9962537173887305,
+   "worst_leak_class": null,
+   "worst_leak_db": null,
+   "failure": "other"
+  },
+  "ms_David_Youngs_-_Technomantra_2": {
+   "sdr": 72.18159421265287,
+   "retention": 0.999822234139743,
+   "worst_leak_class": null,
+   "worst_leak_db": null,
+   "failure": "other"
+  },
+  "ms_David_Youngs_-_Technomantra_3": {
+   "sdr": 111.57294100090965,
+   "retention": 0.9999998103016109,
+   "worst_leak_class": null,
+   "worst_leak_db": null,
+   "failure": "other"
+  },
+  "ms_Diesel13_-_Roar_0": {
+   "sdr": 1.8777073410612333,
+   "retention": 0.2331663102562951,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -21.783232275528974,
+   "failure": "guitar_removed"
+  },
+  "ms_Diesel13_-_Roar_1": {
+   "sdr": 4.113447405460461,
+   "retention": 0.6028955428800269,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -12.865091562021167,
+   "failure": "bass_leak"
+  },
+  "ms_Diesel13_-_Roar_2": {
+   "sdr": 1.6190947282890873,
+   "retention": 0.16100095900379222,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -25.794133779532146,
+   "failure": "guitar_removed"
+  },
+  "ms_Diesel13_-_Roar_3": {
+   "sdr": 1.8169905976672052,
+   "retention": 0.23017694494671792,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -20.261787280200586,
+   "failure": "guitar_removed"
+  },
+  "ms_Jamie_Kent_-_All_American_Mutt_0": {
+   "sdr": 2.527788732351272,
+   "retention": 0.3817180088542157,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -18.001528033962078,
+   "failure": "guitar_removed"
+  },
+  "ms_Jamie_Kent_-_All_American_Mutt_1": {
+   "sdr": 1.4661874976534186,
+   "retention": 0.1582394164655854,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -27.57820803486537,
+   "failure": "guitar_removed"
+  },
+  "ms_Jamie_Kent_-_All_American_Mutt_2": {
+   "sdr": 1.6009762388022226,
+   "retention": 0.2658478571441195,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -22.785506874347607,
+   "failure": "guitar_removed"
+  },
+  "ms_Jamie_Kent_-_All_American_Mutt_3": {
+   "sdr": 2.5815080467072624,
+   "retention": 0.32553182966676164,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -23.734601164537345,
+   "failure": "guitar_removed"
+  },
+  "ms_Jesse_Joy_-_Nearly_There_0": {
+   "sdr": 5.618406974665907,
+   "retention": 0.5599478293895014,
+   "worst_leak_class": "strings",
+   "worst_leak_db": -26.091478654923677,
+   "failure": "strings_winds_leak"
+  },
+  "ms_Jesse_Joy_-_Nearly_There_1": {
+   "sdr": 6.511625451815927,
+   "retention": 0.6308473954542537,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -23.997773952373326,
+   "failure": "vocal_leak"
+  },
+  "ms_Jesse_Joy_-_Nearly_There_2": {
+   "sdr": 7.7017351538742975,
+   "retention": 0.6529945507401373,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -27.19662700340431,
+   "failure": "vocal_leak"
+  },
+  "ms_Jesse_Joy_-_Nearly_There_3": {
+   "sdr": 5.681963140960895,
+   "retention": 0.6054476510868112,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -27.04626842518316,
+   "failure": "vocal_leak"
+  },
+  "ms_Nova_One_Studio_-_Four_Graham_0": {
+   "sdr": 4.374620463244075,
+   "retention": 0.6116341833850812,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -18.63273455103674,
+   "failure": "bass_leak"
+  },
+  "ms_Nova_One_Studio_-_Four_Graham_1": {
+   "sdr": 0.4506706295521215,
+   "retention": 0.020703679791045374,
+   "worst_leak_class": "electric_guitar",
+   "worst_leak_db": -23.63646664808559,
+   "failure": "guitar_removed"
+  },
+  "ms_Nova_One_Studio_-_Four_Graham_2": {
+   "sdr": 3.8465151304808542,
+   "retention": 0.5350015904013685,
+   "worst_leak_class": "electric_guitar",
+   "worst_leak_db": -20.50912838042852,
+   "failure": "electric_leak"
+  },
+  "ms_Nova_One_Studio_-_Four_Graham_3": {
+   "sdr": 4.941762179745182,
+   "retention": 0.7185809365092605,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -11.836958852734265,
+   "failure": "vocal_leak"
+  },
+  "ms_Rubblebucket_-_Carousel_Ride_0": {
+   "sdr": 4.758922541830556,
+   "retention": 0.568734128566061,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -20.414290272478127,
+   "failure": "vocal_leak"
+  },
+  "ms_Rubblebucket_-_Carousel_Ride_1": {
+   "sdr": 4.855942544133614,
+   "retention": 0.47674226711873974,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -24.266831360852684,
+   "failure": "guitar_removed"
+  },
+  "ms_Rubblebucket_-_Carousel_Ride_2": {
+   "sdr": 9.082309250154324,
+   "retention": 0.7583051330595596,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -25.330649907205057,
+   "failure": "vocal_leak"
+  },
+  "ms_Rubblebucket_-_Carousel_Ride_3": {
+   "sdr": 2.8012511361595704,
+   "retention": 0.34327186454819864,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -25.194751656262877,
+   "failure": "guitar_removed"
+  },
+  "ms_The_Long_Wait_-_Lookout_Mounta_0": {
+   "sdr": 7.560610198590258,
+   "retention": 0.6550430490809112,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -25.159338295938984,
+   "failure": "bass_leak"
+  },
+  "ms_The_Long_Wait_-_Lookout_Mounta_1": {
+   "sdr": 5.188464998210175,
+   "retention": 0.5309623658693159,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -21.102715601151402,
+   "failure": "drum_leak"
+  },
+  "ms_The_Long_Wait_-_Lookout_Mounta_2": {
+   "sdr": 8.162331087799652,
+   "retention": 0.7462182428238724,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -24.410883488238042,
+   "failure": "vocal_leak"
+  },
+  "ms_The_Long_Wait_-_Lookout_Mounta_3": {
+   "sdr": 6.20116320477347,
+   "retention": 0.6540438896853509,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -20.51883492177486,
+   "failure": "drum_leak"
+  },
+  "ms_Triviul_-_Gimme_0": {
+   "sdr": 3.952246812434918,
+   "retention": 0.5526610513829237,
+   "worst_leak_class": "keys",
+   "worst_leak_db": -21.596386463805036,
+   "failure": "piano_leak"
+  },
+  "ms_Triviul_-_Gimme_1": {
+   "sdr": 3.3564295263456945,
+   "retention": 0.5648451540523751,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -20.505863423488,
+   "failure": "bass_leak"
+  },
+  "ms_Triviul_-_Gimme_2": {
+   "sdr": 4.285989147279029,
+   "retention": 0.5497390158934884,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -23.31739007083742,
+   "failure": "bass_leak"
+  },
+  "ms_Triviul_-_Gimme_3": {
+   "sdr": 3.300097086792524,
+   "retention": 0.48105304564924495,
+   "worst_leak_class": "keys",
+   "worst_leak_db": -19.665625802617534,
+   "failure": "guitar_removed"
+  },
+  "ms_Wesley_Morgan_-_Flesh_And_Bone_0": {
+   "sdr": 0.2545555953441435,
+   "retention": 0.03453730659114772,
+   "worst_leak_class": "electric_guitar",
+   "worst_leak_db": -20.51250589151143,
+   "failure": "guitar_removed"
+  },
+  "ms_Wesley_Morgan_-_Flesh_And_Bone_1": {
+   "sdr": 0.4786359928047917,
+   "retention": 0.01817405484318938,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -43.109774220170685,
+   "failure": "guitar_removed"
+  },
+  "ms_Wesley_Morgan_-_Flesh_And_Bone_2": {
+   "sdr": 0.21493654289111694,
+   "retention": 0.01676452353022467,
+   "worst_leak_class": "electric_guitar",
+   "worst_leak_db": -16.36409556438958,
+   "failure": "guitar_removed"
+  },
+  "ms_Wesley_Morgan_-_Flesh_And_Bone_3": {
+   "sdr": 0.6149718365255804,
+   "retention": 0.04008314730745575,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -29.005976599587303,
+   "failure": "guitar_removed"
+  },
+  "ms_oxeye_-_Sorry_0": {
+   "sdr": 1.891603294155504,
+   "retention": 0.2681135727970917,
+   "worst_leak_class": "synth",
+   "worst_leak_db": -14.868348646089133,
+   "failure": "guitar_removed"
+  },
+  "ms_oxeye_-_Sorry_1": {
+   "sdr": 3.669957568788362,
+   "retention": 0.5071815355507099,
+   "worst_leak_class": "synth",
+   "worst_leak_db": -16.637139131253555,
+   "failure": "synth_leak"
+  },
+  "ms_oxeye_-_Sorry_2": {
+   "sdr": 4.781090843561336,
+   "retention": 0.6084327791886909,
+   "worst_leak_class": "synth",
+   "worst_leak_db": -17.33394819380973,
+   "failure": "synth_leak"
+  },
+  "ms_oxeye_-_Sorry_3": {
+   "sdr": 2.9653443717702666,
+   "retention": 0.3249775236080674,
+   "worst_leak_class": "synth",
+   "worst_leak_db": -21.54355400356941,
+   "failure": "guitar_removed"
+  },
+  "syn_band_pop_000": {
+   "sdr": 1.4503347238606494,
+   "retention": 0.21320501348817295,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -19.668468986588753,
+   "failure": "guitar_removed"
+  },
+  "syn_band_pop_014": {
+   "sdr": 3.756335817470343,
+   "retention": 0.4469808832381934,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -26.99710891185433,
+   "failure": "guitar_removed"
+  },
+  "syn_band_pop_028": {
+   "sdr": 4.206469054364673,
+   "retention": 0.5262554831189344,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -15.128657891917578,
+   "failure": "electric_leak"
+  },
+  "syn_band_pop_042": {
+   "sdr": 0.7692505686665175,
+   "retention": 0.09439197412540574,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -17.101968978050913,
+   "failure": "guitar_removed"
+  },
+  "syn_band_pop_056": {
+   "sdr": 1.75971646613049,
+   "retention": 0.07974351522823175,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -26.914360415627385,
+   "failure": "guitar_removed"
+  },
+  "syn_buried_011": {
+   "sdr": 0.4827013245109092,
+   "retention": 0.010826712766208208,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -39.20543360511436,
+   "failure": "guitar_removed"
+  },
+  "syn_buried_025": {
+   "sdr": 3.4059052640397773,
+   "retention": 0.4510793200119778,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -18.204559952904226,
+   "failure": "guitar_removed"
+  },
+  "syn_buried_039": {
+   "sdr": 1.9259006715499807,
+   "retention": 0.28776803768675235,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -22.20659185153528,
+   "failure": "guitar_removed"
+  },
+  "syn_buried_053": {
+   "sdr": 1.9865244132303164,
+   "retention": 0.2918782428736092,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -15.031940566859811,
+   "failure": "guitar_removed"
+  },
+  "syn_chamber_frevo_008": {
+   "sdr": 11.8438842563892,
+   "retention": 0.8486346241261009,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -23.062925568200573,
+   "failure": "bass_leak"
+  },
+  "syn_chamber_frevo_022": {
+   "sdr": 8.26265726824406,
+   "retention": 0.7782447311079684,
+   "worst_leak_class": "percussion",
+   "worst_leak_db": -20.366469147646203,
+   "failure": "drum_leak"
+  },
+  "syn_chamber_frevo_036": {
+   "sdr": 12.619060996107985,
+   "retention": 0.8873594528339811,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -26.333621310613026,
+   "failure": "bass_leak"
+  },
+  "syn_chamber_frevo_050": {
+   "sdr": 4.850107587224367,
+   "retention": 0.4775920591812455,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -22.412832352941486,
+   "failure": "guitar_removed"
+  },
+  "syn_clean_electric_003": {
+   "sdr": 9.442989589867057,
+   "retention": 0.9065696405984107,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -16.656281479622493,
+   "failure": "electric_leak"
+  },
+  "syn_clean_electric_017": {
+   "sdr": 7.503073543957979,
+   "retention": 0.6204960596317133,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -24.820679104752067,
+   "failure": "electric_leak"
+  },
+  "syn_clean_electric_031": {
+   "sdr": 8.575945078791754,
+   "retention": 0.8341325114550456,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -15.669532272910605,
+   "failure": "electric_leak"
+  },
+  "syn_clean_electric_045": {
+   "sdr": 7.496470154492939,
+   "retention": 0.7327721303515536,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -23.74286916311467,
+   "failure": "electric_leak"
+  },
+  "syn_clean_electric_059": {
+   "sdr": 2.8206390800714827,
+   "retention": 0.8682625788090242,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -4.315628531848553,
+   "failure": "electric_leak"
+  },
+  "syn_cymbal_drums_010": {
+   "sdr": 13.365647372315863,
+   "retention": 0.9021033639512268,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -24.251130530299093,
+   "failure": "drum_leak"
+  },
+  "syn_cymbal_drums_024": {
+   "sdr": 13.378308040138698,
+   "retention": 0.8875777160383085,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -26.34654113641933,
+   "failure": "drum_leak"
+  },
+  "syn_cymbal_drums_038": {
+   "sdr": 6.129221915921791,
+   "retention": 0.5799484663415696,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -27.022708958990034,
+   "failure": "drum_leak"
+  },
+  "syn_cymbal_drums_052": {
+   "sdr": 8.520163793475103,
+   "retention": 0.5821879172606628,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -31.92148929100915,
+   "failure": "drum_leak"
+  },
+  "syn_dense_013": {
+   "sdr": 2.634309174337953,
+   "retention": 0.39317823805230406,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -20.021873739105573,
+   "failure": "guitar_removed"
+  },
+  "syn_dense_027": {
+   "sdr": 1.6765870470692048,
+   "retention": 0.1504648889312437,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -13.393630464744026,
+   "failure": "guitar_removed"
+  },
+  "syn_dense_041": {
+   "sdr": 1.99391483189332,
+   "retention": 0.17964453824605192,
+   "worst_leak_class": "violin",
+   "worst_leak_db": -25.413095608514876,
+   "failure": "guitar_removed"
+  },
+  "syn_dense_055": {
+   "sdr": -1.2371252308774814,
+   "retention": 0.34210533910633223,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -2.5441510079012852,
+   "failure": "guitar_removed"
+  },
+  "syn_distorted_electric_005": {
+   "sdr": 1.112844963053842,
+   "retention": 0.03787848688903741,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -22.287619698707843,
+   "failure": "guitar_removed"
+  },
+  "syn_distorted_electric_019": {
+   "sdr": 0.9124942157205098,
+   "retention": 0.07002317846311217,
+   "worst_leak_class": "electric_dist",
+   "worst_leak_db": -20.02913313627145,
+   "failure": "guitar_removed"
+  },
+  "syn_distorted_electric_033": {
+   "sdr": 1.880665841116057,
+   "retention": 0.5194394491409127,
+   "worst_leak_class": "electric_dist",
+   "worst_leak_db": -6.0034489573887315,
+   "failure": "electric_leak"
+  },
+  "syn_distorted_electric_047": {
+   "sdr": 2.2343133053350055,
+   "retention": 0.2381586329367247,
+   "worst_leak_class": "electric_dist",
+   "worst_leak_db": -14.968946488817528,
+   "failure": "guitar_removed"
+  },
+  "syn_distorted_electric_061": {
+   "sdr": 0.9313376995476557,
+   "retention": 0.08715327598116526,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -15.858681655744329,
+   "failure": "guitar_removed"
+  },
+  "syn_electric_band_004": {
+   "sdr": 4.831194831198802,
+   "retention": 0.5696624263261039,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -20.822533537029862,
+   "failure": "drum_leak"
+  },
+  "syn_electric_band_018": {
+   "sdr": 4.869727514909395,
+   "retention": 0.5368901454349778,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -24.708481932524116,
+   "failure": "vocal_leak"
+  },
+  "syn_electric_band_032": {
+   "sdr": 4.5697969658358275,
+   "retention": 0.45648449052925333,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -21.497587859730075,
+   "failure": "guitar_removed"
+  },
+  "syn_electric_band_046": {
+   "sdr": 3.672690781088387,
+   "retention": 0.4730513737440007,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -22.548477420292755,
+   "failure": "guitar_removed"
+  },
+  "syn_electric_band_060": {
+   "sdr": 4.296174368781527,
+   "retention": 0.44638189667336936,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -18.860945718716277,
+   "failure": "guitar_removed"
+  },
+  "syn_female_vocal_009": {
+   "sdr": 14.719752708815454,
+   "retention": 0.9477602298160339,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -25.897201065344667,
+   "failure": "vocal_leak"
+  },
+  "syn_female_vocal_023": {
+   "sdr": 10.876579915705662,
+   "retention": 0.8342387923379522,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -22.769810215333692,
+   "failure": "vocal_leak"
+  },
+  "syn_female_vocal_037": {
+   "sdr": 13.517322703802208,
+   "retention": 0.8169532355069569,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -27.65924569603889,
+   "failure": "vocal_leak"
+  },
+  "syn_female_vocal_051": {
+   "sdr": 10.265109785301458,
+   "retention": 0.7968742939547808,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -23.564614666806825,
+   "failure": "vocal_leak"
+  },
+  "syn_piano_001": {
+   "sdr": 8.193449138196492,
+   "retention": 0.7311457408549314,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -23.270050861870576,
+   "failure": "piano_leak"
+  },
+  "syn_piano_015": {
+   "sdr": 13.312934481253926,
+   "retention": 0.9143216712328174,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -22.66980216284862,
+   "failure": "piano_leak"
+  },
+  "syn_piano_029": {
+   "sdr": 9.250996388300061,
+   "retention": 0.7317388547870686,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -21.93231966426144,
+   "failure": "piano_leak"
+  },
+  "syn_piano_043": {
+   "sdr": 16.115209763565332,
+   "retention": 0.8840292267842992,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -28.49388568421352,
+   "failure": "piano_leak"
+  },
+  "syn_piano_057": {
+   "sdr": 14.461887681766008,
+   "retention": 0.9173874440600439,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -28.80901622582069,
+   "failure": "piano_leak"
+  },
+  "syn_piano_band_002": {
+   "sdr": 7.731352032905785,
+   "retention": 0.7472660253804947,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -24.36968849924788,
+   "failure": "drum_leak"
+  },
+  "syn_piano_band_016": {
+   "sdr": 7.280102227669705,
+   "retention": 0.7177085441367793,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -24.201273362813147,
+   "failure": "piano_leak"
+  },
+  "syn_piano_band_030": {
+   "sdr": 7.653082754443171,
+   "retention": 0.686891548826394,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -25.271299631655406,
+   "failure": "piano_leak"
+  },
+  "syn_piano_band_044": {
+   "sdr": 4.616460428149251,
+   "retention": 0.4818807002737804,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -24.130021483184876,
+   "failure": "guitar_removed"
+  },
+  "syn_piano_band_058": {
+   "sdr": 1.3930638240492792,
+   "retention": 0.07521428968641188,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -39.52767892920911,
+   "failure": "guitar_removed"
+  },
+  "syn_plucked_012": {
+   "sdr": 3.257920956153328,
+   "retention": 0.5304038838200239,
+   "worst_leak_class": "plucked_other",
+   "worst_leak_db": -10.79122297463712,
+   "failure": "plucked_leak"
+  },
+  "syn_plucked_026": {
+   "sdr": 2.4501549941452767,
+   "retention": 0.11656491698363773,
+   "worst_leak_class": "plucked_other",
+   "worst_leak_db": -22.724820687459314,
+   "failure": "guitar_removed"
+  },
+  "syn_plucked_040": {
+   "sdr": 14.658467628065683,
+   "retention": 0.9731180505384025,
+   "worst_leak_class": "plucked_other",
+   "worst_leak_db": -19.195476493427453,
+   "failure": "plucked_leak"
+  },
+  "syn_plucked_054": {
+   "sdr": 6.424839897298016,
+   "retention": 0.7967298884474331,
+   "worst_leak_class": "plucked_other",
+   "worst_leak_db": -13.710648044415713,
+   "failure": "plucked_leak"
+  },
+  "syn_strings_006": {
+   "sdr": 16.86835260670839,
+   "retention": 0.9623657377881831,
+   "worst_leak_class": "violin",
+   "worst_leak_db": -26.29357230127422,
+   "failure": "strings_winds_leak"
+  },
+  "syn_strings_020": {
+   "sdr": 8.291874827376999,
+   "retention": 0.729904498150731,
+   "worst_leak_class": "violin",
+   "worst_leak_db": -27.320638486968637,
+   "failure": "strings_winds_leak"
+  },
+  "syn_strings_034": {
+   "sdr": 16.281016900521717,
+   "retention": 0.9579070872478191,
+   "worst_leak_class": "violin",
+   "worst_leak_db": -31.992619126934905,
+   "failure": "strings_winds_leak"
+  },
+  "syn_strings_048": {
+   "sdr": 12.695861833869344,
+   "retention": 0.8395605140475948,
+   "worst_leak_class": "violin",
+   "worst_leak_db": -25.907591267394665,
+   "failure": "strings_winds_leak"
+  },
+  "syn_strings_062": {
+   "sdr": 15.055349623291733,
+   "retention": 0.938985938768971,
+   "worst_leak_class": "violin",
+   "worst_leak_db": -27.19824476846017,
+   "failure": "strings_winds_leak"
+  },
+  "syn_winds_007": {
+   "sdr": 15.385722690608237,
+   "retention": 0.9304944715346569,
+   "worst_leak_class": "winds",
+   "worst_leak_db": -35.74409261746864,
+   "failure": "strings_winds_leak"
+  },
+  "syn_winds_021": {
+   "sdr": 18.109645133101193,
+   "retention": 0.9648913519996574,
+   "worst_leak_class": "winds",
+   "worst_leak_db": -32.57016134730898,
+   "failure": "strings_winds_leak"
+  },
+  "syn_winds_035": {
+   "sdr": 16.40995753247351,
+   "retention": 0.9409771100872454,
+   "worst_leak_class": "winds",
+   "worst_leak_db": -33.78836383572303,
+   "failure": "strings_winds_leak"
+  },
+  "syn_winds_049": {
+   "sdr": 16.765568928997574,
+   "retention": 0.9490137827554658,
+   "worst_leak_class": "winds",
+   "worst_leak_db": -30.447338144048082,
+   "failure": "strings_winds_leak"
+  },
+  "syn_winds_063": {
+   "sdr": 21.140416025688182,
+   "retention": 0.9792703314064601,
+   "worst_leak_class": "winds",
+   "worst_leak_db": -35.38278124475294,
+   "failure": "strings_winds_leak"
+  },
+  "synr2_band_pop_018": {
+   "sdr": 6.5928360215016895,
+   "retention": 0.6371617447931531,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -24.408402288110768,
+   "failure": "drum_leak"
+  },
+  "synr2_buried_003": {
+   "sdr": 1.4837909307710442,
+   "retention": 0.28633752799562306,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -16.380733632785603,
+   "failure": "guitar_removed"
+  },
+  "synr2_buried_004": {
+   "sdr": 2.2338699707309186,
+   "retention": 0.2917402988895175,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -21.488213660829494,
+   "failure": "guitar_removed"
+  },
+  "synr2_buried_005": {
+   "sdr": -2.2881007214336497,
+   "retention": 0.24289965681865708,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -1.7507030030444815,
+   "failure": "guitar_removed"
+  },
+  "synr2_buried_009": {
+   "sdr": 0.45277390675059126,
+   "retention": 0.022269974430199752,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -31.82291961369547,
+   "failure": "guitar_removed"
+  },
+  "synr2_buried_012": {
+   "sdr": 2.7209313444039824,
+   "retention": 0.34604990955790466,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -23.078702630399167,
+   "failure": "guitar_removed"
+  },
+  "synr2_buried_015": {
+   "sdr": 2.454498817265382,
+   "retention": 0.36447020749199477,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -19.288436499212658,
+   "failure": "guitar_removed"
+  },
+  "synr2_buried_016": {
+   "sdr": 1.194848579529018,
+   "retention": 0.24589922966528305,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -20.09141551838365,
+   "failure": "guitar_removed"
+  },
+  "synr2_buried_023": {
+   "sdr": 3.786225979178517,
+   "retention": 0.5646582171172659,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -14.168739287078619,
+   "failure": "electric_leak"
+  },
+  "synr2_buried_027": {
+   "sdr": 2.9792049728240206,
+   "retention": 0.6674566682109987,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -5.912943933720274,
+   "failure": "electric_leak"
+  },
+  "synr2_buried_031": {
+   "sdr": 0.6138872133437387,
+   "retention": 0.04562935113438223,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -26.233366376636262,
+   "failure": "guitar_removed"
+  },
+  "synr2_buried_034": {
+   "sdr": 0.4972746774736791,
+   "retention": 0.03311798005525758,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -15.72473671849745,
+   "failure": "guitar_removed"
+  },
+  "synr2_buried_039": {
+   "sdr": 2.793053029034967,
+   "retention": 0.6266667008653743,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -10.785948401291844,
+   "failure": "electric_leak"
+  },
+  "synr2_buried_040": {
+   "sdr": 0.6903257309641925,
+   "retention": 0.37232806364977117,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -11.363809886912327,
+   "failure": "guitar_removed"
+  },
+  "synr2_buried_041": {
+   "sdr": 3.230763271281558,
+   "retention": 0.4830636485023978,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -12.928383670268431,
+   "failure": "guitar_removed"
+  },
+  "synr2_buried_043": {
+   "sdr": 0.48933328420341066,
+   "retention": 0.027747071343028017,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -31.656454580895502,
+   "failure": "guitar_removed"
+  },
+  "synr2_chamber_frevo_042": {
+   "sdr": 6.255317807576226,
+   "retention": 0.6724210112531742,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -15.597497148037183,
+   "failure": "bass_leak"
+  },
+  "synr2_dense_000": {
+   "sdr": 3.53244076175933,
+   "retention": 0.32338177313842176,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -31.084669276367936,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_001": {
+   "sdr": 1.8180049577652133,
+   "retention": 0.19472439616355264,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -23.879721503397917,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_002": {
+   "sdr": 3.8400186129173495,
+   "retention": 0.4834084462244404,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -16.836005961047185,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_006": {
+   "sdr": 2.7718261409795226,
+   "retention": 0.22405786141203507,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -29.76897428103421,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_007": {
+   "sdr": 6.0003384630840255,
+   "retention": 0.6008791722279789,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -22.8296977626607,
+   "failure": "electric_leak"
+  },
+  "synr2_dense_008": {
+   "sdr": 0.6852751366739993,
+   "retention": 0.02873521917551736,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -31.04289967764256,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_010": {
+   "sdr": 2.2331402707227888,
+   "retention": 0.35073360166964423,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -16.677062739025153,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_014": {
+   "sdr": 3.4128049743463924,
+   "retention": 0.4190702313521513,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -15.779887233268733,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_017": {
+   "sdr": 2.064883430870839,
+   "retention": 0.29558816556444417,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -15.78431726771122,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_019": {
+   "sdr": 1.4457514222674153,
+   "retention": 0.11244705636054647,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -29.563376939293082,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_021": {
+   "sdr": 8.705578214531762,
+   "retention": 0.7804457746978678,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -21.035551550443273,
+   "failure": "piano_leak"
+  },
+  "synr2_dense_022": {
+   "sdr": 1.9834300169963512,
+   "retention": 0.25490960826714076,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -14.366724425845383,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_025": {
+   "sdr": 1.9335276697934756,
+   "retention": 0.21918364924632636,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -12.701473155429696,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_028": {
+   "sdr": 0.5453070039579038,
+   "retention": 0.09328121729132724,
+   "worst_leak_class": "winds",
+   "worst_leak_db": -13.898227643710824,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_030": {
+   "sdr": 1.1380427993340776,
+   "retention": 0.04365018478644278,
+   "worst_leak_class": "vocals",
+   "worst_leak_db": -40.31661883169654,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_033": {
+   "sdr": 1.4791862887674398,
+   "retention": 0.1221810753989715,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -32.16676426222757,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_035": {
+   "sdr": 2.4110101800956,
+   "retention": 0.34472729617679526,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -22.203073491103737,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_036": {
+   "sdr": 4.886498945990112,
+   "retention": 0.7360861404837042,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -9.400260369970388,
+   "failure": "electric_leak"
+  },
+  "synr2_dense_037": {
+   "sdr": 4.201407593584309,
+   "retention": 0.6978464207583884,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -13.308268623093312,
+   "failure": "electric_leak"
+  },
+  "synr2_dense_038": {
+   "sdr": 3.066846741185312,
+   "retention": 0.40970097285455276,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -25.14122732925227,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_044": {
+   "sdr": 0.569995367303882,
+   "retention": 0.040269560340181726,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -23.961095595491493,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_045": {
+   "sdr": 2.6496852448364407,
+   "retention": 0.36697136672008135,
+   "worst_leak_class": "electric_clean",
+   "worst_leak_db": -17.12273824780551,
+   "failure": "guitar_removed"
+  },
+  "synr2_dense_047": {
+   "sdr": 1.47613219695341,
+   "retention": 0.09242803079344993,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -22.202040986191896,
+   "failure": "guitar_removed"
+  },
+  "synr2_electric_band_011": {
+   "sdr": 3.4165952742378716,
+   "retention": 0.3679296040190516,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -21.3265191891141,
+   "failure": "guitar_removed"
+  },
+  "synr2_electric_band_024": {
+   "sdr": 7.137057793588034,
+   "retention": 0.7816099152188516,
+   "worst_leak_class": "bass",
+   "worst_leak_db": -18.627533319501815,
+   "failure": "bass_leak"
+  },
+  "synr2_piano_046": {
+   "sdr": 8.708209062626398,
+   "retention": 0.7529178344085947,
+   "worst_leak_class": "piano",
+   "worst_leak_db": -25.38407331021672,
+   "failure": "piano_leak"
+  },
+  "synr2_piano_band_032": {
+   "sdr": 12.453659222865728,
+   "retention": 0.8630740186113915,
+   "worst_leak_class": "drums",
+   "worst_leak_db": -23.782203931300813,
+   "failure": "drum_leak"
+  },
+  "synr2_plucked_013": {
+   "sdr": 3.0607498606216117,
+   "retention": 0.3374125506642743,
+   "worst_leak_class": "plucked_other",
+   "worst_leak_db": -19.692939667608726,
+   "failure": "guitar_removed"
+  },
+  "synr2_winds_020": {
+   "sdr": 8.248057560873033,
+   "retention": 0.6659079973244137,
+   "worst_leak_class": "winds",
+   "worst_leak_db": -32.15503888155653,
+   "failure": "strings_winds_leak"
+  },
+  "synr2_winds_026": {
+   "sdr": 11.325399465879117,
+   "retention": 0.7927926806441549,
+   "worst_leak_class": "winds",
+   "worst_leak_db": -31.10469286849861,
+   "failure": "strings_winds_leak"
+  },
+  "synr2_winds_029": {
+   "sdr": 18.759993810939008,
+   "retention": 0.9757147340792562,
+   "worst_leak_class": "winds",
+   "worst_leak_db": -30.18009477854768,
+   "failure": "strings_winds_leak"
+  }
+ },
+ "hard_threshold_sdr": 1.9173263272013616,
+ "hard_failure_counts": {
+  "guitar_removed": 41,
+  "electric_leak": 1
+ },
+ "sample_weights": {
+  "ms_Anna_Blanton_-_Waves_0": 3.0,
+  "ms_Anna_Blanton_-_Waves_1": 1.0,
+  "ms_Anna_Blanton_-_Waves_2": 1.0,
+  "ms_Anna_Blanton_-_Waves_3": 3.0,
+  "ms_Benjamin_John_-_Better_Way_0": 3.0,
+  "ms_Benjamin_John_-_Better_Way_1": 1.0,
+  "ms_Benjamin_John_-_Better_Way_2": 1.0,
+  "ms_Benjamin_John_-_Better_Way_3": 3.0,
+  "ms_Brian_C_Cai_Fei_Hong_-_Hold_Me_0": 1.0,
+  "ms_Brian_C_Cai_Fei_Hong_-_Hold_Me_1": 1.0,
+  "ms_Brian_C_Cai_Fei_Hong_-_Hold_Me_2": 1.0,
+  "ms_Brian_C_Cai_Fei_Hong_-_Hold_Me_3": 1.0,
+  "ms_David_Youngs_-_Dust_You_And_Me_0": 1.0,
+  "ms_David_Youngs_-_Dust_You_And_Me_1": 1.0,
+  "ms_David_Youngs_-_Dust_You_And_Me_2": 1.0,
+  "ms_David_Youngs_-_Dust_You_And_Me_3": 1.0,
+  "ms_David_Youngs_-_Technomantra_0": 1.0,
+  "ms_David_Youngs_-_Technomantra_1": 1.0,
+  "ms_David_Youngs_-_Technomantra_2": 1.0,
+  "ms_David_Youngs_-_Technomantra_3": 1.0,
+  "ms_Diesel13_-_Roar_0": 3.0,
+  "ms_Diesel13_-_Roar_1": 1.0,
+  "ms_Diesel13_-_Roar_2": 3.0,
+  "ms_Diesel13_-_Roar_3": 3.0,
+  "ms_Jamie_Kent_-_All_American_Mutt_0": 1.0,
+  "ms_Jamie_Kent_-_All_American_Mutt_1": 3.0,
+  "ms_Jamie_Kent_-_All_American_Mutt_2": 3.0,
+  "ms_Jamie_Kent_-_All_American_Mutt_3": 1.0,
+  "ms_Jesse_Joy_-_Nearly_There_0": 1.0,
+  "ms_Jesse_Joy_-_Nearly_There_1": 1.0,
+  "ms_Jesse_Joy_-_Nearly_There_2": 1.0,
+  "ms_Jesse_Joy_-_Nearly_There_3": 1.0,
+  "ms_Nova_One_Studio_-_Four_Graham_0": 1.0,
+  "ms_Nova_One_Studio_-_Four_Graham_1": 3.0,
+  "ms_Nova_One_Studio_-_Four_Graham_2": 1.0,
+  "ms_Nova_One_Studio_-_Four_Graham_3": 1.0,
+  "ms_Rubblebucket_-_Carousel_Ride_0": 1.0,
+  "ms_Rubblebucket_-_Carousel_Ride_1": 1.0,
+  "ms_Rubblebucket_-_Carousel_Ride_2": 1.0,
+  "ms_Rubblebucket_-_Carousel_Ride_3": 1.0,
+  "ms_The_Long_Wait_-_Lookout_Mounta_0": 1.0,
+  "ms_The_Long_Wait_-_Lookout_Mounta_1": 1.0,
+  "ms_The_Long_Wait_-_Lookout_Mounta_2": 1.0,
+  "ms_The_Long_Wait_-_Lookout_Mounta_3": 1.0,
+  "ms_Triviul_-_Gimme_0": 1.0,
+  "ms_Triviul_-_Gimme_1": 1.0,
+  "ms_Triviul_-_Gimme_2": 1.0,
+  "ms_Triviul_-_Gimme_3": 1.0,
+  "ms_Wesley_Morgan_-_Flesh_And_Bone_0": 3.0,
+  "ms_Wesley_Morgan_-_Flesh_And_Bone_1": 3.0,
+  "ms_Wesley_Morgan_-_Flesh_And_Bone_2": 3.0,
+  "ms_Wesley_Morgan_-_Flesh_And_Bone_3": 3.0,
+  "ms_oxeye_-_Sorry_0": 3.0,
+  "ms_oxeye_-_Sorry_1": 1.0,
+  "ms_oxeye_-_Sorry_2": 1.0,
+  "ms_oxeye_-_Sorry_3": 1.0,
+  "syn_band_pop_000": 3.0,
+  "syn_band_pop_014": 1.0,
+  "syn_band_pop_028": 1.0,
+  "syn_band_pop_042": 3.0,
+  "syn_band_pop_056": 3.0,
+  "syn_buried_011": 3.0,
+  "syn_buried_025": 1.0,
+  "syn_buried_039": 1.0,
+  "syn_buried_053": 1.0,
+  "syn_chamber_frevo_008": 1.0,
+  "syn_chamber_frevo_022": 1.0,
+  "syn_chamber_frevo_036": 1.0,
+  "syn_chamber_frevo_050": 1.0,
+  "syn_clean_electric_003": 1.0,
+  "syn_clean_electric_017": 1.0,
+  "syn_clean_electric_031": 1.0,
+  "syn_clean_electric_045": 1.0,
+  "syn_clean_electric_059": 1.0,
+  "syn_cymbal_drums_010": 1.0,
+  "syn_cymbal_drums_024": 1.0,
+  "syn_cymbal_drums_038": 1.0,
+  "syn_cymbal_drums_052": 1.0,
+  "syn_dense_013": 1.0,
+  "syn_dense_027": 3.0,
+  "syn_dense_041": 1.0,
+  "syn_dense_055": 3.0,
+  "syn_distorted_electric_005": 3.0,
+  "syn_distorted_electric_019": 3.0,
+  "syn_distorted_electric_033": 3.0,
+  "syn_distorted_electric_047": 1.0,
+  "syn_distorted_electric_061": 3.0,
+  "syn_electric_band_004": 1.0,
+  "syn_electric_band_018": 1.0,
+  "syn_electric_band_032": 1.0,
+  "syn_electric_band_046": 1.0,
+  "syn_electric_band_060": 1.0,
+  "syn_female_vocal_009": 1.0,
+  "syn_female_vocal_023": 1.0,
+  "syn_female_vocal_037": 1.0,
+  "syn_female_vocal_051": 1.0,
+  "syn_piano_001": 1.0,
+  "syn_piano_015": 1.0,
+  "syn_piano_029": 1.0,
+  "syn_piano_043": 1.0,
+  "syn_piano_057": 1.0,
+  "syn_piano_band_002": 1.0,
+  "syn_piano_band_016": 1.0,
+  "syn_piano_band_030": 1.0,
+  "syn_piano_band_044": 1.0,
+  "syn_piano_band_058": 3.0,
+  "syn_plucked_012": 1.0,
+  "syn_plucked_026": 1.0,
+  "syn_plucked_040": 1.0,
+  "syn_plucked_054": 1.0,
+  "syn_strings_006": 1.0,
+  "syn_strings_020": 1.0,
+  "syn_strings_034": 1.0,
+  "syn_strings_048": 1.0,
+  "syn_strings_062": 1.0,
+  "syn_winds_007": 1.0,
+  "syn_winds_021": 1.0,
+  "syn_winds_035": 1.0,
+  "syn_winds_049": 1.0,
+  "syn_winds_063": 1.0,
+  "synr2_band_pop_018": 1.0,
+  "synr2_buried_003": 3.0,
+  "synr2_buried_004": 1.0,
+  "synr2_buried_005": 3.0,
+  "synr2_buried_009": 3.0,
+  "synr2_buried_012": 1.0,
+  "synr2_buried_015": 1.0,
+  "synr2_buried_016": 3.0,
+  "synr2_buried_023": 1.0,
+  "synr2_buried_027": 1.0,
+  "synr2_buried_031": 3.0,
+  "synr2_buried_034": 3.0,
+  "synr2_buried_039": 1.0,
+  "synr2_buried_040": 3.0,
+  "synr2_buried_041": 1.0,
+  "synr2_buried_043": 3.0,
+  "synr2_chamber_frevo_042": 1.0,
+  "synr2_dense_000": 1.0,
+  "synr2_dense_001": 3.0,
+  "synr2_dense_002": 1.0,
+  "synr2_dense_006": 1.0,
+  "synr2_dense_007": 1.0,
+  "synr2_dense_008": 3.0,
+  "synr2_dense_010": 1.0,
+  "synr2_dense_014": 1.0,
+  "synr2_dense_017": 1.0,
+  "synr2_dense_019": 3.0,
+  "synr2_dense_021": 1.0,
+  "synr2_dense_022": 1.0,
+  "synr2_dense_025": 1.0,
+  "synr2_dense_028": 3.0,
+  "synr2_dense_030": 3.0,
+  "synr2_dense_033": 3.0,
+  "synr2_dense_035": 1.0,
+  "synr2_dense_036": 1.0,
+  "synr2_dense_037": 1.0,
+  "synr2_dense_038": 1.0,
+  "synr2_dense_044": 3.0,
+  "synr2_dense_045": 1.0,
+  "synr2_dense_047": 3.0,
+  "synr2_electric_band_011": 1.0,
+  "synr2_electric_band_024": 1.0,
+  "synr2_piano_046": 1.0,
+  "synr2_piano_band_032": 1.0,
+  "synr2_plucked_013": 1.0,
+  "synr2_winds_020": 1.0,
+  "synr2_winds_026": 1.0,
+  "synr2_winds_029": 1.0
+ },
+ "scenario_weights": {
+  "buried": 42.0,
+  "dense": 42.0,
+  "clean_electric": 2.0,
+  "electric_band": 2.0
+ }
+}

@@ -131,3 +131,6 @@ model dominates: their failures are on different clips.
   (SDR ≤ 2.4 dB, 30 clips) is 29× `guitar_removed` + 1× electric leakage — the same dominant
   failure as on validation. Next round: 48 new clips drawn with scenario weights
   buried 30 / dense 30 / clean_electric 2 / electric_band 2, and hard clips oversampled 3×.
+* Second mining pass over all 168 clips (incl. the 48 new buried/dense clips): mean SDR 7.98 dB,
+  worst quartile (≤ 1.92 dB) = 41 `guitar_removed` + 1 electric leak → r2 is trained on
+  148 clips (20 held out) with these clips oversampled 3×.
