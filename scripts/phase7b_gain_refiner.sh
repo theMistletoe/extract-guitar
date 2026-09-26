@@ -8,7 +8,7 @@ NEG="sw6:other sw6:piano sw6:vocals sw6:bass sw6:drums mega_multi:violin mega_mu
 W=datasets/train_clips/mining_r1b.json
 [ -f "$W" ] && WARG="--weights $W" || WARG=""
 $PY scripts/train.py candidates --pos $POS --neg $NEG
-$PY scripts/train.py fit --mode gain --base-members 0 1 --pos $POS --neg $NEG --epochs ${EPOCHS:-16} \
+$PY scripts/train.py fit --mode gain --base-members 0 1 --pos $POS --neg $NEG --epochs ${EPOCHS:-6} \
     --out artifacts/refiner/r3 $WARG
 $PY scripts/benchmark.py --pipeline R_r3 --slug R_r3 --strategy "D+gain-refiner+HEM" \
     --hypothesis "Refining the Champion ensemble itself (0..2 TF gain, identity at init) keeps its strengths and learns local fixes: lift guitar holes, cut violin/clarinet/electric leakage; trained on disjoint clips with hard-example oversampling." \

@@ -134,3 +134,13 @@ model dominates: their failures are on different clips.
 * Second mining pass over all 168 clips (incl. the 48 new buried/dense clips): mean SDR 7.98 dB,
   worst quartile (≤ 1.92 dB) = 41 `guitar_removed` + 1 electric leak → r2 is trained on
   148 clips (20 held out) with these clips oversampled 3×.
+* r1 final (epoch 9) on validation (unrecorded check): 3.89 dB (real 2.24, synthetic 5.32),
+  leakage −15.3 dB, retention 0.41 — cleaner but lower than the epoch-4 snapshot (4.00): the
+  refiner keeps improving on training-distribution hold-out while validation degrades.
+* Chunk-mismatch diagnostic on the 20 training hold-out clips (no validation data):
+  refiner gain +1.14 dB with 6 s-chunk candidates (as trained) vs +0.79 dB with the models'
+  default chunks (as at inference). The mismatch costs ≈0.35 dB; the larger loss (+0.79 →
+  +0.31 dB on validation) comes from the content shift between training songs (mostly pop)
+  and the validation songs. Consequences: (1) refine the *Champion* instead of a mask mean
+  (gain mode, r3); (2) limit training to 6 epochs as regularisation against that shift — this
+  choice uses the r1 validation curve (epoch 4 > 9) and is therefore disclosed here.
