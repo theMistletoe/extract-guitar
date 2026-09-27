@@ -215,3 +215,5 @@ model dominates: their failures are on different clips.
   it — exp041/042 crashed): Mega 6 s **5.58 dB** (exp044; +0.11 over both-at-6 s, 26/41 wins),
   Mega 8 s 5.08 dB (exp046; -0.51 vs Mega 6 s, 7/41 wins). Mega default is 20 s. The chunk
   effect is on the Mega side and monotone: shorter is better down to ~6 s. Mega 4 s: exp047.
+  **Mega 4 s: 5.79 dB** (exp047; +0.21 vs Mega 6 s, 28/41 wins) — best plain ensemble so far.
+  Next candidate: retrain the refiner on candidates with Mega at 4 s (HTDemucs native).
