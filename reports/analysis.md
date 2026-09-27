@@ -162,3 +162,10 @@ model dominates: their failures are on different clips.
   smooth arcs (≈0.5–1 kHz at 95–100 s and 108–113 s) are clearly present in exp023 and are
   weaker but **still visible** in exp030; guitar onsets are preserved in both. Residual
   bowed/wind glissandi are therefore a known remaining artifact of the Champion.
+
+### Phase 3 — Strategy B (two-stage) and C (cascades)
+
+* exp031 **B: SW all-guitar → Mega acoustic head on that stem**: 3.05 dB (real 1.63, synthetic
+  4.28), SIR 14.4, SAR 1.1, retention 0.32 — the same operating point as the acoustic head on
+  the full mix (3.13 dB). Removing vocals/drums/etc. first does not make the head less
+  conservative; two-stage brings no gain here.
