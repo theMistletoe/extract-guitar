@@ -219,6 +219,7 @@ model dominates: their failures are on different clips.
   Next candidate: retrain the refiner on candidates with Mega at 4 s (HTDemucs native).
 * **Strategy C, exp048 C_xlance_violin_clarinet** (SW guitar → subtract Mega violin → subtract
   Mega clarinet): **3.12 dB** (median 0.75; real 1.70 / synthetic 4.35; retention 0.60, leakage
-  -10.4 dB). Well below plain SW (the subtraction removes guitar energy along with the leakage) —
-  post-hoc per-instrument subtraction does not pay off; the learned gain refiner does this job
-  better. exp034 (the interrupted first attempt) is superseded by this record.
+  -10.4 dB) — identical to plain SW (exp004, 3.12 dB): removing the violin/clarinet
+  estimates changes nothing on average, whereas removing the Mega *electric*-guitar estimate
+  (exp033) gained +1.08 dB. Violin/clarinet leakage is not what limits SW here; the learned gain
+  refiner handles residual leakage better. exp034 (the interrupted first attempt) is superseded by this record.
