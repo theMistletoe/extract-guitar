@@ -35,3 +35,4 @@ experiments_*.log
 fetch_train.log
 phase7_refiner.log
 phase7b_refiner.log
+final_render.log

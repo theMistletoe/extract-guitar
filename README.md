@@ -11,6 +11,20 @@ Direct・Two-stage・Cascade・Ensemble の各方式で組み合わせ、正解 
 * 実験履歴: [`docs/experiments.md`](docs/experiments.md), [`experiments/results.csv`](experiments/results.csv)
 * 最終レポート: [`reports/final_report.md`](reports/final_report.md)
 
+## Results (ground-truth validation set, 41 clips)
+
+| Pipeline | Val. SDR | SIR / SAR | Retention | Notes |
+|---|---|---|---|---|
+| Best single model (Mega-53 acoustic head) | 3.13 dB | 14.8 / 1.2 | 0.33 | clean but loses guitar |
+| HTDemucs-6s guitar-FT + Mega acoustic, waveform mean | 4.16 dB | 8.4 / 6.6 | 0.43 | Strategy D |
+| **+ learned gain refiner (Champion, `--quality max`)** | **4.68 dB** | **9.5 / 6.4** | **0.51** | paired +0.53 dB, CI [+0.18, +0.86] |
+| Oracle ideal Wiener mask (upper bound) | 10.70 dB | – | – | headroom |
+
+Details: [`reports/final_report.md`](reports/final_report.md), per-experiment log
+[`docs/experiments.md`](docs/experiments.md). No ground truth exists for the target song, so
+"perfect" is never claimed; selection is by validation metrics, paired statistics and
+target-song diagnostics (`outputs/target/report.html`, generated locally).
+
 ## Quick start (1 command)
 
 ```bash
