@@ -211,3 +211,7 @@ model dominates: their failures are on different clips.
   Per clip vs exp037: +0.40 dB, wins 35/41. **Promoted to Champion.** Cost: 3 members at 6 s
   chunks incl. the SW→Mega cascade — ~6 min per 20 s clip and ~59 min for the 132 s target on
   4 CPU cores (vs ~11 min for exp037).
+* **Mega-side chunk sweep** (HTDemucs-ft at its native 7.8 s segment; HTDemucs cannot exceed
+  it — exp041/042 crashed): Mega 6 s **5.58 dB** (exp044; +0.11 over both-at-6 s, 26/41 wins),
+  Mega 8 s 5.08 dB (exp046; -0.51 vs Mega 6 s, 7/41 wins). Mega default is 20 s. The chunk
+  effect is on the Mega side and monotone: shorter is better down to ~6 s. Mega 4 s: exp047.
