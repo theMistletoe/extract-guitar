@@ -1,0 +1,62 @@
+experiment: exp048_C_xlance_violin_clarinet
+strategy: C
+pipeline:
+  name: C_xlance_then_violin_clarinet
+  description: 'Strategy C (post-cascade): SW/X-LANCE guitar stem, then remove residual
+    violin (Mega violin head) and clarinet (Mega clarinet head) leakage'
+  steps:
+  - id: g
+    model: xlance_gtr
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: g2
+    model: mega_multi
+    input: g
+    take: ~violin
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: g3
+    model: mega_multi
+    input: g2
+    take: ~clarinet
+    params:
+      num_overlap: 2
+      precision: bf16
+  output: g3
+models:
+  xlance_gtr:
+    repo: chenxie95/xlance-msr-ckpt
+    checkpoint: gtr_mss.pth
+    sha256: 813a92bd210e1fc7412d658c777e3676b4991e33499437ea2f830d7b58af2684
+    arch: bs_roformer
+    license: MIT tag on HF, but the weights are SW's (unknown provenance) - private
+      use only
+  mega_multi:
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: multihead
+    sha256: 1ce0838f692246a31637c08b43128ed5b574c3d2b6cd9b8572fae1b85a40711d
+    arch: bs_roformer_multihead
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+seed: 0
+reproducibility:
+  git_commit: 12eee2f696c79bb0403d2544619174bc149e23e6
+  command: /home/user/extract-guitar/scripts/benchmark.py --pipeline C_xlance_then_violin_clarinet
+    --slug C_xlance_violin_clarinet --strategy C --hypothesis For the target (guitar
+    + violin + clarinet), residual violin/clarinet leakage in the guitar stem can
+    be removed by dedicated heads applied after guitar extraction. --change xlance_gtr
+    -> subtract mega_violin estimate -> subtract mega_clarinet estimate. --next Full
+    removal cascade before guitar extraction.
+  timestamp: '2026-09-27T18:02:09'
+  seed: 0
+  hardware:
+    python: 3.11.15
+    platform: Linux-6.18.44-fc-v37-x86_64-with-glibc2.39
+    processor: x86_64
+    torch: 2.14.0+cpu
+    numpy: 2.4.6
+    cuda: false
+    threads: 4
+    cpu_count: 4

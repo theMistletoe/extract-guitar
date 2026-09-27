@@ -1,0 +1,25 @@
+name: C_xlance_then_violin_clarinet
+description: 'Strategy C (post-cascade): SW/X-LANCE guitar stem, then remove residual
+  violin (Mega violin head) and clarinet (Mega clarinet head) leakage'
+steps:
+- id: g
+  model: xlance_gtr
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: g2
+  model: mega_multi
+  input: g
+  take: ~violin
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: g3
+  model: mega_multi
+  input: g2
+  take: ~clarinet
+  params:
+    num_overlap: 2
+    precision: bf16
+output: g3
