@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-"""Assemble reports/final_report.md from the Champion, results.csv and a hand-written
-analysis file (reports/analysis.md, sections: What worked / What failed / Remaining
-artifacts / Known failure modes / Why the final model was selected)."""
+"""Assemble reports/final_report.md from the Champion, results.csv and the hand-written
+conclusions (reports/conclusions.md, sections: What worked / What failed / Remaining
+artifacts / Known failure modes / Why the final model was selected). The chronological
+lab notebook stays in reports/analysis.md and is linked, not inlined."""
 from __future__ import annotations
 
 import json
@@ -41,7 +42,7 @@ def main() -> int:
     pipe_txt = "\n".join(f"  {i + 1}. {json.dumps(s, ensure_ascii=False)}" for i, s in enumerate(steps))
     base = [r for r in rows if r["strategy"] == "A"]
     best_base = max(base, key=lambda r: float(r["sdr"] or "nan")) if base else None
-    analysis = (ROOT / "reports" / "analysis.md")
+    conclusions = ROOT / "reports" / "conclusions.md"
     lines = [
         "# Final report — acoustic guitar extraction", "",
         "```text",
@@ -69,9 +70,10 @@ def main() -> int:
                   f"{float(v.get('sdr_mean')) - float(best_base['sdr']):+.2f} dB.", ""]
     lines += ["## Champion pipeline", "", "```text", pipe_txt, "```", "",
               "## All experiments", "", "See `docs/experiments.md` (full table and per-experiment "
-              "Hypothesis / Change / Result / Conclusion / Next) and `experiments/results.csv`.", ""]
-    if analysis.exists():
-        lines += [analysis.read_text().strip(), ""]
+              "Hypothesis / Change / Result / Conclusion / Next), `experiments/results.csv`, and the "
+              "chronological lab notebook `reports/analysis.md`.", ""]
+    if conclusions.exists():
+        lines += [conclusions.read_text().strip(), ""]
     out = ROOT / "reports" / "final_report.md"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("\n".join(lines) + "\n")
