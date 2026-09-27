@@ -200,3 +200,6 @@ model dominates: their failures are on different clips.
   training condition roughly doubles the refiner's contribution. Next: chunk-size sweep
   (4 / 8 / 10 s) on the plain ensemble (configs/queues/phase4_chunk_sweep.yaml).
 * exp034 (Strategy C cascade) was interrupted by a container restart; re-queued.
+* **Chunk sweep, 4 s (exp040 D_htft_macou_c4): 5.56 dB** (median 5.09) vs 5.47 at 6 s (exp038);
+  per clip +0.09 dB, wins 19/41 — flat. Shorter than default helps; 4–6 s is a plateau.
+  (exp039 was stopped by a container shutdown before any clip finished.)
