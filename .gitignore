@@ -37,3 +37,6 @@ phase7_refiner.log
 phase7b_refiner.log
 final_render.log
 phase9_r4.log
+
+# Learned refiners are small (~300 KB) and required by the --quality max preset
+!artifacts/refiner/*/model.pt
