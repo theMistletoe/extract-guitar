@@ -9,7 +9,7 @@ W=datasets/train_clips/mining_r1b.json
 $PY scripts/train.py candidates --pos $POS --neg $NEG
 $PY scripts/train.py fit --mode gain --base-members 0 1 2 --pos $POS --neg $NEG --epochs ${EPOCHS:-6} \
     --out artifacts/refiner/r4 --weights $W
-$PY scripts/benchmark.py --pipeline R_r4 --slug R_r4 --strategy "B+D+gain-refiner+HEM" \
+$PY scripts/benchmark.py --pipeline R_r4_c6 --slug R_r4_c6 --strategy "B+D+gain-refiner+HEM" \
     --hypothesis "The 3-member ensemble with the Strategy-B stem (SW minus electric) is 0.29 dB better than the pair used by r3; the same gain refiner on this stronger base should add a similar gain on top." \
-    --change "gain refiner r4: base = mean of SW-minus-electric, HTDemucs-ft, Mega acoustic; 5 positive + 8 negative evidence stems; r1 mining weights; 6 epochs" \
+    --change "gain refiner r4: base = mean of SW-minus-electric, HTDemucs-ft, Mega acoustic; 5 positive + 8 negative evidence stems; r1 mining weights; 6 epochs; members at 6 s chunks as in training (the c6 finding)" \
     --next "final render" || true

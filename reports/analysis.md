@@ -174,3 +174,12 @@ model dominates: their failures are on different clips.
   plain 2-model ensemble; the best *non-ensemble* pipeline. Subtracting the electric part keeps
   SW's fullness while removing its main confusion (electric guitar). Median is low (1.59): it
   still fails badly on some clips.
+
+### Phase 9 — train/inference condition matching (the "c6" finding)
+
+* exp032 R_r3_c6 = R_r3 with every member computed with 6 s chunks, exactly as the refiner's
+  training candidates were. The validation part completed (per_clip.csv): **6.50 dB mean**
+  (median 5.33; real 4.06, synthetic 8.62), retention 0.66, SIR 10.9, SAR 9.0 — +1.8 dB over
+  R_r3. The run then crashed writing the target output (disk full), so it is re-run from
+  scratch as a proper experiment, together with a control (`D_htft_macou_c6`: the same members
+  at 6 s chunks *without* the refiner) to attribute the gain.
