@@ -206,3 +206,8 @@ model dominates: their failures are on different clips.
 * **Refiner r4 trained** (base = mean of SW-minus-electric, HTDemucs-ft, Mega acoustic; 5 pos +
   8 neg evidence stems; 6 s chunk candidates; r1 mining weights). Training hold-out SDR:
   base 6.15 → best **6.93 dB** at epoch 5 (r3: base 5.23 → 6.28). Validation benchmark: exp043.
+* **exp043 R_r4_c6: 6.901 dB mean** (median 5.89, SI-SDR 5.07, SDRi 12.4; real 4.65 /
+  synthetic 8.85; SIR 11.6 / SAR 9.3; retention 0.62, leakage -15.4 dB, hard-case 7.02).
+  Per clip vs exp037: +0.40 dB, wins 35/41. **Promoted to Champion.** Cost: 3 members at 6 s
+  chunks incl. the SW→Mega cascade — ~6 min per 20 s clip and ~59 min for the 132 s target on
+  4 CPU cores (vs ~11 min for exp037).

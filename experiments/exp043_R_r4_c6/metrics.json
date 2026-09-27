@@ -1,85 +1,6 @@
 {
   "experiment": "exp043_R_r4_c6",
-  "pipeline": {
-    "name": "R_r4_c6",
-    "description": "Phase 9 gain refiner (r4), every member computed with 6 s chunks exactly as in training, on the improved 3-member ensemble: SW guitar minus Mega electric estimate (Strategy B output) + HTDemucs-ft + Mega acoustic; SW guitar and Mega guitar as extra positives; SW other/piano/vocals/bass/drums + Mega violin/woodwind/electric as negative evidence",
-    "steps": [
-      {
-        "id": "g",
-        "model": "xlance_gtr",
-        "input": "mix",
-        "params": {
-          "num_overlap": 2,
-          "precision": "bf16",
-          "chunk_size": 264600
-        }
-      },
-      {
-        "id": "swme",
-        "model": "mega_multi",
-        "input": "g",
-        "take": "~electric-guitar",
-        "params": {
-          "num_overlap": 2,
-          "precision": "bf16",
-          "chunk_size": 264600
-        }
-      },
-      {
-        "id": "ht",
-        "model": "htdemucs6s_gtrft",
-        "input": "mix",
-        "params": {
-          "num_overlap": 2,
-          "precision": "bf16",
-          "chunk_size": 264600
-        }
-      },
-      {
-        "id": "mm",
-        "model": "mega_multi",
-        "input": "mix",
-        "params": {
-          "num_overlap": 2,
-          "precision": "bf16",
-          "chunk_size": 264600
-        }
-      },
-      {
-        "id": "sw",
-        "model": "sw6",
-        "input": "mix",
-        "params": {
-          "num_overlap": 2,
-          "precision": "bf16",
-          "chunk_size": 264600
-        }
-      },
-      {
-        "id": "ref",
-        "refiner": "artifacts/refiner/r4/model.pt",
-        "positives": [
-          "swme",
-          "ht.guitar",
-          "mm.acoustic-guitar",
-          "sw.guitar",
-          "mm.guitar"
-        ],
-        "negatives": [
-          "sw.other",
-          "sw.piano",
-          "sw.vocals",
-          "sw.bass",
-          "sw.drums",
-          "mm.violin",
-          "mm.woodwind",
-          "mm.electric-guitar"
-        ]
-      }
-    ],
-    "output": "ref"
-  },
-  "metrics": {
+  "validation": {
     "hard_mean": 0.8780487804878049,
     "hard_median": 1.0,
     "leak_bass_db_mean": -18.529630504887617,
@@ -238,7 +159,46 @@
     },
     "runtime_s": 15058.658309888087
   },
-  "promoted_at": "2026-09-27T14:16:28",
-  "git_commit": "66ffdb2ff4db53c3632a3713ed3ed64894a08ed0",
-  "previous": "exp037_R_r3_c6"
+  "target": {
+    "runtime_s": 3515.708771351994,
+    "model_runtime_s": 3515.708771351994,
+    "step_times": {
+      "g": {
+        "seconds": 1364.4248095019975,
+        "cached": false
+      },
+      "swme": {
+        "seconds": 1478.8978815550036,
+        "cached": false
+      },
+      "ht": {
+        "seconds": 58.592621244999464,
+        "cached": true
+      },
+      "mm": {
+        "seconds": 225.27429471799405,
+        "cached": true
+      },
+      "sw": {
+        "seconds": 388.5191643319995,
+        "cached": true
+      }
+    },
+    "proxy": {
+      "guitar_prob": 0.1789349466562271,
+      "residual_guitar_prob": 0.008934367448091507,
+      "leak_vocal_prob": 0.029719866812229156,
+      "leak_drums_prob": 0.0014415953774005175,
+      "leak_bass_prob": 0.011357620358467102,
+      "leak_piano_prob": 0.0015384580474346876,
+      "leak_electric_guitar_prob": 0.015019646845757961,
+      "leak_strings_prob": 0.021935144439339638,
+      "leak_winds_prob": 0.0012776282383129,
+      "leak_synth_prob": 0.0005712354904972017,
+      "leak_prob_max": 0.029719866812229156,
+      "leak_prob_sum": 0.08286119560943916,
+      "stem_energy_db": -6.639751434326172
+    }
+  },
+  "is_champion": true
 }
