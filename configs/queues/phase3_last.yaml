@@ -1,0 +1,15 @@
+- pipeline: C_orch_xlance
+  slug: C_orch_xlance
+  strategy: C
+  hypothesis: Removing orchestral instruments (strings + winds) from the mix before
+    guitar extraction reduces violin/clarinet confusion.
+  change: mix -> remove xlance_orch estimate -> xlance_gtr.
+  next: Longer cascade with SW + strings + woodwind removal.
+- pipeline: C_sw6rest_strings_winds_xlance
+  slug: C_sw6_strings_winds_xlance
+  strategy: C
+  hypothesis: A full instrument-removal cascade (PRD §11 Strategy C) isolates guitar
+    by elimination; errors may accumulate.
+  change: SW keeps guitar+other -> remove bowed strings (gilliaan) -> remove woodwind
+    (Mega) -> xlance_gtr.
+  next: Ensembles (Strategy D) of the best A/B/C outputs.

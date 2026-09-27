@@ -107,6 +107,14 @@ def _spec(s: str):
     return tuple(s.split(":", 1)) if ":" in s else (s, None)
 
 
+def _params(model: str):
+    """'model@176400' overrides the chunk size (samples); 'model@native' uses the model default."""
+    if "@" not in model:
+        return model, InferenceParams(**PARAMS)
+    model, chunk = model.split("@", 1)
+    return model, InferenceParams(**{**PARAMS, "chunk_size": None if chunk == "native" else int(chunk)})
+
+
 def _run(runner, spec, mix):
     """Candidate stem for a spec. Specs chain with '>': 'sw6:guitar>mega_multi:~electric-guitar'
     runs the second model on the first output; '~stem' means input minus that stem."""
@@ -114,7 +122,8 @@ def _run(runner, spec, mix):
         first, rest = spec.split(">", 1)
         return _run(runner, rest, _run(runner, first, mix))
     model, stem = _spec(spec)
-    out, _, _ = runner._separate(model, mix, 44100, InferenceParams(**PARAMS))
+    model, params = _params(model)
+    out, _, _ = runner._separate(model, mix, 44100, params)
     cat = runner.catalog[model]
     stem = stem or cat.target_stem or cat.stems[0]
     if stem.startswith("~"):
