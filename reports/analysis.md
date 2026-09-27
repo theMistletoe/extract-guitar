@@ -183,3 +183,7 @@ model dominates: their failures are on different clips.
   R_r3. The run then crashed writing the target output (disk full), so it is re-run from
   scratch as a proper experiment, together with a control (`D_htft_macou_c6`: the same members
   at 6 s chunks *without* the refiner) to attribute the gain.
+* **exp037 R_r3_c6 (rerun, complete record): 6.502 dB mean** (median 5.34, SI-SDR 4.38,
+  SDRi 12.0; real 4.06 / synthetic 8.62; SIR 10.9 / SAR 8.9; retention 0.655, leakage
+  -13.5 dB). Reproduces exp032 to within 0.01 dB. **Promoted to Champion** (+1.82 dB over
+  exp030 R_r3). Target-song proxy: residual guitar prob 0.009, max leak prob 0.030.
