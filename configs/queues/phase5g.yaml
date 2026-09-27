@@ -1,0 +1,14 @@
+- pipeline: D_swme_htft_macou_wave_mean
+  slug: D_swme_htft_macou_wave_mean
+  strategy: D
+  hypothesis: Combining B_xlance_minus_electric, A_htdemucs6s_ft, A_mega_acoustic
+    with wave_mean averages out model-specific errors and beats the best single member.
+  change: ensemble method=wave_mean, weights=equal
+  next: Compare methods; keep the best as Champion candidate.
+- pipeline: D_swme_htft_wave_mean
+  slug: D_swme_htft_wave_mean
+  strategy: D
+  hypothesis: Combining B_xlance_minus_electric, A_htdemucs6s_ft with wave_mean averages
+    out model-specific errors and beats the best single member.
+  change: ensemble method=wave_mean, weights=equal
+  next: Compare methods; keep the best as Champion candidate.

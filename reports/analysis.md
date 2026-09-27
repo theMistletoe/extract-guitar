@@ -169,3 +169,8 @@ model dominates: their failures are on different clips.
   4.28), SIR 14.4, SAR 1.1, retention 0.32 — the same operating point as the acoustic head on
   the full mix (3.13 dB). Removing vocals/drums/etc. first does not make the head less
   conservative; two-stage brings no gain here.
+* exp033 **B: SW all-guitar − Mega electric-guitar estimate of that stem**: **4.20 dB** (real 2.58,
+  synthetic 5.60), SIR 9.1, SAR 5.9, retention 0.53 — +1.08 dB over SW alone and on par with the
+  plain 2-model ensemble; the best *non-ensemble* pipeline. Subtracting the electric part keeps
+  SW's fullness while removing its main confusion (electric guitar). Median is low (1.59): it
+  still fails badly on some clips.

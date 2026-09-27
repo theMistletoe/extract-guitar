@@ -1,0 +1,28 @@
+name: D_swme_htft_wave_mean
+description: 'Strategy D: wave_mean of B_xlance_minus_electric, A_htdemucs6s_ft'
+steps:
+- id: m0_g
+  model: xlance_gtr
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: m0_ag
+  model: mega_multi
+  input: m0_g
+  take: ~electric-guitar
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: m1_guitar
+  model: htdemucs6s_gtrft
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: ens
+  ensemble:
+  - m0_ag
+  - m1_guitar
+  method: wave_mean
+output: ens
