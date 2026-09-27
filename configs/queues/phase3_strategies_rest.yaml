@@ -1,3 +1,27 @@
+- pipeline: D_htft_macou_ht78_mega6
+  slug: D_htft_macou_ht78_mega6
+  strategy: D (inference tuning)
+  hypothesis: HTDemucs cannot exceed its 7.8 s training segment (exp041/042 crashed),
+    and Mega defaults to 20 s; the 6 s gain is probably Mega-side. Mega at 6 s with
+    HTDemucs native isolates it.
+  change: HTDemucs default chunk, Mega chunk_size 264600 (6 s)
+  next: choose per-model chunk sizes
+- pipeline: D_htft_macou_ht78_mega8
+  slug: D_htft_macou_ht78_mega8
+  strategy: D (inference tuning)
+  hypothesis: HTDemucs cannot exceed its 7.8 s training segment (exp041/042 crashed),
+    and Mega defaults to 20 s; the 6 s gain is probably Mega-side. Mega at 8 s with
+    HTDemucs native isolates it.
+  change: HTDemucs default chunk, Mega chunk_size 352800 (8 s)
+  next: choose per-model chunk sizes
+- pipeline: D_htft_macou_ht78_mega10
+  slug: D_htft_macou_ht78_mega10
+  strategy: D (inference tuning)
+  hypothesis: HTDemucs cannot exceed its 7.8 s training segment (exp041/042 crashed),
+    and Mega defaults to 20 s; the 6 s gain is probably Mega-side. Mega at 10 s with
+    HTDemucs native isolates it.
+  change: HTDemucs default chunk, Mega chunk_size 441000 (10 s)
+  next: choose per-model chunk sizes
 - pipeline: C_xlance_then_violin_clarinet
   slug: C_xlance_violin_clarinet
   strategy: C
