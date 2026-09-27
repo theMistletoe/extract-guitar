@@ -203,3 +203,6 @@ model dominates: their failures are on different clips.
 * **Chunk sweep, 4 s (exp040 D_htft_macou_c4): 5.56 dB** (median 5.09) vs 5.47 at 6 s (exp038);
   per clip +0.09 dB, wins 19/41 — flat. Shorter than default helps; 4–6 s is a plateau.
   (exp039 was stopped by a container shutdown before any clip finished.)
+* **Refiner r4 trained** (base = mean of SW-minus-electric, HTDemucs-ft, Mega acoustic; 5 pos +
+  8 neg evidence stems; 6 s chunk candidates; r1 mining weights). Training hold-out SDR:
+  base 6.15 → best **6.93 dB** at epoch 5 (r3: base 5.23 → 6.28). Validation benchmark: exp043.
