@@ -126,6 +126,10 @@ class PipelineRunner:
             write_cached_stems(folder, out)
             (folder / "meta.json").write_text(key_src)
             (folder / "done").write_text(str(dt))
+            # Return exactly what later cache hits will return (FLAC round trip): downstream
+            # steps key their own cache on the hash of this output, so a fresh run and a cached
+            # run must hand them bit-identical arrays or every cascade misses the cache once.
+            out = read_cached_stems(folder)
         return out, dt, False
 
     def _refine(self, step: dict, mix: np.ndarray, ref) -> np.ndarray:

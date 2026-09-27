@@ -113,3 +113,29 @@ def test_pipeline_cascade_ops_with_fake_models(monkeypatch, tmp_path):
     np.testing.assert_allclose(res["values"]["b"], g + d - v, atol=1e-6)  # input minus violin estimate
     np.testing.assert_allclose(res["output"], g, atol=1e-6)
     np.testing.assert_allclose(res["output"] + res["residual"], mix, atol=1e-6)
+
+
+def test_fresh_and_cached_separation_are_bit_identical(monkeypatch, tmp_path):
+    """Downstream cascade steps key their cache on the hash of the upstream output, so a
+    freshly computed result must equal the later cache hit exactly (FLAC round trip)."""
+    from acoustic_separator import pipeline as P
+    from acoustic_separator.models.loader import ModelSpec
+
+    g, v, d = _sig(seconds=1.0)
+    spec = ModelSpec("fake", "x", None, "c", "none", ["guitar"], target_stem="guitar")
+    spec.extra["resolved_sha256"] = "0"
+
+    class FakeSep:
+        def separate(self, audio, sr, params, progress=False):
+            return {"guitar": audio * 0.3141592}
+
+    monkeypatch.setattr(P, "load_catalog", lambda: {"fake": spec})
+    monkeypatch.setattr(P, "cache_dir", lambda: tmp_path)
+    monkeypatch.setattr(P, "resolve_files", lambda s: None)
+    runner = P.PipelineRunner()
+    monkeypatch.setattr(runner.pool, "get", lambda m: FakeSep())
+    mix = (g + v + d).astype(np.float32)
+    fresh, _, cached1 = runner._separate("fake", mix, 44100, P.InferenceParams())
+    again, _, cached2 = runner._separate("fake", mix, 44100, P.InferenceParams())
+    assert (cached1, cached2) == (False, True)
+    assert P._hash_array(fresh["guitar"]) == P._hash_array(again["guitar"])
