@@ -1,0 +1,60 @@
+experiment: exp044_D_htft_macou_ht78_mega6
+strategy: D (inference tuning)
+pipeline:
+  description: 'Chunk sweep (Mega side): HTDemucs-ft at its native 7.8 s segment,
+    Mega acoustic at 6 s chunks (Mega default is 20 s)'
+  name: D_htft_macou_ht78_mega6
+  output: ens
+  steps:
+  - id: m0_guitar
+    input: mix
+    model: htdemucs6s_gtrft
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: m1_guitar
+    input: mix
+    model: mega_multi
+    params:
+      chunk_size: 264600
+      num_overlap: 2
+      precision: bf16
+    take: acoustic-guitar
+  - ensemble:
+    - m0_guitar
+    - m1_guitar
+    id: ens
+    method: wave_mean
+models:
+  htdemucs6s_gtrft:
+    repo: null
+    checkpoint: htdemucs_6s
+    sha256: demucs:htdemucs_6s:adityalakhani/htdemucs-6s-guitar-ft:guitar_htdemucs_6s.pt
+    arch: demucs_pkg
+    license: Apache-2.0 (fine-tune on MoisesDB)
+  mega_multi:
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: multihead
+    sha256: 1ce0838f692246a31637c08b43128ed5b574c3d2b6cd9b8572fae1b85a40711d
+    arch: bs_roformer_multihead
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+seed: 0
+reproducibility:
+  git_commit: 2e4d723ea9c46ddf0dea194f8c1160453bff3f5a
+  command: /home/user/extract-guitar/scripts/benchmark.py --pipeline D_htft_macou_ht78_mega6
+    --slug D_htft_macou_ht78_mega6 --strategy D (inference tuning) --hypothesis HTDemucs
+    cannot exceed its 7.8 s training segment (exp041/042 crashed), and Mega defaults
+    to 20 s; the 6 s gain is probably Mega-side. Mega at 6 s with HTDemucs native
+    isolates it. --change HTDemucs default chunk, Mega chunk_size 264600 (6 s) --next
+    choose per-model chunk sizes
+  timestamp: '2026-09-27T14:19:31'
+  seed: 0
+  hardware:
+    python: 3.11.15
+    platform: Linux-6.18.44-fc-v37-x86_64-with-glibc2.39
+    processor: x86_64
+    torch: 2.14.0+cpu
+    numpy: 2.4.6
+    cuda: false
+    threads: 4
+    cpu_count: 4
