@@ -187,3 +187,16 @@ model dominates: their failures are on different clips.
   SDRi 12.0; real 4.06 / synthetic 8.62; SIR 10.9 / SAR 8.9; retention 0.655, leakage
   -13.5 dB). Reproduces exp032 to within 0.01 dB. **Promoted to Champion** (+1.82 dB over
   exp030 R_r3). Target-song proxy: residual guitar prob 0.009, max leak prob 0.030.
+* **Control exp038 D_htft_macou_c6 (plain ensemble, 6 s chunks, no refiner): 5.47 dB**
+  vs 4.16 dB for the same ensemble at default chunks (exp023). Attribution:
+
+  | | default chunks | 6 s chunks |
+  |---|---|---|
+  | plain HTDemucs-ft + Mega acoustic mean | 4.16 (exp023) | 5.47 (exp038) |
+  | + gain refiner r3 | 4.68 (exp030) | **6.50** (exp037) |
+
+  ~1.3 dB of the gain comes from the chunk length itself; the refiner adds +0.53 dB at
+  default chunks and +1.03 dB at 6 s chunks (its training condition), so matching the
+  training condition roughly doubles the refiner's contribution. Next: chunk-size sweep
+  (4 / 8 / 10 s) on the plain ensemble (configs/queues/phase4_chunk_sweep.yaml).
+* exp034 (Strategy C cascade) was interrupted by a container restart; re-queued.
