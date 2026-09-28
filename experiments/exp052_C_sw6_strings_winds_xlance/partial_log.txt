@@ -1,0 +1,13 @@
+== exp052_C_sw6_strings_winds_xlance: pipeline C_sw6rest_strings_winds_xlance
+/usr/lib/python3.11/contextlib.py:105: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+  self.gen = func(*args, **kwds)
+  [1/41] ms_Adam_Buckley_Drag_me_Down_0           sdr=  0.79 si_sdr= -6.21 ret=0.29 leak=  -5.3 (346s)
+  [2/41] ms_Andres_Guazzelli_Attention_0          sdr= -1.38 si_sdr= -6.13 ret=0.48 leak=  -2.3 (353s)
+  [3/41] ms_Bolz_Knecht_Summertime_0              sdr= 13.21 si_sdr= 12.55 ret=0.85 leak= -27.8 (384s)
+  [4/41] ms_Bolz_Knecht_Summertime_1              sdr= 16.34 si_sdr= 12.56 ret=0.93 leak= -26.0 (380s)
+  [5/41] ms_Catfolkin_Sant_Jordi_v2_0_0           sdr=  0.42 si_sdr= -7.65 ret=0.47 leak=  -4.9 (407s)
+  [6/41] ms_Catfolkin_Sant_Jordi_v2_0_1           sdr=  0.29 si_sdr= -4.36 ret=0.46 leak=  -5.5 (417s)
+  [7/41] ms_Egda_Carolyn_Saudade_Do_Teu__0        sdr= -2.47 si_sdr=-11.22 ret=0.30 leak=  -2.0 (368s)
+  [8/41] ms_Enda_Reilly_An_Nasc_Nua_0             sdr=  3.43 si_sdr=  0.68 ret=0.33 leak= -19.5 (378s)
+  [9/41] ms_Enda_Reilly_An_Nasc_Nua_1             sdr=  1.76 si_sdr= -2.99 ret=0.26 leak= -16.9 (393s)
+  [10/41] ms_Leslie_Mendelson_The_Hardest_0        sdr=  1.82 si_sdr= -1.57 ret=0.51 leak= -11.5 (359s)

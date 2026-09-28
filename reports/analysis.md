@@ -237,3 +237,6 @@ model dominates: their failures are on different clips.
   4.12; retention 0.61, leakage -10.2 dB) — 0.2 dB below plain SW (exp004, 3.12). Removing the
   orchestra before guitar extraction also removes guitar energy and adds artifacts the guitar
   model was not trained on.
+* **Strategy C, exp052** (SW → strings remover → woodwind subtraction → guitar model): stopped
+  after 10/41 clips at -0.42 dB vs plain SW on the same clips (2/10 wins); see its notes.md.
+  All three Strategy C cascades are at or below plain SW.
