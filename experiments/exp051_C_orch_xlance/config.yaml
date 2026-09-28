@@ -1,0 +1,54 @@
+experiment: exp051_C_orch_xlance
+strategy: C
+pipeline:
+  name: C_orch_xlance
+  description: 'Strategy C (cascade): X-LANCE orchestral remover (strings+winds) then
+    X-LANCE guitar'
+  steps:
+  - id: s1
+    model: xlance_orch
+    input: mix
+    take: ~orch
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: g
+    model: xlance_gtr
+    input: s1
+    params:
+      num_overlap: 2
+      precision: bf16
+  output: g
+models:
+  xlance_orch:
+    repo: chenxie95/xlance-msr-ckpt
+    checkpoint: orch_mss.pth
+    sha256: 9093c7f649614e50fd6901b80fae28d4082e846e172c1f340de64c533ceaaf4d
+    arch: bs_roformer
+    license: MIT (HF); training data MoisesDB/RawStems (non-commercial research)
+  xlance_gtr:
+    repo: chenxie95/xlance-msr-ckpt
+    checkpoint: gtr_mss.pth
+    sha256: 813a92bd210e1fc7412d658c777e3676b4991e33499437ea2f830d7b58af2684
+    arch: bs_roformer
+    license: MIT tag on HF, but the weights are SW's (unknown provenance) - private
+      use only
+seed: 0
+reproducibility:
+  git_commit: 7911c4261d550acf7f1eac09e2043696b4a5fc9f
+  command: /home/user/extract-guitar/scripts/benchmark.py --pipeline C_orch_xlance
+    --slug C_orch_xlance --strategy C --hypothesis Removing orchestral instruments
+    (strings + winds) from the mix before guitar extraction reduces violin/clarinet
+    confusion. --change mix -> remove xlance_orch estimate -> xlance_gtr. --next Longer
+    cascade with SW + strings + woodwind removal.
+  timestamp: '2026-09-28T03:03:59'
+  seed: 0
+  hardware:
+    python: 3.11.15
+    platform: Linux-6.18.44-fc-v37-x86_64-with-glibc2.39
+    processor: x86_64
+    torch: 2.14.0+cpu
+    numpy: 2.4.6
+    cuda: false
+    threads: 4
+    cpu_count: 4

@@ -11,7 +11,7 @@ SIR / SAR (BSS):     12.49 / 9.45 dB
 Leakage:             -14.91 dB excess energy; target retention 0.693
 Runtime:             target song 4348 s for 132 s of audio (search setting); validation 18749 s (wall clock incl. any member not yet in the stem cache)
 Hardware:            x86_64, 4 cores, torch 2.14.0+cpu, CUDA=False
-Number of experiments: 43
+Number of experiments: 44
 ```
 
 Best single pretrained model (Strategy A): `exp015_A_mega_acoustic` — validation SDR 3.13 dB; Champion improves on it by +4.49 dB.
@@ -74,8 +74,10 @@ See `docs/experiments.md` (full table and per-experiment Hypothesis / Change / R
   They did not transfer to validation.
 * Mask-mode refiners r1/r2 (3.89/3.88 dB). They learned to clean, not to restore, and were capped
   by their weak mask-mean starting point.
-* Strategy C, subtracting Mega violin and clarinet estimates after SW (exp048): 3.12 dB, i.e.
-  no change from plain SW. Violin/clarinet leakage is not what limits the guitar estimate.
+* Strategy C cascades. Subtracting Mega violin and clarinet estimates after SW (exp048): 3.12 dB,
+  i.e. no change from plain SW. Removing strings and winds with the X-LANCE orchestral model
+  *before* the guitar model (exp051): 2.92 dB, 0.2 dB worse than SW alone. Violin/clarinet
+  leakage is not what limits the guitar estimate.
 * Strategy B with the Mega *acoustic* head applied to the SW guitar output (exp031, 3.05 dB).
   The Mega acoustic head is useful on the mix, not as a second stage.
 * becruily Mel-RoFormer as an extra member (dilutes the average). The Mega all-guitar head as a

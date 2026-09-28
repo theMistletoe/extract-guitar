@@ -41,8 +41,10 @@
   They did not transfer to validation.
 * Mask-mode refiners r1/r2 (3.89/3.88 dB). They learned to clean, not to restore, and were capped
   by their weak mask-mean starting point.
-* Strategy C, subtracting Mega violin and clarinet estimates after SW (exp048): 3.12 dB, i.e.
-  no change from plain SW. Violin/clarinet leakage is not what limits the guitar estimate.
+* Strategy C cascades. Subtracting Mega violin and clarinet estimates after SW (exp048): 3.12 dB,
+  i.e. no change from plain SW. Removing strings and winds with the X-LANCE orchestral model
+  *before* the guitar model (exp051): 2.92 dB, 0.2 dB worse than SW alone. Violin/clarinet
+  leakage is not what limits the guitar estimate.
 * Strategy B with the Mega *acoustic* head applied to the SW guitar output (exp031, 3.05 dB).
   The Mega acoustic head is useful on the mix, not as a second stage.
 * becruily Mel-RoFormer as an extra member (dilutes the average). The Mega all-guitar head as a

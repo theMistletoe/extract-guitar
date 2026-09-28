@@ -232,3 +232,8 @@ model dominates: their failures are on different clips.
   leak prob 0.029, residual guitar prob 0.008. The recorded runtimes (validation 18 749 s, target
   4 348 s) include one-off recomputation of the SW→Mega cascade caused by a cache-key bug (fixed
   in f4858f5).
+* **Strategy C, exp051 C_orch_xlance** (X-LANCE orchestral remover — strings+winds — first, then
+  the SW/X-LANCE guitar model on the remainder): **2.92 dB** (median 1.12; real 1.54 / synthetic
+  4.12; retention 0.61, leakage -10.2 dB) — 0.2 dB below plain SW (exp004, 3.12). Removing the
+  orchestra before guitar extraction also removes guitar energy and adds artifacts the guitar
+  model was not trained on.

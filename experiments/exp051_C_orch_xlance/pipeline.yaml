@@ -1,0 +1,18 @@
+name: C_orch_xlance
+description: 'Strategy C (cascade): X-LANCE orchestral remover (strings+winds) then
+  X-LANCE guitar'
+steps:
+- id: s1
+  model: xlance_orch
+  input: mix
+  take: ~orch
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: g
+  model: xlance_gtr
+  input: s1
+  params:
+    num_overlap: 2
+    precision: bf16
+output: g
