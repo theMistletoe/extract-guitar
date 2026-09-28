@@ -48,7 +48,8 @@ def main() -> int:
         "```text",
         f"Best architecture:   {champ['pipeline'].get('description', champ['pipeline']['name'])}",
         f"Best checkpoint(s):  " + "; ".join(f"{k} ({v.get('repo')}:{v.get('checkpoint')}, sha256 {(v.get('sha256') or '')[:16]})"
-                                             for k, v in models.items()),
+                                             for k, v in models.items())
+        + "".join(f"; learned refiner {st['refiner']} (in git)" for st in champ["pipeline"]["steps"] if "refiner" in st),
         f"Pipeline:            {champ['pipeline']['name']} (experiment {exp})",
         f"Dataset:             datasets/validation — 41 clips x 12 s (19 real multitrack + 22 scenario), exact GT",
         f"Validation SDR:      {f(v.get('sdr_mean'))} dB mean / {f(v.get('sdr_median'))} dB median "
@@ -58,7 +59,7 @@ def main() -> int:
         f"Leakage:             {f(v.get('leakage_db_mean'))} dB excess energy; target retention "
         f"{f(v.get('target_retention_mean'), 3)}",
         f"Runtime:             target song {f(t.get('runtime_s'), 0)} s for 132 s of audio (search setting); "
-        f"validation {f(v.get('runtime_s'), 0)} s",
+        f"validation {f(v.get('runtime_s'), 0)} s (wall clock incl. any member not yet in the stem cache)",
         f"Hardware:            {hw.get('processor', platform.machine())}, {hw.get('cpu_count')} cores, "
         f"torch {hw.get('torch')}, CUDA={hw.get('cuda')}",
         f"Number of experiments: {len(rows)}",

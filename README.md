@@ -16,8 +16,10 @@ Direct・Two-stage・Cascade・Ensemble の各方式で組み合わせ、正解 
 | Pipeline | Val. SDR | SIR / SAR | Retention | Notes |
 |---|---|---|---|---|
 | Best single model (Mega-53 acoustic head) | 3.13 dB | 14.8 / 1.2 | 0.33 | clean but loses guitar |
-| HTDemucs-6s guitar-FT + Mega acoustic, waveform mean | 4.16 dB | 8.4 / 6.6 | 0.43 | Strategy D |
-| **+ learned gain refiner (Champion, `--quality max`)** | **4.68 dB** | **9.5 / 6.4** | **0.51** | paired +0.53 dB, CI [+0.18, +0.86] |
+| HTDemucs-6s guitar-FT + Mega acoustic, waveform mean | 4.16 dB | 8.4 / 6.6 | 0.43 | Strategy D, default chunks |
+| same, Mega at 4 s chunks (HTDemucs native 7.8 s) | 5.79 dB | 9.9 / 8.9 | 0.61 | Phase 4 inference tuning |
+| 3-member ensemble + learned gain refiner r4 | 6.90 dB | 11.6 / 9.3 | 0.62 | Phase 9 |
+| **+ refiner r5 with tuned chunks (Champion, `--quality max`)** | **7.62 dB** | **12.5 / 9.5** | **0.69** | +0.72 dB over r4, 32/41 clips |
 | Oracle ideal Wiener mask (upper bound) | 10.70 dB | – | – | headroom |
 
 Details: [`reports/final_report.md`](reports/final_report.md), per-experiment log
@@ -35,6 +37,11 @@ uv sync --extra cpu        # CPU / Apple Silicon (MPS)
 # 2. separate (file or URL). --quality max = current Champion pipeline, fp32
 uv run --no-sync python -m acoustic_separator --input "<youtube-url-or-audio-file>" --quality max
 ```
+
+`--quality max` runs 5 separation passes (4 distinct checkpoints) plus the learned refiner (weights ship in
+`artifacts/refiner/`). On the 4-core reference CPU a 2-minute song takes roughly 1–1.5 hours; a GPU
+is much faster. `--quality standard` (best single model, 3.13 dB) and `--quality fast`
+(HTDemucs-ft, 3.07 dB, ~50 s per song) are the cheap alternatives.
 
 Outputs (float32 WAV, original sample rate):
 
@@ -70,7 +77,9 @@ python scripts/make_codec_valset.py               # AAC-128k variant (codec robu
 python scripts/run_queue.py configs/queues/phase2_baselines.yaml   # etc. for every queue
 python scripts/sweep.py configs/sweeps/<sweep>.yaml
 bash   scripts/phase7_refiner.sh                  # training clips, refiner, hard-example mining
+bash   scripts/phase9_r5.sh                       # final refiner r5 (candidates, fit, benchmark)
 python scripts/run_target.py --render-best        # Champion in fp32 -> outputs/target/best + report.html
+python scripts/update_presets.py && python scripts/failure_analysis.py
 python scripts/summarize_experiments.py && python scripts/make_final_report.py
 ```
 
@@ -90,6 +99,7 @@ scripts/                   benchmark, download_models, prepare_dataset, train, e
 datasets/manifest.csv      every source file used, with licence and split
 experiments/               one folder per experiment + results.csv
 artifacts/champion/        current Champion (history.jsonl keeps every past Champion)
+artifacts/refiner/rN/      learned gain refiners (model.pt ~300 KB + train_log.json)
 outputs/target/            target-song candidates, best/, report.html
 reports/final_report.md    final evaluation
 ```

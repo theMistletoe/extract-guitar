@@ -21,8 +21,12 @@
    * r3 with every member computed exactly as in training (6 s chunks): +1.03 dB over its own
      base (exp037, 6.50 dB). Matching the train and inference conditions doubled the refiner's
      contribution.
-   * r4 on a 3-member base (adds the Strategy-B stem): **6.90 dB** (exp043), +0.40 over exp037,
+   * r4 on a 3-member base (adds the Strategy-B stem): 6.90 dB (exp043), +0.40 over exp037,
      better on 35 of 41 clips. It raises SIR (11.6 dB) and lowers leakage (−15.4 dB).
+   * r5 = r4 with the per-model chunk sizes from item 3, in training and at inference:
+     **7.62 dB** (exp050, the final Champion), +0.72 over r4, better on 32 of 41 clips. SIR
+     12.5 dB, SAR 9.5 dB, retention 0.69 (r4 0.62), leakage −14.9 dB. Over the best single
+     pretrained model (3.13 dB) this is +4.49 dB.
 5. **Engineering for a CPU-only box.** The main tools were bf16 autocast (1.5× faster, −40 dB
    difference from fp32), merged multi-head checkpoints (one trunk pass gives all Mega stems),
    and a content-addressed FLAC stem cache that makes interrupted runs resumable. Together they
@@ -49,16 +53,22 @@
 
 * Violin/clarinet glissandi are attenuated but still audible in places (e.g. around 95–100 s
   and 108–113 s).
-* In dense passages some guitar energy is still missing. Validation retention is 0.62: in hard
-  mixes about a third of the guitar's time-frequency energy is not fully recovered.
+* In dense passages some guitar energy is still missing. Validation retention is 0.69: in hard
+  mixes roughly 30% of the guitar's time-frequency energy is not fully recovered.
 * The target is AAC-encoded with a 16 kHz low-pass, so nothing above 16 kHz can be recovered.
 
 ## Known failure modes (validation; see reports/failure_modes.md)
 
-* Guitar buried ≥ 12 dB below the rest (`buried`, `dense`): large guitar losses.
-* Electric guitar with a clean/crunch tone overlapping the acoustic's register. This is the
-  most common leak class on the real multitracks.
-* Mandolin/banjo/ukulele (plucked) and pizzicato strings are partly kept as "guitar".
+With the final Champion, 25 of 41 clips have no failure label (mean SDR 11.5 dB). The rest:
+
+* Electric guitar overlapping the acoustic's register (5 clips labelled `electric_guitar_leak` /
+  `electric_clean_leak`, mean SDR −1.1 / 0.7 dB). This is the worst failure mode: the models keep
+  a clean or crunch electric as "guitar".
+* Guitar far below the rest of the mix (5 clips labelled `guitar_removed`, mean SDR 2.1 dB:
+  both `buried` scenarios, `band_pop`, and two real multitracks): the guitar is partly removed
+  along with the band.
+* Bass leakage (3 clips: one real multitrack, the `dense` and `distorted_electric` scenarios),
+  plus single cases of vocal, violin and plucked-instrument (mandolin/banjo) leakage.
 
 ## Why the final model was selected
 

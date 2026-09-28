@@ -95,7 +95,7 @@ def main() -> int:
                      "runtime_s": m.get("target", {}).get("runtime_s")},
         })
     if (TARGET_DIR / "best" / "acoustic_guitar.wav").exists():
-        cands.insert(0, {"id": "best", "label": "best/ (Champion, final render)",
+        cands.insert(0, {"id": "best", "label": "best/ (Champion output)",
                          "acoustic": TARGET_DIR / "best" / "acoustic_guitar.wav",
                          "residual": TARGET_DIR / "best" / "non_acoustic_guitar.wav",
                          "info": {"champion": champ["experiment"] if champ else None}})

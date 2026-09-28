@@ -1,10 +1,23 @@
 name: max
-description: '[preset max] Champion exp030_R_r3 (val SDR 4.68 dB), fp32 | Phase 7-9
-  gain refiner (r3): learns a 0..2 time-frequency gain on the Champion ensemble (HTDemucs-ft
-  + Mega acoustic waveform mean), with SW guitar + Mega guitar as extra positive evidence
-  and SW other/piano/vocals/bass/drums + Mega violin/woodwind/electric as negative
-  evidence; hard-example-mined sampling'
+description: '[preset max] Champion exp050_R_r5_m4 (val SDR 7.62 dB), fp32 | Phase
+  9 gain refiner (r5): r4 members/evidence, HTDemucs at native chunk, Mega on the
+  mix at 4 s, SW and the SW->Mega cascade at 6 s (all exactly as in training)'
 steps:
+- id: g
+  model: xlance_gtr
+  input: mix
+  params:
+    num_overlap: 2
+    precision: fp32
+    chunk_size: 264600
+- id: swme
+  model: mega_multi
+  input: g
+  take: ~electric-guitar
+  params:
+    num_overlap: 2
+    precision: fp32
+    chunk_size: 264600
 - id: ht
   model: htdemucs6s_gtrft
   input: mix
@@ -17,15 +30,18 @@ steps:
   params:
     num_overlap: 2
     precision: fp32
+    chunk_size: 176400
 - id: sw
   model: sw6
   input: mix
   params:
     num_overlap: 2
     precision: fp32
+    chunk_size: 264600
 - id: ref
-  refiner: artifacts/refiner/r3/model.pt
+  refiner: artifacts/refiner/r5/model.pt
   positives:
+  - swme
   - ht.guitar
   - mm.acoustic-guitar
   - sw.guitar

@@ -223,3 +223,12 @@ model dominates: their failures are on different clips.
   estimates changes nothing on average, whereas removing the Mega *electric*-guitar estimate
   (exp033) gained +1.08 dB. Violin/clarinet leakage is not what limits SW here; the learned gain
   refiner handles residual leakage better. exp034 (the interrupted first attempt) is superseded by this record.
+* **Refiner r5** = r4 recipe with the per-model chunk sizes from the Phase 4 sweep (HTDemucs at its
+  native 7.8 s, Mega on the mix at 4 s; SW and the SW→Mega cascade stay at 6 s), in training and
+  at inference. Training hold-out: base 6.47 → **7.48 dB** (r4: 6.15 → 6.93).
+* **exp050 R_r5_m4: 7.616 dB mean** (median 6.65, SI-SDR 5.79, SDRi 13.1; real 4.89 / synthetic
+  9.97; SIR 12.5 / SAR 9.5; retention 0.69, leakage -14.9 dB, hard-case 7.78). Per clip vs exp043:
+  +0.72 dB, wins 32/41. **Promoted to Champion.** Target proxy: guitar prob 0.224 (r4 0.179), max
+  leak prob 0.029, residual guitar prob 0.008. The recorded runtimes (validation 18 749 s, target
+  4 348 s) include one-off recomputation of the SW→Mega cascade caused by a cache-key bug (fixed
+  in f4858f5).

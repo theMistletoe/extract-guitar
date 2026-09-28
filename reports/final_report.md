@@ -1,30 +1,30 @@
 # Final report — acoustic guitar extraction
 
 ```text
-Best architecture:   Phase 9 gain refiner (r4), every member computed with 6 s chunks exactly as in training, on the improved 3-member ensemble: SW guitar minus Mega electric estimate (Strategy B output) + HTDemucs-ft + Mega acoustic; SW guitar and Mega guitar as extra positives; SW other/piano/vocals/bass/drums + Mega violin/woodwind/electric as negative evidence
-Best checkpoint(s):  xlance_gtr (chenxie95/xlance-msr-ckpt:gtr_mss.pth, sha256 813a92bd210e1fc7); mega_multi (noblebarkrr/BS-Roformer-MVSep-Mega-53-stems:multihead, sha256 1ce0838f692246a3); htdemucs6s_gtrft (None:htdemucs_6s, sha256 demucs:htdemucs_); sw6 (enerjazzer/BS-ROFO-SW-Fixed:BS-Rofo-SW-Fixed.ckpt, sha256 24e7d35ee9c64415)
-Pipeline:            R_r4_c6 (experiment exp043_R_r4_c6)
+Best architecture:   Phase 9 gain refiner (r5): r4 members/evidence, HTDemucs at native chunk, Mega on the mix at 4 s, SW and the SW->Mega cascade at 6 s (all exactly as in training)
+Best checkpoint(s):  xlance_gtr (chenxie95/xlance-msr-ckpt:gtr_mss.pth, sha256 813a92bd210e1fc7); mega_multi (noblebarkrr/BS-Roformer-MVSep-Mega-53-stems:multihead, sha256 1ce0838f692246a3); htdemucs6s_gtrft (None:htdemucs_6s, sha256 demucs:htdemucs_); sw6 (enerjazzer/BS-ROFO-SW-Fixed:BS-Rofo-SW-Fixed.ckpt, sha256 24e7d35ee9c64415); learned refiner artifacts/refiner/r5/model.pt (in git)
+Pipeline:            R_r5_m4 (experiment exp050_R_r5_m4)
 Dataset:             datasets/validation — 41 clips x 12 s (19 real multitrack + 22 scenario), exact GT
-Validation SDR:      6.90 dB mean / 5.89 dB median (real multitracks 4.65, synthetic 8.85)
-Validation SI-SDR:   5.07 dB (SDRi 12.39 dB)
-SIR / SAR (BSS):     11.59 / 9.33 dB
-Leakage:             -15.41 dB excess energy; target retention 0.618
-Runtime:             target song 3516 s for 132 s of audio (search setting); validation 15059 s
+Validation SDR:      7.62 dB mean / 6.65 dB median (real multitracks 4.89, synthetic 9.97)
+Validation SI-SDR:   5.79 dB (SDRi 13.10 dB)
+SIR / SAR (BSS):     12.49 / 9.45 dB
+Leakage:             -14.91 dB excess energy; target retention 0.693
+Runtime:             target song 4348 s for 132 s of audio (search setting); validation 18749 s (wall clock incl. any member not yet in the stem cache)
 Hardware:            x86_64, 4 cores, torch 2.14.0+cpu, CUDA=False
-Number of experiments: 42
+Number of experiments: 43
 ```
 
-Best single pretrained model (Strategy A): `exp015_A_mega_acoustic` — validation SDR 3.13 dB; Champion improves on it by +3.77 dB.
+Best single pretrained model (Strategy A): `exp015_A_mega_acoustic` — validation SDR 3.13 dB; Champion improves on it by +4.49 dB.
 
 ## Champion pipeline
 
 ```text
   1. {"id": "g", "model": "xlance_gtr", "input": "mix", "params": {"num_overlap": 2, "precision": "bf16", "chunk_size": 264600}}
   2. {"id": "swme", "model": "mega_multi", "input": "g", "take": "~electric-guitar", "params": {"num_overlap": 2, "precision": "bf16", "chunk_size": 264600}}
-  3. {"id": "ht", "model": "htdemucs6s_gtrft", "input": "mix", "params": {"num_overlap": 2, "precision": "bf16", "chunk_size": 264600}}
-  4. {"id": "mm", "model": "mega_multi", "input": "mix", "params": {"num_overlap": 2, "precision": "bf16", "chunk_size": 264600}}
+  3. {"id": "ht", "model": "htdemucs6s_gtrft", "input": "mix", "params": {"num_overlap": 2, "precision": "bf16"}}
+  4. {"id": "mm", "model": "mega_multi", "input": "mix", "params": {"num_overlap": 2, "precision": "bf16", "chunk_size": 176400}}
   5. {"id": "sw", "model": "sw6", "input": "mix", "params": {"num_overlap": 2, "precision": "bf16", "chunk_size": 264600}}
-  6. {"id": "ref", "refiner": "artifacts/refiner/r4/model.pt", "positives": ["swme", "ht.guitar", "mm.acoustic-guitar", "sw.guitar", "mm.guitar"], "negatives": ["sw.other", "sw.piano", "sw.vocals", "sw.bass", "sw.drums", "mm.violin", "mm.woodwind", "mm.electric-guitar"]}
+  6. {"id": "ref", "refiner": "artifacts/refiner/r5/model.pt", "positives": ["swme", "ht.guitar", "mm.acoustic-guitar", "sw.guitar", "mm.guitar"], "negatives": ["sw.other", "sw.piano", "sw.vocals", "sw.bass", "sw.drums", "mm.violin", "mm.woodwind", "mm.electric-guitar"]}
 ```
 
 ## All experiments
@@ -54,8 +54,12 @@ See `docs/experiments.md` (full table and per-experiment Hypothesis / Change / R
    * r3 with every member computed exactly as in training (6 s chunks): +1.03 dB over its own
      base (exp037, 6.50 dB). Matching the train and inference conditions doubled the refiner's
      contribution.
-   * r4 on a 3-member base (adds the Strategy-B stem): **6.90 dB** (exp043), +0.40 over exp037,
+   * r4 on a 3-member base (adds the Strategy-B stem): 6.90 dB (exp043), +0.40 over exp037,
      better on 35 of 41 clips. It raises SIR (11.6 dB) and lowers leakage (−15.4 dB).
+   * r5 = r4 with the per-model chunk sizes from item 3, in training and at inference:
+     **7.62 dB** (exp050, the final Champion), +0.72 over r4, better on 32 of 41 clips. SIR
+     12.5 dB, SAR 9.5 dB, retention 0.69 (r4 0.62), leakage −14.9 dB. Over the best single
+     pretrained model (3.13 dB) this is +4.49 dB.
 5. **Engineering for a CPU-only box.** The main tools were bf16 autocast (1.5× faster, −40 dB
    difference from fp32), merged multi-head checkpoints (one trunk pass gives all Mega stems),
    and a content-addressed FLAC stem cache that makes interrupted runs resumable. Together they
@@ -82,16 +86,22 @@ See `docs/experiments.md` (full table and per-experiment Hypothesis / Change / R
 
 * Violin/clarinet glissandi are attenuated but still audible in places (e.g. around 95–100 s
   and 108–113 s).
-* In dense passages some guitar energy is still missing. Validation retention is 0.62: in hard
-  mixes about a third of the guitar's time-frequency energy is not fully recovered.
+* In dense passages some guitar energy is still missing. Validation retention is 0.69: in hard
+  mixes roughly 30% of the guitar's time-frequency energy is not fully recovered.
 * The target is AAC-encoded with a 16 kHz low-pass, so nothing above 16 kHz can be recovered.
 
 ## Known failure modes (validation; see reports/failure_modes.md)
 
-* Guitar buried ≥ 12 dB below the rest (`buried`, `dense`): large guitar losses.
-* Electric guitar with a clean/crunch tone overlapping the acoustic's register. This is the
-  most common leak class on the real multitracks.
-* Mandolin/banjo/ukulele (plucked) and pizzicato strings are partly kept as "guitar".
+With the final Champion, 25 of 41 clips have no failure label (mean SDR 11.5 dB). The rest:
+
+* Electric guitar overlapping the acoustic's register (5 clips labelled `electric_guitar_leak` /
+  `electric_clean_leak`, mean SDR −1.1 / 0.7 dB). This is the worst failure mode: the models keep
+  a clean or crunch electric as "guitar".
+* Guitar far below the rest of the mix (5 clips labelled `guitar_removed`, mean SDR 2.1 dB:
+  both `buried` scenarios, `band_pop`, and two real multitracks): the guitar is partly removed
+  along with the band.
+* Bass leakage (3 clips: one real multitrack, the `dense` and `distorted_electric` scenarios),
+  plus single cases of vocal, violin and plucked-instrument (mandolin/banjo) leakage.
 
 ## Why the final model was selected
 
