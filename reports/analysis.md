@@ -240,6 +240,7 @@ model dominates: their failures are on different clips.
 * **Strategy C, exp052** (SW → strings remover → woodwind subtraction → guitar model): stopped
   after 10/41 clips at -0.42 dB vs plain SW on the same clips (2/10 wins); see its notes.md.
   All three Strategy C cascades are at or below plain SW.
+* (exp053 was a 41-clip codec run stopped after its first clip to cut run time; no record.)
 * **Codec robustness, exp054_R_r5_m4_aac128_real19**: the Champion pipeline on the 19 real-multitrack clips with the
   mixture passed through AAC 128k (references clean), paired against exp050 on the same clips:
   SDR 4.62 vs 4.89 dB (**-0.28 dB**, AAC better on 5/19), SI-SDR -0.45 dB, retention unchanged
