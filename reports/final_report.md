@@ -11,7 +11,7 @@ SIR / SAR (BSS):     12.49 / 9.45 dB
 Leakage:             -14.91 dB excess energy; target retention 0.693
 Runtime:             target song 4348 s for 132 s of audio (search setting); validation 18749 s (wall clock incl. any member not yet in the stem cache)
 Hardware:            x86_64, 4 cores, torch 2.14.0+cpu, CUDA=False
-Number of experiments: 44
+Number of experiments: 45
 ```
 
 Best single pretrained model (Strategy A): `exp015_A_mega_acoustic` — validation SDR 3.13 dB; Champion improves on it by +4.49 dB.
@@ -92,6 +92,9 @@ See `docs/experiments.md` (full table and per-experiment Hypothesis / Change / R
 * In dense passages some guitar energy is still missing. Validation retention is 0.69: in hard
   mixes roughly 30% of the guitar's time-frequency energy is not fully recovered.
 * The target is AAC-encoded with a 16 kHz low-pass, so nothing above 16 kHz can be recovered.
+  On the real-multitrack validation clips, AAC 128k input costs the Champion 0.28 dB SDR and
+  adds 1.3 dB of leakage (retention unchanged), so expect slightly more bleed on the target
+  than the lossless validation numbers suggest.
 
 ## Known failure modes (validation; see reports/failure_modes.md)
 

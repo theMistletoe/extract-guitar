@@ -59,6 +59,9 @@
 * In dense passages some guitar energy is still missing. Validation retention is 0.69: in hard
   mixes roughly 30% of the guitar's time-frequency energy is not fully recovered.
 * The target is AAC-encoded with a 16 kHz low-pass, so nothing above 16 kHz can be recovered.
+  On the real-multitrack validation clips, AAC 128k input costs the Champion 0.28 dB SDR and
+  adds 1.3 dB of leakage (retention unchanged), so expect slightly more bleed on the target
+  than the lossless validation numbers suggest.
 
 ## Known failure modes (validation; see reports/failure_modes.md)
 
