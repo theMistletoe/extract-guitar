@@ -35,6 +35,8 @@ dependencies = [
 cpu = ["torch>=2.3"]
 cu126 = ["torch>=2.3"]
 dev = ["pytest>=8"]
+# Guitar tablature (scripts/transcribe_tab.py): Guitar Pro export and engraved PDF
+tab = ["safetensors>=0.4", "pyguitarpro>=0.9", "lilypond>=2.24"]
 
 [project.scripts]
 acoustic-separator = "acoustic_separator.cli:main"

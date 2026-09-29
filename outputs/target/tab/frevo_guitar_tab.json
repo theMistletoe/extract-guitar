@@ -1,0 +1,31 @@
+{
+  "stem": "outputs/target/best/acoustic_guitar.wav",
+  "stem_sha256": "db3a388ae9c8dba187a1c85acb7411722284cf9487da7d4c07240e503c0949ce",
+  "model": {
+    "repo": "xavriley/midi-transcription-models",
+    "file": "guitar_kroma.safetensors",
+    "revision": "b7bec65a2b860aca72856b0feef58b5df407b777",
+    "sha256": "26919a2fa15652f3a63255ea413a64ffbbeba99efa0a2a2dab425d13f57f2de0"
+  },
+  "tuning_cents": 9.1,
+  "tta_shifts_s": [
+    0.0,
+    2.5
+  ],
+  "onset_threshold": 0.3,
+  "notes": 1255,
+  "notes_unplayable_dropped": 12,
+  "bars": 163,
+  "bpm": 156.35,
+  "swing_centres": [
+    -0.006,
+    0.351,
+    0.487,
+    0.693
+  ],
+  "bar1_time_s": 3.278,
+  "key": "G minor",
+  "chord_changes": 252,
+  "pdf": true,
+  "runtime_s": 165.7
+}

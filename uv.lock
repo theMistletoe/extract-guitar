@@ -87,6 +87,11 @@ cu126 = [
 dev = [
     { name = "pytest" },
 ]
+tab = [
+    { name = "lilypond" },
+    { name = "pyguitarpro" },
+    { name = "safetensors" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -97,14 +102,17 @@ requires-dist = [
     { name = "huggingface-hub", specifier = ">=0.24" },
     { name = "imageio-ffmpeg", specifier = ">=0.5" },
     { name = "librosa", specifier = ">=0.10" },
+    { name = "lilypond", marker = "extra == 'tab'", specifier = ">=2.24" },
     { name = "matplotlib", specifier = ">=3.8" },
     { name = "ml-collections", specifier = ">=0.1" },
     { name = "numpy", specifier = ">=1.26" },
     { name = "omegaconf", specifier = ">=2.3" },
     { name = "packaging", specifier = ">=23" },
+    { name = "pyguitarpro", marker = "extra == 'tab'", specifier = ">=0.9" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "rotary-embedding-torch", specifier = ">=0.6" },
+    { name = "safetensors", marker = "extra == 'tab'", specifier = ">=0.4" },
     { name = "scipy", specifier = ">=1.11" },
     { name = "soundfile", specifier = ">=0.12" },
     { name = "soxr", specifier = ">=0.3" },
@@ -115,7 +123,7 @@ requires-dist = [
     { name = "transformers", specifier = ">=4.44" },
     { name = "yt-dlp", specifier = ">=2025.1.1" },
 ]
-provides-extras = ["cpu", "cu126", "dev"]
+provides-extras = ["cpu", "cu126", "dev", "tab"]
 
 [[package]]
 name = "annotated-doc"
@@ -144,6 +152,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a9/d2/f4d173e22df740bc37b1db102b386ba719b66e95b0f0d751f556b387e6d2/anyio-4.15.1.tar.gz", hash = "sha256:9f28306018cbd6d329e64a36d58256edff76dd996fe423bc957326e578b82a94", size = 276966, upload-time = "2026-09-05T10:42:39.44Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/12/b8/4bd346e22b28902df4d651910f5242c28d84e4a5c2435ca5c3f797ed7e2e/anyio-4.15.1-py3-none-any.whl", hash = "sha256:6152fdbbf9a77fdec97731721bebf7c4c44f7c29b424b0065826173efc7ed101", size = 132079, upload-time = "2026-09-05T10:42:37.923Z" },
+]
+
+[[package]]
+name = "attrs"
+version = "26.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9a/8e/82a0fe20a541c03148528be8cac2408564a6c9a0cc7e9171802bc1d26985/attrs-26.1.0.tar.gz", hash = "sha256:d03ceb89cb322a8fd706d4fb91940737b6642aa36998fe130a9bc96c985eff32", size = 952055, upload-time = "2026-03-19T14:22:25.026Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/64/b4/17d4b0b2a2dc85a6df63d1157e028ed19f90d4cd97c36717afef2bc2f395/attrs-26.1.0-py3-none-any.whl", hash = "sha256:c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309", size = 67548, upload-time = "2026-03-19T14:22:23.645Z" },
 ]
 
 [[package]]
@@ -1188,6 +1205,16 @@ wheels = [
 ]
 
 [[package]]
+name = "lilypond"
+version = "2.25.12"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/62/b5/ab967fead46591193d14cceb5babf28be02c8f5333f907e46269cd97e912/lilypond-2.25.12-0-py3-none-macosx_10_15_x86_64.whl", hash = "sha256:9096134302daf82b7dd20d08b08a3199b9a6ec353ede4fb71e90a5affd8d874c", size = 42898654, upload-time = "2024-02-02T22:30:57.139Z" },
+    { url = "https://files.pythonhosted.org/packages/ea/75/63d89e71ccc5d551ad77630944f7187fe9a861410c9ac63d4f71aca0030d/lilypond-2.25.12-0-py3-none-manylinux2014_x86_64.whl", hash = "sha256:68b72d24d542b03212a44672a71314d31138d3117542cff59b28f46dd5000106", size = 43898654, upload-time = "2024-02-02T22:31:02.492Z" },
+    { url = "https://files.pythonhosted.org/packages/1a/3d/6efca969f698ce3e52428d62ff2a1587312eb6cc9e9e4bd4bd688d54edff/lilypond-2.25.12-0-py3-none-win_amd64.whl", hash = "sha256:14711d62f22ddb9d5caf048deffdffced8f4d9d10cad96c3e3b68328bdbcee6c", size = 41323146, upload-time = "2024-02-02T22:31:08.329Z" },
+]
+
+[[package]]
 name = "llvmlite"
 version = "0.49.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2122,6 +2149,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/49/2e/ced460408999b33da6b31b0021b0f37d329e202d4169aeb164493778f25b/pygments-2.21.0.tar.gz", hash = "sha256:610ca751c9bc2492b38eb9a38a7fbc93edbbb2d7182edaf34e66ae493dee5c8c", size = 5005329, upload-time = "2026-08-17T08:02:48.824Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl", hash = "sha256:2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9", size = 1250147, upload-time = "2026-08-17T08:02:44.912Z" },
+]
+
+[[package]]
+name = "pyguitarpro"
+version = "0.11"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0f/79/24754b4088a0647dc6dbc641534991fc5cb25acb8bdd65654bef42c3da81/pyguitarpro-0.11.tar.gz", hash = "sha256:d8692f9510a80a7c22b43b1c40fcd5ff32ae861241ef95a51cc607c3610f9f01", size = 105427, upload-time = "2026-05-03T12:19:59.018Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/62/5e/58c0b0a61636316a77c1a5106a0a82198bba15f415cc8205fa334d561da9/pyguitarpro-0.11-py3-none-any.whl", hash = "sha256:747d01b580b147a0b726a8f7fafa9e5b0947030c886622831580ef1b6fa99a94", size = 45636, upload-time = "2026-05-03T12:19:57.519Z" },
 ]
 
 [[package]]

@@ -65,6 +65,25 @@ Model weights are downloaded once from Hugging Face into `~/.cache/acoustic-sepa
 (override with `ACOUSTIC_SEPARATOR_CACHE`) and their sha256 is recorded. Weights, datasets
 and audio are never committed to git.
 
+## Guitar tablature of the target song
+
+[`outputs/target/tab/`](outputs/target/tab/README.md) holds a tab transcribed from the extracted
+guitar stem: engraved [PDF](outputs/target/tab/frevo_guitar_tab.pdf) (notation + TAB),
+[ASCII tab](outputs/target/tab/frevo_guitar_tab.txt), Guitar Pro 5, MusicXML, recording-aligned
+MIDI and a note CSV, with a [verification report](outputs/target/tab/verification.md).
+
+```bash
+uv sync --extra cpu --extra tab
+uv run --no-sync python scripts/transcribe_tab.py   # --stem x.wav --out dir --title ... for other songs
+uv run --no-sync python scripts/verify_tab.py
+```
+
+Pipeline (`src/acoustic_separator/tab/`): tuning estimate -> high-resolution onset/offset
+regression CRNN (Kong et al. architecture, Riley's guitar checkpoint loaded from safetensors) ->
+beat grid from the guitar's own onsets with swing-aware 16th quantisation -> string/fret Viterbi
+over fingering x hand position -> chord symbols. On GuitarSet (not used for training) the note
+model reaches onset F1 0.80 and the fingering picks the performer's string for 67.8 % of notes.
+
 ## Reproducing the experiments
 
 ```bash
@@ -94,12 +113,14 @@ See `docs/experiments.md` for the full list of commands that produced every expe
 configs/models.yaml        model catalog (HF repo, file, sha256, licence)
 configs/pipelines/         direct / two-stage / cascade / ensemble pipelines
 src/acoustic_separator/    cli, audio, inference, pipeline, ensemble, evaluation, proxy,
-                           mixing/augment (synthetic data), report, tracking, models/
-scripts/                   benchmark, download_models, prepare_dataset, train, evaluate, run_target
+                           mixing/augment (synthetic data), report, tracking, models/,
+                           tab/ (guitar tablature: amt, rhythm, fretboard, chords, export)
+scripts/                   benchmark, download_models, prepare_dataset, train, evaluate, run_target,
+                           transcribe_tab, verify_tab
 datasets/manifest.csv      every source file used, with licence and split
 experiments/               one folder per experiment + results.csv
 artifacts/champion/        current Champion (history.jsonl keeps every past Champion)
 artifacts/refiner/rN/      learned gain refiners (model.pt ~300 KB + train_log.json)
-outputs/target/            target-song candidates, best/, report.html
+outputs/target/            target-song candidates, best/, report.html, tab/ (guitar tab)
 reports/final_report.md    final evaluation
 ```
