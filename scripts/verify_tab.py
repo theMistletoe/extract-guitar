@@ -3,15 +3,20 @@
 
     python scripts/verify_tab.py            # outputs/target/tab/frevo_guitar_tab_notes.csv
 
-1. Posterior support: every tab note's onset/frame evidence in the CRNN output.
-2. Missed energy: strong frame activations (>= 0.5 for >= 80 ms) not covered by any tab note.
+1. Posterior support: every tab note's onset/frame evidence in the (ensemble) CRNN output, and
+   how many of the individual guitar checkpoints detect it.
+2. Missed notes: strong frame activations (>= 0.5 for >= 80 ms) not covered by any tab note, and
+   notes that >= 2 individual checkpoints detect but the tab lacks.
 3. Resynthesis: the tab (performance timing) is rendered with a plucked-string model; the
    chroma of that rendering is compared with the stem's chroma (cosine), per bar.  Chroma is
    octave- and largely timbre-independent, so low bars point at wrong or missing pitches.
 4. Independent model: note-onset agreement with Basic Pitch (Spotify) on the same stem, if
    installed.
 5. Playability: fret span per chord and hand shifts.
-Writes <tab dir>/verification.json and verification.md.
+6. Repeats: a note played in one statement of a repeated passage but missing at the repeat,
+   although >= 2 checkpoints hear it there.
+Writes <tab dir>/verification.json, verification.md and review.json (bars to check by ear, with
+reasons; shown by scripts/make_tab_check.py).
 """
 from __future__ import annotations
 
@@ -30,6 +35,7 @@ from acoustic_separator.audio import load_audio  # noqa: E402
 from acoustic_separator.tab import amt  # noqa: E402
 
 TAB = ROOT / "outputs" / "target" / "tab"
+NOTE_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"]
 
 
 def read_notes(path: Path) -> list[dict]:
@@ -71,8 +77,10 @@ def main() -> int:
     rep: dict = {"n_notes": len(notes)}
 
     # 1-2. posterior support and missed energy ------------------------------------------
-    d = np.load(tabdir / "posteriors.npz")
-    frame, onset = d["frame"], d["onset"]
+    members = list(meta.get("models", {}).get("checkpoints", {"kroma": None}))
+    posts = {pth.stem.removeprefix("posteriors_"): np.load(pth) for pth in sorted(tabdir.glob("posteriors_*.npz"))}
+    frame = np.mean([posts[m]["frame"] for m in members], 0)
+    onset = np.mean([posts[m]["onset"] for m in members], 0)
     f = 2 ** (-meta["tuning_cents"] / 1200)
     fr = lambda t: int(round(t / f * amt.FPS))  # noqa: E731 original time -> model frame
     sup_on, sup_fr = [], []
@@ -82,9 +90,33 @@ def main() -> int:
         sup_on.append(onset[max(a - 3, 0):a + 4, k].max())
         sup_fr.append(frame[a:a + 8, k].mean())
     sup_on, sup_fr = np.array(sup_on), np.array(sup_fr)
-    rep["support"] = {"onset_post_median": float(np.median(sup_on)),
+    rep["support"] = {"ensemble": members, "onset_post_median": float(np.median(sup_on)),
                       "weak_notes(onset<0.4)": int((sup_on < 0.4).sum()),
                       "frame_post_median": float(np.median(sup_fr))}
+    # checkpoints with (near-)identical output count once (guitar_kroma is guitar-gaps re-saved)
+    names, dup = [], {}
+    for m in sorted(posts, key=lambda m: (m not in members, m)):
+        same = [d for d in names if np.corrcoef(posts[m]["onset"].ravel()[::5], posts[d]["onset"].ravel()[::5])[0, 1] > 0.99]
+        if same:
+            dup[m] = same[0]
+        else:
+            names.append(m)
+    votes = np.array([[posts[m]["onset"][max(fr(n["onset_s"]) - 4, 0):fr(n["onset_s"]) + 5,
+                                         n["midi"] - amt.BEGIN_NOTE].max() >= 0.3 for m in names] for n in notes])
+    agree = votes.sum(1)
+    rep["model_agreement"] = {"checkpoints": names, "duplicates": dup,
+                              "notes_by_n_checkpoints": {int(k): int((agree == k).sum()) for k in range(len(names) + 1)}}
+    tab_on = np.array([n["onset_s"] for n in notes])
+    tab_p = np.array([n["midi"] for n in notes])
+    extra: dict[tuple, set] = {}
+    for m in names:
+        est = amt.decode({k: posts[m][k] for k in ("onset", "offset", "frame", "velocity")}, onset_thr=0.3, frame_thr=0.3)
+        est[:, :2] *= f
+        for on, _, p, _ in est[(est[:, 2] >= 40) & (est[:, 2] <= 83)]:
+            if not np.any((np.abs(tab_on - on) < 0.06) & (tab_p == p)):
+                extra.setdefault((round(on / 0.05) * 0.05, int(p)), set()).add(m)
+    extra2 = sorted((t, p, sorted(ms)) for (t, p), ms in extra.items() if len(ms) >= 2)
+    rep["notes_heard_by_2plus_checkpoints_not_in_tab"] = {"count": len(extra2), "examples": extra2[:30]}
     covered = np.zeros_like(frame, bool)
     for n in notes:
         k = n["midi"] - amt.BEGIN_NOTE
@@ -171,6 +203,62 @@ def main() -> int:
                           "median_position": float(np.median(pos)),
                           "shifts_gt_5_frets": int((np.abs(np.diff(pos)) > 5).sum())}
 
+    c = rep["chroma_cosine"]
+
+    # 6. repeated passages -------------------------------------------------------------
+    beats = np.asarray(meta["beat_times_s"])
+    cen = np.asarray(meta["swing_centres"])
+    bars: dict[int, set] = {}
+    for n in notes:
+        bars.setdefault(n["bar"], set()).add(((n["beat"] - 1) * 4 + n["sixteenth"] - 1, n["midi"]))
+    n_bars = max(bars)
+    sim = lambda a, b: len(bars.get(a, set()) & bars.get(b, set())) / max(1, len(bars.get(a, set()) | bars.get(b, set())))  # noqa: E731
+    pairs = set()
+    for lag in range(8, n_bars):  # 8-bar windows that recur (pitch + position)
+        for a in range(1, n_bars - lag - 6):
+            if np.mean([sim(a + i, a + lag + i) for i in range(8)]) > 0.4:
+                pairs.update((a + i, a + lag + i) for i in range(8))
+    rep_miss = []
+    for a, b in sorted(pairs):
+        for x, y in ((a, b), (b, a)):
+            if sim(x, y) < 0.4:
+                continue
+            for slot, p in sorted(bars.get(x, set()) - bars.get(y, set())):
+                if any((s, p) in bars.get(y, set()) for s in (slot - 1, slot + 1)):
+                    continue
+                q = (y - 1) * 8 + slot
+                k, j = divmod(q, 4)
+                if k + 1 >= len(beats):
+                    continue
+                t = beats[k] + cen[j] * (beats[k + 1] - beats[k])
+                heard = [m for m in names
+                         if posts[m]["onset"][max(fr(t) - 4, 0):fr(t) + 5, p - amt.BEGIN_NOTE].max() >= 0.2]
+                if len(heard) >= 2:
+                    rep_miss.append((y, slot, p, x, heard))
+    rep["repeats"] = {"repeated_bar_pairs": len(pairs), "missing_at_repeat_but_heard": len(set(r[:3] for r in rep_miss)),
+                      "examples": sorted(set((y, s, p, x) for y, s, p, x, _ in rep_miss))[:30]}
+
+    # review list: bars to check by ear first (strong reasons only) ------------------------
+    names_ja = lambda p: NOTE_NAMES[p % 12] + str(p // 12 - 1)  # noqa: E731
+    review: dict[int, list[str]] = {}
+    for n, a in zip(notes, agree):
+        if a <= 1:
+            review.setdefault(n["bar"], []).append(
+                f"{names_ja(n['midi'])}（{n['beat']}拍目）を検出したのは {len(names)} モデル中 {a} つだけ")
+    for t, p, ms in extra2:
+        if len(ms) >= 2:
+            k = int(np.clip(np.searchsorted(beats, t) - 1, 0, len(beats) - 1))
+            review.setdefault(k // 2 + 1, []).append(f"{names_ja(p)} が {len(ms)} モデルで聞こえるがタブに無い")
+    for y, slot, p, x, heard in rep_miss:
+        review.setdefault(y, []).append(
+            f"繰り返しの {x} 小節目にある {names_ja(p)} が無い（{len(heard)} モデルがここでも検出）")
+    for b in c["bars_below_0.7"]:
+        review.setdefault(b, []).append("和音の響きの一致度が低い")
+    review = {b: sorted(set(v)) for b, v in review.items()}
+    ranked = sorted(review, key=lambda b: (-len(review[b]), b))
+    rep["review_bars"] = {"count": len(review), "top": ranked[:25]}
+    (tabdir / "review.json").write_text(json.dumps({str(b): review[b] for b in sorted(review)}, ensure_ascii=False, indent=1))
+
     (tabdir / "verification.json").write_text(json.dumps(rep, indent=2))
     (tabdir / "verification.md").write_text(markdown(rep))
     print(json.dumps(rep, indent=2))
@@ -191,9 +279,15 @@ def markdown(rep: dict) -> str:
     if isinstance(bp, dict):
         lines.append(f"| agreement with Basic Pitch (onset F1, 50 ms) | {bp['onset_f1']:.2f} "
                      f"(pitch class {bp['onset_f1_pitch_class']:.2f}) |")
+    ma = rep["model_agreement"]
+    lines.append(f"| tab notes detected by k of {len(ma['checkpoints'])} guitar checkpoints (k: count) | "
+                 + ", ".join(f"{k}: {v}" for k, v in ma["notes_by_n_checkpoints"].items()) + " |")
+    lines.append(f"| notes heard by >= 2 checkpoints but not in the tab | {rep['notes_heard_by_2plus_checkpoints_not_in_tab']['count']} |")
+    lines.append(f"| repeated passages: note missing at the repeat although heard | {rep['repeats']['missing_at_repeat_but_heard']} |")
     lines += [f"| max fret span in a chord / max fret | {p['max_span']} / {p['max_fret']} |",
               f"| hand shifts > 5 frets | {p['shifts_gt_5_frets']} |", "",
-              f"Bars to double-check by ear first (lowest chroma agreement): {', '.join(map(str, c['lowest_bars']))}.", ""]
+              f"Bars to double-check by ear first (most review reasons, see review.json): "
+              f"{', '.join(map(str, rep['review_bars']['top']))}.", ""]
     return "\n".join(lines)
 
 

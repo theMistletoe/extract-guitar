@@ -158,3 +158,33 @@ def test_midi_and_gp5(tmp_path):
     song = gp.parse(str(tmp_path / "t.gp5"))
     assert len(song.tracks[0].measures) == 3
     assert all(sum(b.duration.time for b in m.voices[0].beats) == 2 * 960 for m in song.tracks[0].measures)
+
+
+def test_pth_conversion_uses_weights_only(tmp_path):
+    import torch
+
+    sd = amt.RegressCRNN().state_dict()
+    sampler = {"random_state": np.random.RandomState(0).get_state()[1][:16], "indexes": np.arange(5)}
+    torch.save({"iteration": 1, "model": sd, "sampler": sampler}, tmp_path / "m.pth")
+    with pytest.raises(Exception):  # plain weights_only refuses the NumPy sampler state
+        torch.load(tmp_path / "m.pth", weights_only=True)
+    amt._convert_pth(tmp_path / "m.pth", tmp_path / "m.safetensors")
+    m = amt.load_model(tmp_path / "m.safetensors")
+    assert torch.equal(m.state_dict()["frame_fc.weight"], sd["frame_fc.weight"].float())
+
+
+def test_check_page_and_synth():
+    import importlib.util
+    import pathlib
+
+    spec = importlib.util.spec_from_file_location(
+        "make_tab_check", pathlib.Path(__file__).resolve().parents[1] / "scripts" / "make_tab_check.py")
+    mtc = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mtc)
+    y = mtc.pluck(196.0, 0.5, 1.0, np.random.default_rng(0))
+    assert np.isfinite(y).all() and len(y) == int(0.56 * mtc.SR)
+    times = np.arange(17) * 0.1
+    notes = [{"q": 0, "string": 0, "fret": 3, "midi": 43}, {"q": 3, "string": 3, "fret": 3, "midi": 58}]
+    html = mtc.page({"title": "T"}, notes, {0: "Gm7"}, times, 2, {1: ["reason"]})
+    assert 'class="bl rv1"' in html and 'title="reason"' in html and "Gm7" in html
+    assert '"review": [0]' in html and html.count('class="c q0"') == 7

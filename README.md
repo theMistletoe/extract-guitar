@@ -70,19 +70,29 @@ and audio are never committed to git.
 [`outputs/target/tab/`](outputs/target/tab/README.md) holds a tab transcribed from the extracted
 guitar stem: engraved [PDF](outputs/target/tab/frevo_guitar_tab.pdf) (notation + TAB),
 [ASCII tab](outputs/target/tab/frevo_guitar_tab.txt), Guitar Pro 5, MusicXML, recording-aligned
-MIDI and a note CSV, with a [verification report](outputs/target/tab/verification.md).
+MIDI and a note CSV.  [`check/index.html`](outputs/target/tab/check/index.html) plays the extracted
+guitar, a rendering of the tab, or both (left/right) while highlighting the current 16th, with
+the bars flagged by the automatic checks marked for listening first.  It has not been checked
+against the recording by ear yet.
 
 ```bash
 uv sync --extra cpu --extra tab
 uv run --no-sync python scripts/transcribe_tab.py   # --stem x.wav --out dir --title ... for other songs
-uv run --no-sync python scripts/verify_tab.py
+uv run --no-sync python scripts/verify_tab.py       # consistency checks + bars to review
+uv run --no-sync python scripts/make_tab_check.py   # listening aids
 ```
 
 Pipeline (`src/acoustic_separator/tab/`): tuning estimate -> high-resolution onset/offset
-regression CRNN (Kong et al. architecture, Riley's guitar checkpoint loaded from safetensors) ->
-beat grid from the guitar's own onsets with swing-aware 16th quantisation -> string/fret Viterbi
-over fingering x hand position -> chord symbols. On GuitarSet (not used for training) the note
-model reaches onset F1 0.80 and the fingering picks the performer's string for 67.8 % of notes.
+regression CRNN (Kong et al. architecture) averaging two of X. Riley's guitar checkpoints (FL and
+GAPS paper version; `.pth` files are read with `torch.load(weights_only=True)` and a NumPy-only
+allowlist, then kept as safetensors) -> beat grid from the guitar's own onsets with swing-aware
+16th quantisation -> string/fret Viterbi over fingering x hand position -> chord symbols.
+
+End-to-end accuracy on music with known notes ([`reports/tab_benchmark.md`](reports/tab_benchmark.md),
+`scripts/bench_tab.py`): GuitarSet bossa-nova comping and GAPS choro guitar mixed with URMP
+violin/clarinet and percussion at the target's balance, separated with the Champion pipeline,
+then transcribed: note precision 0.930, recall 0.880, F1 0.904 (the earlier single checkpoint:
+0.853); strings match the performer's for 77 % of correctly detected notes.
 
 ## Reproducing the experiments
 
@@ -116,7 +126,7 @@ src/acoustic_separator/    cli, audio, inference, pipeline, ensemble, evaluation
                            mixing/augment (synthetic data), report, tracking, models/,
                            tab/ (guitar tablature: amt, rhythm, fretboard, chords, export)
 scripts/                   benchmark, download_models, prepare_dataset, train, evaluate, run_target,
-                           transcribe_tab, verify_tab
+                           transcribe_tab, verify_tab, make_tab_check, bench_tab
 datasets/manifest.csv      every source file used, with licence and split
 experiments/               one folder per experiment + results.csv
 artifacts/champion/        current Champion (history.jsonl keeps every past Champion)

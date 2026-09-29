@@ -2,14 +2,17 @@
 
 | check | result |
 |---|---|
-| notes in the tab | 1255 |
-| CRNN onset evidence per note (median) | 0.86 |
-| notes with weak onset evidence (< 0.4) | 35 |
-| strong activations not in the tab (>= 80 ms) | 20 |
-| chroma cosine stem vs. resynthesised tab (median frame / bar) | 0.88 / 0.87 |
+| notes in the tab | 1256 |
+| CRNN onset evidence per note (median) | 0.75 |
+| notes with weak onset evidence (< 0.4) | 107 |
+| strong activations not in the tab (>= 80 ms) | 10 |
+| chroma cosine stem vs. resynthesised tab (median frame / bar) | 0.89 / 0.88 |
 | bars with chroma cosine < 0.7 | none |
-| agreement with Basic Pitch (onset F1, 50 ms) | 0.64 (pitch class 0.66) |
-| max fret span in a chord / max fret | 4 / 10 |
+| agreement with Basic Pitch (onset F1, 50 ms) | 0.67 (pitch class 0.69) |
+| tab notes detected by k of 3 guitar checkpoints (k: count) | 0: 0, 1: 79, 2: 107, 3: 1070 |
+| notes heard by >= 2 checkpoints but not in the tab | 34 |
+| repeated passages: note missing at the repeat although heard | 8 |
+| max fret span in a chord / max fret | 4 / 7 |
 | hand shifts > 5 frets | 0 |
 
-Bars to double-check by ear first (lowest chroma agreement): 62, 155, 127, 32, 84, 15, 139, 112, 27, 97, 5, 38.
+Bars to double-check by ear first (most review reasons, see review.json): 160, 161, 50, 59, 76, 58, 124, 131, 132, 142, 157, 11, 19, 31, 101, 103, 105, 117, 130, 155, 3, 8, 9, 12, 14.

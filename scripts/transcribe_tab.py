@@ -36,12 +36,26 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--artist", default="ko-ko-ya")
     p.add_argument("--composer", default="Shigeharu Sasago")
     p.add_argument("--beats-per-bar", type=int, default=2)
+    p.add_argument("--models", nargs="+", default=["fl", "gaps_paper"],
+                   help="guitar checkpoints whose posteriors are averaged (see amt.CHECKPOINTS)")
     p.add_argument("--onset-thr", type=float, default=0.3)
     p.add_argument("--tta", type=float, nargs="*", default=[0.0, 2.5],
                    help="window shifts (s) averaged over for the CRNN posteriors")
     p.add_argument("--tuning-cents", type=float, default=None, help="override the tuning estimate")
     p.add_argument("--no-cache", action="store_true")
     return p
+
+
+def model_posteriors(model: str, y16: np.ndarray, out: Path, key: dict, tta, no_cache: bool) -> dict:
+    """Posteriors of one checkpoint, cached per model in <out>/posteriors_<model>.npz."""
+    cache = out / f"posteriors_{model}.npz"
+    if cache.exists() and not no_cache:
+        d = np.load(cache, allow_pickle=False)
+        if json.loads(str(d["key"])) == key:
+            return {k: d[k] for k in ("onset", "offset", "frame", "velocity")}
+    post = amt.posteriors(amt.load_model(model), y16, shifts=tuple(tta))
+    np.savez_compressed(cache, key=json.dumps(key), **post)
+    return post
 
 
 def render_pdf(ly: Path) -> Path | None:
@@ -76,16 +90,10 @@ def main(argv: list[str] | None = None) -> int:
     # 1. tuning + note transcription -------------------------------------------------
     cents = args.tuning_cents if args.tuning_cents is not None else amt.estimate_tuning(mono, sr)
     y16, f = amt.to_model_input(audio, sr, cents)
-    cache = out / "posteriors.npz"
-    key = dict(stem_sha=file_sha256(args.stem), cents=round(cents, 2), tta=list(args.tta))
-    post = None
-    if cache.exists() and not args.no_cache:
-        d = np.load(cache, allow_pickle=False)
-        if json.loads(str(d["key"])) == key:
-            post = {k: d[k] for k in ("onset", "offset", "frame", "velocity")}
-    if post is None:
-        post = amt.posteriors(amt.load_model(), y16, shifts=tuple(args.tta))
-        np.savez_compressed(cache, key=json.dumps(key), **post)
+    stem_sha = file_sha256(args.stem)
+    posts = [model_posteriors(m, y16, out, dict(stem_sha=stem_sha, cents=round(cents, 2), tta=list(args.tta)),
+                              args.tta, args.no_cache) for m in args.models]
+    post = {k: np.mean([p[k] for p in posts], 0) for k in posts[0]}  # ensemble = mean posterior
     notes = amt.decode(post, onset_thr=args.onset_thr, frame_thr=0.3)
     notes[:, :2] *= f  # model time -> original time
     lo, hi = fretboard.STANDARD[0], fretboard.STANDARD[-1] + fretboard.Weights().max_fret
@@ -175,8 +183,9 @@ def main(argv: list[str] | None = None) -> int:
     pdf = render_pdf(stem.with_suffix(".ly"))
     summary = {
         "stem": str(Path(args.stem).resolve().relative_to(ROOT)) if Path(args.stem).resolve().is_relative_to(ROOT) else args.stem,
-        "stem_sha256": key["stem_sha"],
-        "model": amt.CHECKPOINT,
+        "stem_sha256": stem_sha,
+        "models": {"repo": amt.CHECKPOINT["repo"], "revision": amt.CHECKPOINT["revision"],
+                   "checkpoints": {m: amt.CHECKPOINTS[m] for m in args.models}},
         "tuning_cents": round(cents, 2),
         "tta_shifts_s": args.tta,
         "onset_threshold": args.onset_thr,
@@ -186,8 +195,10 @@ def main(argv: list[str] | None = None) -> int:
         "bpm": round(bpm, 2),
         "swing_centres": [round(float(c), 3) for c in centres],
         "bar1_time_s": round(float(beats[0]), 3),
+        "beat_times_s": [round(float(b), 4) for b in beats],
         "key": key_name,
         "chord_changes": len(symbols),
+        "chord_symbols": {str(k): v for k, v in sorted(symbols.items())},  # 16th position -> symbol
         "pdf": pdf is not None,
         "runtime_s": round(time.perf_counter() - t0, 1),
     }

@@ -25,12 +25,22 @@ MEL_BINS = 229
 BEGIN_NOTE = 21  # MIDI pitch of output class 0 (A0)
 CLASSES = 88
 
-CHECKPOINT = {
-    "repo": "xavriley/midi-transcription-models",
-    "file": "guitar_kroma.safetensors",
-    "revision": "b7bec65a2b860aca72856b0feef58b5df407b777",
-    "sha256": "26919a2fa15652f3a63255ea413a64ffbbeba99efa0a2a2dab425d13f57f2de0",
+_REPO = "xavriley/midi-transcription-models"
+_REVISION = "b7bec65a2b860aca72856b0feef58b5df407b777"
+# Guitar checkpoints of the same architecture (X. Riley, MIT).  gaps*: trained on GAPS (classical
+# nylon-string guitar); fl: trained on the Francois Leduc guitar recordings; kroma: released as
+# safetensors.  The .pth files are converted once with PyTorch's weights_only loader.
+CHECKPOINTS = {
+    "kroma": {"file": "guitar_kroma.safetensors",
+              "sha256": "26919a2fa15652f3a63255ea413a64ffbbeba99efa0a2a2dab425d13f57f2de0"},
+    "gaps": {"file": "guitar-gaps.pth",
+             "sha256": "65483e7c0e340a90415b15b520687587698c8c728f5fa470a205f13ee45c6513"},
+    "gaps_paper": {"file": "guitar-gaps-paper-version-12200_iterations.pth",
+                   "sha256": "94a7c936ec9fde83686d29007dc256274384e832739cadece39e92cee3b69a7e"},
+    "fl": {"file": "guitar-fl.pth",
+           "sha256": "50d93dba89bdd3401849bc735614478e83d9f46d21fa3f71d8aca5acc0a52028"},
 }
+CHECKPOINT = {"repo": _REPO, "revision": _REVISION, **CHECKPOINTS["kroma"]}
 
 
 # --------------------------------------------------------------------------------- model
@@ -127,21 +137,54 @@ class RegressCRNN(nn.Module):
         return {"onset": onset, "offset": offset, "frame": frame, "velocity": vel}
 
 
-def checkpoint_path() -> Path:
+def checkpoint_path(name: str = "kroma") -> Path:
+    """Local safetensors file of a guitar checkpoint (downloaded at a pinned revision and
+    checksummed).  ``.pth`` releases are converted once, see ``_convert_pth``."""
     from ..audio import file_sha256
-    from ..models.loader import _hf_download
+    from ..models.loader import _hf_download, cache_dir
 
-    path = _hf_download(CHECKPOINT["repo"], CHECKPOINT["file"], CHECKPOINT["revision"])
+    spec = CHECKPOINTS[name]
+    path = _hf_download(_REPO, spec["file"], _REVISION)
     digest = file_sha256(path)
-    if digest != CHECKPOINT["sha256"]:
+    if digest != spec["sha256"]:
         raise RuntimeError(f"checksum mismatch for {path}: {digest}")
-    return path
+    if path.suffix == ".safetensors":
+        return path
+    out = cache_dir() / "tab" / f"{Path(spec['file']).stem}.safetensors"
+    if not out.exists():
+        _convert_pth(path, out)
+    return out
 
 
-def load_model(path: str | Path | None = None) -> RegressCRNN:
+def _convert_pth(src: Path, dst: Path) -> None:
+    """The .pth files also pickle the training sampler's state (NumPy arrays).  They are read
+    with torch.load(weights_only=True), allowing only NumPy's array/dtype constructors besides
+    tensors (checked statically: nothing else is referenced), and re-saved as safetensors."""
+    import codecs
+
+    import numpy.dtypes as ndt
+    from safetensors.torch import save_file
+
+    try:
+        from numpy._core.multiarray import _reconstruct
+    except ImportError:  # NumPy < 2
+        from numpy.core.multiarray import _reconstruct
+    # the pickles name the NumPy 1.x path; register the function under that name too
+    allow = [_reconstruct, (_reconstruct, "numpy.core.multiarray._reconstruct"), np.ndarray, np.dtype,
+             codecs.encode]
+    allow += [getattr(ndt, n) for n in dir(ndt) if n.endswith("DType")]
+    with torch.serialization.safe_globals(allow):
+        ck = torch.load(src, map_location="cpu", weights_only=True)
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    save_file({k: v.float().contiguous() for k, v in ck["model"].items()}, str(dst))
+
+
+def load_model(name: str | Path = "kroma") -> RegressCRNN:
+    """Checkpoint name from ``CHECKPOINTS`` or a path to a safetensors file."""
     from safetensors.torch import load_file
 
-    sd = {k: v.float() for k, v in load_file(str(path or checkpoint_path())).items()}
+    path = Path(name) if str(name).endswith(".safetensors") else checkpoint_path(str(name))
+    sd = {k: v.float() for k, v in load_file(str(path)).items()}
     model = RegressCRNN()
     model.load_state_dict(sd, strict=True)
     return model.eval()
