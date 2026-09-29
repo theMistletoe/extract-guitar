@@ -40,3 +40,8 @@ phase9_r4.log
 
 # Learned refiners are small (~300 KB) and required by the --quality max preset
 !artifacts/refiner/*/model.pt
+
+# Final target-song stems (float32 WAV, lossless), added at the repository owner's request.
+!outputs/target/original.wav
+!outputs/target/best/acoustic_guitar.wav
+!outputs/target/best/non_acoustic_guitar.wav
