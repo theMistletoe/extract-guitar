@@ -1,0 +1,46 @@
+{
+ "scenario": "plucked",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gs_05_Funk2-108-Eb_solo_mic",
+   "path": "/home/user/extract-guitar/data/raw/guitarset/mic/05_Funk2-108-Eb_solo_mic.wav",
+   "cls": "acoustic_guitar",
+   "license": "CC-BY-4.0",
+   "dataset": "GuitarSet (Xi et al. 2018, zenodo 3371780)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 3.243,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "bandlimit": true,
+    "pan": -0.38,
+    "reverb": true
+   }
+  },
+  {
+   "id": "msneg_Diesel13_Colour_Me_Red_Gtr_AG_28_Banjo_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Diesel13 - Colour_Me_Red/Gtr/AG/28_Banjo.flac",
+   "cls": "plucked_other",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 187.187,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "bandlimit": true,
+    "pan": -0.36,
+    "haas": true,
+    "reverb": true
+   },
+   "level_rel_guitar_db": -2.87
+  }
+ ],
+ "guitar_to_rest_db": 0.7400000095367432,
+ "category": "plucked"
+}

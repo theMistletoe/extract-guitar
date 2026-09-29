@@ -1,0 +1,115 @@
+{
+ "scenario": "buried",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gaps_111_hf1wc",
+   "path": "/home/user/extract-guitar/data/raw/GAPS/audio/111_hf1wc.wav",
+   "cls": "acoustic_guitar",
+   "license": "research use (MIT card; audio from YouTube performances)",
+   "dataset": "GAPS (xavriley/GAPS, test split)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 41.719,
+   "fx": {
+    "compress": true,
+    "pan": 0.23,
+    "reverb": true
+   }
+  },
+  {
+   "id": "msneg_Guarna_Parole_Vuote_Voc_LV_26_LeadVox2DT2_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Guarna - Parole_Vuote/Voc/LV/26_LeadVox2DT2.flac",
+   "cls": "vocals",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 161.177,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.56,
+    "haas": true,
+    "echo": true
+   },
+   "level_rel_guitar_db": 8.96
+  },
+  {
+   "id": "msneg_Andrew_Cole_Dead_Roses_Rhy_DK_DRUM_OH_AK47_SSL_DUALITY_L_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Andrew_Cole - Dead_Roses/Rhy/DK/DRUM OH-AK47-SSL DUALITY.L.flac",
+   "cls": "drums",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 197.592,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": 0.67,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 9.38
+  },
+  {
+   "id": "msneg_Ryan_Cali_Crazy_Bass_08_Bass_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Ryan_Cali - Crazy/Bass/08_Bass.flac",
+   "cls": "bass",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 167.694,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.54
+   },
+   "level_rel_guitar_db": 4.57
+  },
+  {
+   "id": "msneg_Szymon_Skiba_Death_Metal_Sucks_Kbs_PN_21_Piano_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Szymon_Skiba - Death_Metal_Sucks/Kbs/PN/21_Piano.flac",
+   "cls": "piano",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 239.65,
+   "fx": {
+    "eq": true,
+    "pan": 0.38,
+    "echo": true,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 4.19
+  },
+  {
+   "id": "gjam_266",
+   "path": "/home/user/extract-guitar/data/raw/GuitarJam/guitar_jam/train/266.wav",
+   "cls": "electric_clean",
+   "license": "CC0-1.0",
+   "dataset": "GuitarJam (HF Julian-br/GuitarJam)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 0.07,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": 0.06,
+    "echo": true,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 4.11
+  }
+ ],
+ "guitar_to_rest_db": -13.289999961853027,
+ "category": "buried"
+}

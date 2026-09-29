@@ -1,0 +1,21 @@
+- pipeline: D_htft_macou_c4
+  slug: D_htft_macou_c4
+  strategy: D (inference tuning)
+  hypothesis: exp038 showed 6 s chunks give +1.3 dB over default on the plain ensemble;
+    4 s tests which direction of chunk length helps.
+  change: exp038 with chunk_size 176400 (4 s)
+  next: pick the chunk size for the final members / refiner retraining
+- pipeline: D_htft_macou_c8
+  slug: D_htft_macou_c8
+  strategy: D (inference tuning)
+  hypothesis: exp038 showed 6 s chunks give +1.3 dB over default on the plain ensemble;
+    8 s tests which direction of chunk length helps.
+  change: exp038 with chunk_size 352800 (8 s)
+  next: pick the chunk size for the final members / refiner retraining
+- pipeline: D_htft_macou_c10
+  slug: D_htft_macou_c10
+  strategy: D (inference tuning)
+  hypothesis: exp038 showed 6 s chunks give +1.3 dB over default on the plain ensemble;
+    10 s tests which direction of chunk length helps.
+  change: exp038 with chunk_size 441000 (10 s)
+  next: pick the chunk size for the final members / refiner retraining

@@ -1,0 +1,8 @@
+name: C_sw6rest_strings_winds_xlance
+description: "Strategy C (cascade): SW removes vocals/drums/bass/piano -> bowed strings removed (gilliaan) -> woodwinds removed (Mega) -> SW/X-LANCE guitar"
+steps:
+  - {id: s1, model: sw6, input: mix, take: "guitar+other", params: {num_overlap: 2, precision: bf16}}
+  - {id: s2, model: gilliaan_strings, input: s1, take: other, params: {num_overlap: 2, precision: bf16}}
+  - {id: s3, model: mega_multi, input: s2, take: "~woodwind", params: {num_overlap: 2, precision: bf16}}
+  - {id: g, model: xlance_gtr, input: s3, params: {num_overlap: 2, precision: bf16}}
+output: g

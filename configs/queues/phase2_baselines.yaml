@@ -1,0 +1,44 @@
+# Phase 2: every downloadable guitar separator applied directly to the mix (Strategy A).
+# Same inference settings for all (num_overlap 2, bf16) so only the model changes.
+- pipeline: A_htdemucs6s
+  slug: A_htdemucs6s
+  strategy: A
+  hypothesis: "HTDemucs 6s (hybrid waveform/spectrogram, MIT) gives a first baseline from a different architecture family than the RoFormers."
+  change: "Baseline: htdemucs_6s guitar stem, overlap 2, bf16."
+  next: "Run the RoFormer guitar models with identical settings."
+- pipeline: A_becruily
+  slug: A_becruily
+  strategy: A
+  hypothesis: "The small becruily Mel-Band RoFormer guitar model (22M params) is a fast RoFormer baseline."
+  change: "Model = becruily_guitar."
+  next: "Large BS-RoFormer guitar models."
+- pipeline: A_htdemucs6s_ft
+  slug: A_htdemucs6s_ft
+  strategy: A
+  hypothesis: "The MoisesDB guitar fine-tune of htdemucs_6s improves guitar SDR over stock htdemucs_6s."
+  change: "Model = htdemucs_6s + adityalakhani guitar fine-tune weights."
+  next: "Large BS-RoFormer guitar models."
+- pipeline: A_xlance
+  slug: A_xlance
+  strategy: A
+  hypothesis: "X-LANCE MSR guitar BS-RoFormer (8.60 SDR on MVSep all-guitar) is among the best public guitar models. Caveat: trained on RawStems, so its ms_* validation clips may be contaminated -> compare syn_* too."
+  change: "Model = xlance_gtr."
+  next: "SW 6-stem guitar output."
+- pipeline: A_sw6
+  slug: A_sw6
+  strategy: A
+  hypothesis: "BS-RoFormer SW (9.01 on MVSep all-guitar) is the strongest public guitar separator."
+  change: "Model = sw6, guitar stem."
+  next: "Acoustic-specific Mega-53 head."
+- pipeline: A_mega_acoustic
+  slug: A_mega_acoustic
+  strategy: A
+  hypothesis: "The only public acoustic-guitar-specific head (Mega-53) should reject electric guitar better, possibly at the cost of acoustic retention."
+  change: "Model = mega_acoustic."
+  next: "Mega-53 all-guitar head; then two-stage (B) pipelines."
+- pipeline: A_mega_guitar
+  slug: A_mega_guitar
+  strategy: A
+  hypothesis: "Mega-53 all-guitar head (8.25 on MVSep) - same trunk as the acoustic head, isolates the effect of the head."
+  change: "Model = mega_guitar."
+  next: "Strategy B/C pipelines and ensembles of the best direct models."

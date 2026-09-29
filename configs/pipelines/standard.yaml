@@ -1,0 +1,14 @@
+name: standard
+description: '[preset standard] best single model exp015_A_mega_acoustic (val SDR
+  3.13 dB) | Strategy A (direct): MVSep Mega-53 acoustic-guitar head applied to the
+  full mix (computed with the merged mega_multi model; identical output to the single-head
+  checkpoint)'
+steps:
+- id: guitar
+  model: mega_multi
+  input: mix
+  take: acoustic-guitar
+  params:
+    num_overlap: 2
+    precision: bf16
+output: guitar

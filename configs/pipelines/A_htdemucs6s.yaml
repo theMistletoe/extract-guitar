@@ -1,0 +1,8 @@
+name: A_htdemucs6s
+description: "Strategy A (direct): HTDemucs 6s guitar stem applied to the full mix"
+steps:
+  - id: guitar
+    model: htdemucs6s
+    input: mix
+    params: {num_overlap: 2, precision: bf16}
+output: guitar

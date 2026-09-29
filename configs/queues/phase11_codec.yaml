@@ -1,0 +1,16 @@
+# Codec robustness (the target is YouTube AAC with a 16 kHz low-pass): the same validation
+# clips with AAC-128k mixtures. Recorded for analysis only (no Champion/Challenger).
+- pipeline: R_r3
+  slug: codec_R_r3
+  strategy: "codec-check (validation_aac)"
+  hypothesis: "The Champion's advantage holds when the mixture is AAC-128k encoded like the target."
+  change: "validation mixtures replaced by AAC-128k (16 kHz cutoff) versions; ground truth unchanged"
+  next: "final render"
+  args: ["--val-dir", "datasets/validation_aac", "--no-target", "--no-champion"]
+- pipeline: D_htft_macou_wave_mean
+  slug: codec_D_htft_macou
+  strategy: "codec-check (validation_aac)"
+  hypothesis: "Reference point for the codec check: the plain ensemble without the refiner."
+  change: "validation mixtures replaced by AAC-128k versions"
+  next: "final render"
+  args: ["--val-dir", "datasets/validation_aac", "--no-target", "--no-champion"]

@@ -1,0 +1,10 @@
+# Phase 5: weight search for the HTDemucs-ft + Mega acoustic pair (Champion exp023).
+base: D_htft_macou_wave_mean
+slug: W_htft_macou
+strategy: "D+tuning"
+target: best
+hypothesis: "Mega acoustic is clean but conservative (SAR 1.2); HTDemucs-ft keeps more guitar. Weighting may move the pair to a better leakage/retention point."
+next: "Learned frequency-dependent weights (training clips) and the refiner."
+variants:
+  - {ens.weights: [0.6, 0.4]}
+  - {ens.weights: [0.4, 0.6]}

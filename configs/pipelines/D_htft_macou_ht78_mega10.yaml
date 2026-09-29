@@ -1,0 +1,24 @@
+description: 'Chunk sweep (Mega side): HTDemucs-ft at its native 7.8 s segment, Mega
+  acoustic at 10 s chunks (Mega default is 20 s)'
+name: D_htft_macou_ht78_mega10
+output: ens
+steps:
+- id: m0_guitar
+  input: mix
+  model: htdemucs6s_gtrft
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: m1_guitar
+  input: mix
+  model: mega_multi
+  params:
+    chunk_size: 441000
+    num_overlap: 2
+    precision: bf16
+  take: acoustic-guitar
+- ensemble:
+  - m0_guitar
+  - m1_guitar
+  id: ens
+  method: wave_mean

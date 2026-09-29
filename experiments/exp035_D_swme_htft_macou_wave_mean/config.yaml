@@ -1,0 +1,79 @@
+experiment: exp035_D_swme_htft_macou_wave_mean
+strategy: D
+pipeline:
+  name: D_swme_htft_macou_wave_mean
+  description: 'Strategy D: wave_mean of B_xlance_minus_electric, A_htdemucs6s_ft,
+    A_mega_acoustic'
+  steps:
+  - id: m0_g
+    model: xlance_gtr
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: m0_ag
+    model: mega_multi
+    input: m0_g
+    take: ~electric-guitar
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: m1_guitar
+    model: htdemucs6s_gtrft
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: m2_guitar
+    model: mega_multi
+    input: mix
+    take: acoustic-guitar
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: ens
+    ensemble:
+    - m0_ag
+    - m1_guitar
+    - m2_guitar
+    method: wave_mean
+  output: ens
+models:
+  xlance_gtr:
+    repo: chenxie95/xlance-msr-ckpt
+    checkpoint: gtr_mss.pth
+    sha256: 813a92bd210e1fc7412d658c777e3676b4991e33499437ea2f830d7b58af2684
+    arch: bs_roformer
+    license: MIT tag on HF, but the weights are SW's (unknown provenance) - private
+      use only
+  mega_multi:
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: multihead
+    sha256: 1ce0838f692246a31637c08b43128ed5b574c3d2b6cd9b8572fae1b85a40711d
+    arch: bs_roformer_multihead
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+  htdemucs6s_gtrft:
+    repo: null
+    checkpoint: htdemucs_6s
+    sha256: demucs:htdemucs_6s:adityalakhani/htdemucs-6s-guitar-ft:guitar_htdemucs_6s.pt
+    arch: demucs_pkg
+    license: Apache-2.0 (fine-tune on MoisesDB)
+seed: 0
+reproducibility:
+  git_commit: f91c190dc3041da423e73be39f53ccf19c2023ed-dirty
+  command: /home/user/extract-guitar/scripts/benchmark.py --pipeline D_swme_htft_macou_wave_mean
+    --slug D_swme_htft_macou_wave_mean --strategy D --hypothesis Combining B_xlance_minus_electric,
+    A_htdemucs6s_ft, A_mega_acoustic with wave_mean averages out model-specific errors
+    and beats the best single member. --change ensemble method=wave_mean, weights=equal
+    --next Compare methods; keep the best as Champion candidate.
+  timestamp: '2026-09-27T02:38:50'
+  seed: 0
+  hardware:
+    python: 3.11.15
+    platform: Linux-6.18.44-fc-v37-x86_64-with-glibc2.39
+    processor: x86_64
+    torch: 2.14.0+cpu
+    numpy: 2.4.6
+    cuda: false
+    threads: 1
+    cpu_count: 4

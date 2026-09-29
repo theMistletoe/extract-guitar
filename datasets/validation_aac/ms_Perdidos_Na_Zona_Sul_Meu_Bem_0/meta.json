@@ -1,0 +1,57 @@
+{
+ "song": "Perdidos_Na_Zona_Sul - Meu_Bem",
+ "start_s": 61.5,
+ "classes": {
+  "bass": {
+   "level_rel_guitar_db": 2.75,
+   "fx": {
+    "compress": true,
+    "pan": -0.04
+   }
+  },
+  "acoustic_guitar": {
+   "level_rel_guitar_db": 0.0,
+   "fx": {
+    "pan": 0.58,
+    "echo": true
+   }
+  },
+  "electric_guitar": {
+   "level_rel_guitar_db": 1.09,
+   "fx": {
+    "pan": 0.61
+   }
+  },
+  "piano": {
+   "level_rel_guitar_db": -2.66,
+   "fx": {
+    "eq": true,
+    "pan": -0.64
+   }
+  },
+  "drums": {
+   "level_rel_guitar_db": -0.55,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.28
+   }
+  },
+  "vocals": {
+   "level_rel_guitar_db": 3.61,
+   "fx": {
+    "pan": -0.41,
+    "haas": true,
+    "reverb": true
+   }
+  }
+ },
+ "guitar_to_rest_db": -9.130000114440918,
+ "hard": true,
+ "scenario": "multitrack",
+ "source_ids": [
+  "ms_Perdidos_Na_Zona_Sul_Meu_Bem"
+ ],
+ "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+ "category": "multitrack"
+}

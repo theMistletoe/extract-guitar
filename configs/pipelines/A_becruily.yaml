@@ -1,0 +1,8 @@
+name: A_becruily
+description: "Strategy A (direct): Mel-Band RoFormer guitar (becruily) applied to the full mix"
+steps:
+  - id: guitar
+    model: becruily_guitar
+    input: mix
+    params: {num_overlap: 2, precision: bf16}
+output: guitar

@@ -1,0 +1,44 @@
+{
+ "scenario": "cymbal_drums",
+ "hard": false,
+ "sources": [
+  {
+   "id": "gaps_375_1w1wc",
+   "path": "/home/user/extract-guitar/data/raw/GAPS/audio/375_1w1wc.wav",
+   "cls": "acoustic_guitar",
+   "license": "research use (MIT card; audio from YouTube performances)",
+   "dataset": "GAPS (xavriley/GAPS, test split)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 117.972,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.58,
+    "echo": true,
+    "reverb": true
+   }
+  },
+  {
+   "id": "msneg_Human_Radio_You_Me_The_Radio_Rhy_DK_DRUMS_OH_L_AR_01_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Human_Radio - You__Me__The_Radio/Rhy/DK/DRUMS -OH L AR_01.flac",
+   "cls": "drums",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 163.978,
+   "fx": {
+    "compress": true,
+    "saturate": true,
+    "pan": -0.12,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 7.46
+  }
+ ],
+ "guitar_to_rest_db": -4.110000133514404,
+ "category": "cymbal_drums"
+}

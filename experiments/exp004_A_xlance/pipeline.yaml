@@ -1,0 +1,11 @@
+name: A_xlance
+description: 'Strategy A (direct): X-LANCE BS-RoFormer guitar (MSR 2025) applied to
+  the full mix'
+steps:
+- id: guitar
+  model: xlance_gtr
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+output: guitar

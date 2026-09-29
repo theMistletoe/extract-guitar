@@ -1,0 +1,1 @@
+{"song": "David_Youngs - Dust_You_And_Me", "start_s": 132.0, "classes": {"acoustic_guitar": {"level_rel_guitar_db": 0.0, "fx": {"eq": true, "compress": true, "pan": 0.56, "reverb": true}}}, "guitar_to_rest_db": 101.5, "hard": false, "scenario": "multitrack"}

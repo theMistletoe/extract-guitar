@@ -1,0 +1,46 @@
+{
+ "scenario": "plucked",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gs_05_Rock1-130-A_comp_mic",
+   "path": "/home/user/extract-guitar/data/raw/guitarset/mic/05_Rock1-130-A_comp_mic.wav",
+   "cls": "acoustic_guitar",
+   "license": "CC-BY-4.0",
+   "dataset": "GuitarSet (Xi et al. 2018, zenodo 3371780)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 9.316,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": 0.07,
+    "haas": true,
+    "reverb": true
+   }
+  },
+  {
+   "id": "msneg_Bronze_Radio_Return_Mister_Mister_Gtr_AG_BANJO_DI_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Bronze_Radio_Return - Mister_Mister/Gtr/AG/BANJO_DI.flac",
+   "cls": "plucked_other",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 148.293,
+   "fx": {
+    "eq": true,
+    "saturate": true,
+    "pan": -0.55,
+    "haas": true,
+    "echo": true,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 2.16
+  }
+ ],
+ "guitar_to_rest_db": -1.7699999809265137,
+ "category": "plucked"
+}

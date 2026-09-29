@@ -1,0 +1,28 @@
+{
+ "song": "Leslie_Mendelson - The_Hardest_Part",
+ "start_s": 72.0,
+ "classes": {
+  "acoustic_guitar": {
+   "level_rel_guitar_db": 0.0,
+   "fx": {
+    "eq": true,
+    "pan": -0.38,
+    "reverb": true
+   }
+  },
+  "vocals": {
+   "level_rel_guitar_db": 5.57,
+   "fx": {
+    "pan": -0.33
+   }
+  }
+ },
+ "guitar_to_rest_db": -4.570000171661377,
+ "hard": false,
+ "scenario": "multitrack",
+ "source_ids": [
+  "ms_Leslie_Mendelson_The_Hardest_Part"
+ ],
+ "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+ "category": "multitrack"
+}

@@ -1,0 +1,59 @@
+{
+ "song": "Spektakulatius - What_Child_Is_This",
+ "start_s": 141.0,
+ "classes": {
+  "bass": {
+   "level_rel_guitar_db": -2.52,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.04
+   }
+  },
+  "acoustic_guitar": {
+   "level_rel_guitar_db": 0.0,
+   "fx": {
+    "pan": -0.19,
+    "reverb": true
+   }
+  },
+  "piano": {
+   "level_rel_guitar_db": -1.74,
+   "fx": {
+    "pan": 0.46
+   }
+  },
+  "winds": {
+   "level_rel_guitar_db": -0.05,
+   "fx": {
+    "eq": true,
+    "pan": 0.18,
+    "reverb": true
+   }
+  },
+  "drums": {
+   "level_rel_guitar_db": 3.45,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.66,
+    "haas": true,
+    "reverb": true
+   }
+  },
+  "vocals": {
+   "level_rel_guitar_db": 3.19,
+   "fx": {
+    "pan": 0.43
+   }
+  }
+ },
+ "guitar_to_rest_db": -7.449999809265137,
+ "hard": true,
+ "scenario": "multitrack",
+ "source_ids": [
+  "ms_Spektakulatius_What_Child_Is_This"
+ ],
+ "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+ "category": "multitrack"
+}

@@ -1,0 +1,39 @@
+experiment: exp003_A_htdemucs6s_ft
+strategy: A
+pipeline:
+  name: A_htdemucs6s_ft
+  description: 'Strategy A (direct): HTDemucs 6s guitar fine-tune applied to the full
+    mix'
+  steps:
+  - id: guitar
+    model: htdemucs6s_gtrft
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+  output: guitar
+models:
+  htdemucs6s_gtrft:
+    repo: null
+    checkpoint: htdemucs_6s
+    sha256: demucs:htdemucs_6s:adityalakhani/htdemucs-6s-guitar-ft:guitar_htdemucs_6s.pt
+    arch: demucs_pkg
+    license: Apache-2.0 (fine-tune on MoisesDB)
+seed: 0
+reproducibility:
+  git_commit: 8bbdb499702f1fc86f223eeb0f42ada85295a089-dirty
+  command: /home/user/extract-guitar/scripts/benchmark.py --pipeline A_htdemucs6s_ft
+    --slug A_htdemucs6s_ft --strategy A --hypothesis The MoisesDB guitar fine-tune
+    of htdemucs_6s improves guitar SDR over stock htdemucs_6s. --change Model = htdemucs_6s
+    + adityalakhani guitar fine-tune weights. --next Large BS-RoFormer guitar models.
+  timestamp: '2026-09-26T16:11:52'
+  seed: 0
+  hardware:
+    python: 3.11.15
+    platform: Linux-6.18.44-fc-v37-x86_64-with-glibc2.39
+    processor: x86_64
+    torch: 2.14.0+cpu
+    numpy: 2.4.6
+    cuda: false
+    threads: 4
+    cpu_count: 4

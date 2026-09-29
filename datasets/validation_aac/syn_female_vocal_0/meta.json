@@ -1,0 +1,43 @@
+{
+ "scenario": "female_vocal",
+ "hard": false,
+ "sources": [
+  {
+   "id": "gaps_019_Vpswc",
+   "path": "/home/user/extract-guitar/data/raw/GAPS/audio/019_Vpswc.wav",
+   "cls": "acoustic_guitar",
+   "license": "research use (MIT card; audio from YouTube performances)",
+   "dataset": "GAPS (xavriley/GAPS, test split)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 56.027,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": 0.56,
+    "reverb": true
+   }
+  },
+  {
+   "id": "msneg_The_Bright_Star_Alliance_Error_404_Voc_LV_34_LeadVox_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/The_Bright_Star_Alliance - Error_404/Voc/LV/34_LeadVox.flac",
+   "cls": "vocals",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 110.249,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.47,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 7.92
+  }
+ ],
+ "guitar_to_rest_db": -6.03000020980835,
+ "category": "female_vocal"
+}

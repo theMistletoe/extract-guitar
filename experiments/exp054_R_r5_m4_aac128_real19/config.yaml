@@ -1,0 +1,110 @@
+experiment: exp054_R_r5_m4_aac128_real19
+strategy: codec robustness
+pipeline:
+  name: R_r5_m4
+  description: 'Phase 9 gain refiner (r5): r4 members/evidence, HTDemucs at native
+    chunk, Mega on the mix at 4 s, SW and the SW->Mega cascade at 6 s (all exactly
+    as in training)'
+  steps:
+  - id: g
+    model: xlance_gtr
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+      chunk_size: 264600
+  - id: swme
+    model: mega_multi
+    input: g
+    take: ~electric-guitar
+    params:
+      num_overlap: 2
+      precision: bf16
+      chunk_size: 264600
+  - id: ht
+    model: htdemucs6s_gtrft
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: mm
+    model: mega_multi
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+      chunk_size: 176400
+  - id: sw
+    model: sw6
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+      chunk_size: 264600
+  - id: ref
+    refiner: artifacts/refiner/r5/model.pt
+    positives:
+    - swme
+    - ht.guitar
+    - mm.acoustic-guitar
+    - sw.guitar
+    - mm.guitar
+    negatives:
+    - sw.other
+    - sw.piano
+    - sw.vocals
+    - sw.bass
+    - sw.drums
+    - mm.violin
+    - mm.woodwind
+    - mm.electric-guitar
+  output: ref
+models:
+  xlance_gtr:
+    repo: chenxie95/xlance-msr-ckpt
+    checkpoint: gtr_mss.pth
+    sha256: 813a92bd210e1fc7412d658c777e3676b4991e33499437ea2f830d7b58af2684
+    arch: bs_roformer
+    license: MIT tag on HF, but the weights are SW's (unknown provenance) - private
+      use only
+  mega_multi:
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: multihead
+    sha256: 1ce0838f692246a31637c08b43128ed5b574c3d2b6cd9b8572fae1b85a40711d
+    arch: bs_roformer_multihead
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+  htdemucs6s_gtrft:
+    repo: null
+    checkpoint: htdemucs_6s
+    sha256: demucs:htdemucs_6s:adityalakhani/htdemucs-6s-guitar-ft:guitar_htdemucs_6s.pt
+    arch: demucs_pkg
+    license: Apache-2.0 (fine-tune on MoisesDB)
+  sw6:
+    repo: enerjazzer/BS-ROFO-SW-Fixed
+    checkpoint: BS-Rofo-SW-Fixed.ckpt
+    sha256: 24e7d35ee9c64415673d3fd33e06a67cac2c103c5df6267ba1576459c775916e
+    arch: bs_roformer
+    license: unknown (anonymous; likely derived from Logic Pro Stem Splitter) - private
+      use only
+seed: 0
+reproducibility:
+  git_commit: 8fbffe8d2617bb988ef67f502b17cfe57fe72bad
+  command: scripts/benchmark.py --pipeline R_r5_m4 --slug R_r5_m4_aac128_real19 --strategy
+    codec robustness --val-dir datasets/validation_aac --val-limit 19 --no-target
+    --no-champion --hypothesis The target is AAC with a 16 kHz low-pass; the Champion's
+    validation score is on lossless mixtures. Scoring it on the 19 real-multitrack
+    clips passed through AAC 128k (clean references) measures how much codec damage
+    costs. --change exp050 pipeline on datasets/validation_aac, first 19 clips (=
+    all real multitracks); mixtures AAC-128k, references clean --next report the codec
+    penalty in the final report
+  timestamp: '2026-09-28T06:58:16'
+  seed: 0
+  hardware:
+    python: 3.11.15
+    platform: Linux-6.18.44-fc-v37-x86_64-with-glibc2.39
+    processor: x86_64
+    torch: 2.14.0+cpu
+    numpy: 2.4.6
+    cuda: false
+    threads: 4
+    cpu_count: 4

@@ -1,0 +1,93 @@
+{
+ "scenario": "electric_band",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gaps_291_3Sswc",
+   "path": "/home/user/extract-guitar/data/raw/GAPS/audio/291_3Sswc.wav",
+   "cls": "acoustic_guitar",
+   "license": "research use (MIT card; audio from YouTube performances)",
+   "dataset": "GAPS (xavriley/GAPS, test split)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 55.744,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.52,
+    "reverb": true
+   }
+  },
+  {
+   "id": "gjam_450",
+   "path": "/home/user/extract-guitar/data/raw/GuitarJam/guitar_jam/train/450.wav",
+   "cls": "electric_clean",
+   "license": "CC0-1.0",
+   "dataset": "GuitarJam (HF Julian-br/GuitarJam)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 0.584,
+   "fx": {
+    "eq": true,
+    "pan": 0.25,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 3.86
+  },
+  {
+   "id": "msneg_Andrew_Cole_Dead_Roses_Rhy_DK_DRUM_OH_AK47_SSL_DUALITY_L_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Andrew_Cole - Dead_Roses/Rhy/DK/DRUM OH-AK47-SSL DUALITY.L.flac",
+   "cls": "drums",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 93.197,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.07
+   },
+   "level_rel_guitar_db": 3.95
+  },
+  {
+   "id": "msneg_Don_Camillo_Choir_The_Marsh_Marigolds_Song_Bass_11_BassCloseMic5_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Don_Camillo_Choir - The_Marsh_Marigolds_Song/Bass/11_BassCloseMic5.flac",
+   "cls": "bass",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 1.682,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.05,
+    "reverb": true
+   },
+   "level_rel_guitar_db": -1.78
+  },
+  {
+   "id": "msneg_Nicki_Bluhm_The_Gramblers_Go_Go_Go_Voc_LV_NBATG_Lead_Vox_M80_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Nicki_Bluhm__The_Gramblers - Go_Go_Go/Voc/LV/NBATG - Lead Vox - M80.flac",
+   "cls": "vocals",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 137.223,
+   "fx": {
+    "compress": true,
+    "pan": 0.18
+   },
+   "level_rel_guitar_db": 1.25
+  }
+ ],
+ "guitar_to_rest_db": -6.809999942779541,
+ "category": "electric_band"
+}

@@ -1,0 +1,38 @@
+- pipeline: B_xlance_megaacoustic
+  slug: B_xlance_megaacoustic
+  strategy: B
+  hypothesis: Removing vocals/drums/bass etc. first with an all-guitar model makes
+    the acoustic-vs-rest decision easier for the Mega acoustic head (PRD §11 Strategy
+    B).
+  change: Stage 1 xlance_gtr (all guitar) -> stage 2 mega_acoustic on the guitar stem.
+  next: Same with SW as stage 1; guitar minus electric variant.
+- pipeline: B_xlance_minus_electric
+  slug: B_xlance_minus_electric
+  strategy: B
+  hypothesis: Subtracting an electric-guitar estimate from the all-guitar stem removes
+    electric leakage while keeping acoustic energy the acoustic head might drop.
+  change: Stage 1 xlance_gtr -> subtract mega_electric estimate of that stem.
+  next: Cascades (C).
+- pipeline: C_xlance_then_violin_clarinet
+  slug: C_xlance_violin_clarinet
+  strategy: C
+  hypothesis: For the target (guitar + violin + clarinet), residual violin/clarinet
+    leakage in the guitar stem can be removed by dedicated heads applied after guitar
+    extraction.
+  change: xlance_gtr -> subtract mega_violin estimate -> subtract mega_clarinet estimate.
+  next: Full removal cascade before guitar extraction.
+- pipeline: C_orch_xlance
+  slug: C_orch_xlance
+  strategy: C
+  hypothesis: Removing orchestral instruments (strings + winds) from the mix before
+    guitar extraction reduces violin/clarinet confusion.
+  change: mix -> remove xlance_orch estimate -> xlance_gtr.
+  next: Longer cascade with SW + strings + woodwind removal.
+- pipeline: C_sw6rest_strings_winds_xlance
+  slug: C_sw6_strings_winds_xlance
+  strategy: C
+  hypothesis: A full instrument-removal cascade (PRD §11 Strategy C) isolates guitar
+    by elimination; errors may accumulate.
+  change: SW keeps guitar+other -> remove bowed strings (gilliaan) -> remove woodwind
+    (Mega) -> xlance_gtr.
+  next: Ensembles (Strategy D) of the best A/B/C outputs.

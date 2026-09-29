@@ -1,0 +1,49 @@
+name: D_bandw_htft_macou
+description: 'Strategy D: frequency-dependent least-squares weights (fitted on 120
+  training clips) over A_htdemucs6s_ft, A_mega_acoustic'
+steps:
+- id: m0_guitar
+  model: htdemucs6s_gtrft
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: m1_guitar
+  model: mega_multi
+  input: mix
+  take: acoustic-guitar
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: ens
+  ensemble:
+  - m0_guitar
+  - m1_guitar
+  method: band_weighted
+  band_weights:
+  - - 0.1923
+    - 0.2385
+    - 0.0651
+    - 0.1189
+    - 0.013
+    - 0.028
+    - 0.1249
+    - 0.3847
+  - - 0.8133
+    - 0.8142
+    - 0.8642
+    - 0.901
+    - 0.9305
+    - 0.983
+    - 0.8976
+    - 0.6598
+  crossovers:
+  - 150.0
+  - 300.0
+  - 600.0
+  - 1200.0
+  - 2400.0
+  - 4800.0
+  - 9600.0
+  normalize: false
+output: ens

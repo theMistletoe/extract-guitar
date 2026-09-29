@@ -1,0 +1,50 @@
+{
+ "song": "Swing_Bazar - Fleche_DOr",
+ "start_s": 117.5,
+ "classes": {
+  "bass": {
+   "level_rel_guitar_db": 0.52,
+   "fx": {
+    "eq": true,
+    "pan": 0.12,
+    "haas": true,
+    "reverb": true
+   }
+  },
+  "acoustic_guitar": {
+   "level_rel_guitar_db": 0.0,
+   "fx": {
+    "eq": true,
+    "pan": -0.33
+   }
+  },
+  "electric_guitar": {
+   "level_rel_guitar_db": -2.48,
+   "fx": {
+    "pan": -0.68,
+    "haas": true
+   }
+  },
+  "keys": {
+   "level_rel_guitar_db": -4.7,
+   "fx": {
+    "compress": true,
+    "pan": -0.55
+   }
+  },
+  "strings": {
+   "level_rel_guitar_db": -0.45,
+   "fx": {
+    "pan": -0.58
+   }
+  }
+ },
+ "guitar_to_rest_db": -9.890000343322754,
+ "hard": true,
+ "scenario": "multitrack",
+ "source_ids": [
+  "ms_Swing_Bazar_Fleche_DOr"
+ ],
+ "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+ "category": "multitrack"
+}

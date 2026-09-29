@@ -1,0 +1,61 @@
+experiment: exp014_W_htft_xl_weights0.65-0.35
+strategy: D+tuning
+pipeline:
+  name: W_htft_xl__weights0.65-0.35
+  description: 'Strategy D: wave_mean of A_htdemucs6s_ft, A_xlance | sweep {''ens.weights'':
+    [0.65, 0.35]}'
+  steps:
+  - id: m0_guitar
+    model: htdemucs6s_gtrft
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: m1_guitar
+    model: xlance_gtr
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: ens
+    ensemble:
+    - m0_guitar
+    - m1_guitar
+    method: wave_mean
+    weights:
+    - 0.65
+    - 0.35
+  output: ens
+models:
+  htdemucs6s_gtrft:
+    repo: null
+    checkpoint: htdemucs_6s
+    sha256: demucs:htdemucs_6s:adityalakhani/htdemucs-6s-guitar-ft:guitar_htdemucs_6s.pt
+    arch: demucs_pkg
+    license: Apache-2.0 (fine-tune on MoisesDB)
+  xlance_gtr:
+    repo: chenxie95/xlance-msr-ckpt
+    checkpoint: gtr_mss.pth
+    sha256: 813a92bd210e1fc7412d658c777e3676b4991e33499437ea2f830d7b58af2684
+    arch: bs_roformer
+    license: MIT tag on HF, but the weights are SW's (unknown provenance) - private
+      use only
+seed: 0
+reproducibility:
+  git_commit: 0c9a04f12850c77461d553b3dc70e0ce0e4fd50a-dirty
+  command: '/home/user/extract-guitar/scripts/benchmark.py --pipeline /home/user/extract-guitar/configs/pipelines/generated/W_htft_xl__weights0.65-0.35.yaml
+    --slug x --exp-id exp014_W_htft_xl_weights0.65-0.35 --strategy D+tuning --hypothesis
+    Unequal weights may help because the two members have different error profiles
+    (HTDemucs-ft better SI-SDR/retention, SW better SAR). --change {"ens.weights":
+    [0.65, 0.35]} --next Frequency-dependent weights learned on training clips. --no-target'
+  timestamp: '2026-09-26T17:13:56'
+  seed: 0
+  hardware:
+    python: 3.11.15
+    platform: Linux-6.18.44-fc-v37-x86_64-with-glibc2.39
+    processor: x86_64
+    torch: 2.14.0+cpu
+    numpy: 2.4.6
+    cuda: false
+    threads: 1
+    cpu_count: 4

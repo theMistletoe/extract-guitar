@@ -1,0 +1,61 @@
+experiment: exp038_D_htft_macou_c6
+strategy: D (control)
+pipeline:
+  name: D_htft_macou_c6
+  description: 'Control for the c6 finding: plain waveform mean of HTDemucs-ft + Mega
+    acoustic with both members at 6 s chunks (no refiner)'
+  steps:
+  - id: m0_guitar
+    model: htdemucs6s_gtrft
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+      chunk_size: 264600
+  - id: m1_guitar
+    model: mega_multi
+    input: mix
+    take: acoustic-guitar
+    params:
+      num_overlap: 2
+      precision: bf16
+      chunk_size: 264600
+  - id: ens
+    ensemble:
+    - m0_guitar
+    - m1_guitar
+    method: wave_mean
+  output: ens
+models:
+  htdemucs6s_gtrft:
+    repo: null
+    checkpoint: htdemucs_6s
+    sha256: demucs:htdemucs_6s:adityalakhani/htdemucs-6s-guitar-ft:guitar_htdemucs_6s.pt
+    arch: demucs_pkg
+    license: Apache-2.0 (fine-tune on MoisesDB)
+  mega_multi:
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: multihead
+    sha256: 1ce0838f692246a31637c08b43128ed5b574c3d2b6cd9b8572fae1b85a40711d
+    arch: bs_roformer_multihead
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+seed: 0
+reproducibility:
+  git_commit: 79df878455ef28f869fcd152ca4258e175591071
+  command: '/home/user/extract-guitar/scripts/benchmark.py --pipeline D_htft_macou_c6
+    --slug D_htft_macou_c6 --strategy D (control) --hypothesis Control: if the plain
+    ensemble at 6 s chunks is itself much better than at default chunks, the R_r3_c6
+    gain comes from chunking, not from matching the refiner''s training condition.
+    --change exp023 pipeline with chunk_size 264600 for both members; no refiner --next
+    attribute the c6 gain'
+  timestamp: '2026-09-27T04:32:51'
+  seed: 0
+  hardware:
+    python: 3.11.15
+    platform: Linux-6.18.44-fc-v37-x86_64-with-glibc2.39
+    processor: x86_64
+    torch: 2.14.0+cpu
+    numpy: 2.4.6
+    cuda: false
+    threads: 1
+    cpu_count: 4

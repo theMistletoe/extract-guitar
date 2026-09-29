@@ -1,0 +1,168 @@
+"""Learned mask refiner ("stacking ensemble") on top of pretrained separators.
+
+Inputs per clip (all at 44.1 kHz stereo):
+    mix                 -- the mixture
+    positives[k]        -- acoustic/all-guitar estimates from K pretrained models
+    negatives[j]        -- estimates of interferers (e.g. violin, woodwind) used as evidence
+The network predicts a soft mask on the mixture STFT. It is residual on the logit of the
+mean positive ratio mask, and its last layer is zero-initialised, so an untrained refiner
+is exactly the ``mask_mean`` ensemble; training can only move away from it if that lowers
+the validation loss (checked with the ground-truth benchmark, not the training loss).
+
+The network is small (≈100–300 k parameters) so it trains on a CPU.
+"""
+from __future__ import annotations
+
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.utils.checkpoint
+
+N_FFT = 2048
+HOP = 512
+EPS = 1e-6
+
+
+def stft(x: torch.Tensor) -> torch.Tensor:
+    """(..., T) -> complex (..., F, N)."""
+    shape = x.shape
+    X = torch.stft(x.reshape(-1, shape[-1]), N_FFT, HOP, window=torch.hann_window(N_FFT, device=x.device),
+                   return_complex=True, center=True)
+    return X.reshape(*shape[:-1], *X.shape[-2:])
+
+
+def istft(X: torch.Tensor, length: int) -> torch.Tensor:
+    shape = X.shape
+    y = torch.istft(X.reshape(-1, *shape[-2:]), N_FFT, HOP, window=torch.hann_window(N_FFT, device=X.device),
+                    center=True, length=length)
+    return y.reshape(*shape[:-2], length)
+
+
+def features(mix: torch.Tensor, pos: list[torch.Tensor], neg: list[torch.Tensor],
+             base_members: list[int] | None = None):
+    """mix/pos/neg: (B, 2, T). Returns (feat (B*2, C, F, N), X (B, 2, F, N), base).
+
+    mask mode (base_members None): base = mean positive ratio mask (in [0, 1]).
+    gain mode: base = complex STFT of the waveform mean of pos[base_members] (the plain
+    ensemble), and its magnitude ratio is added as a feature."""
+    X = stft(mix)
+    ax = X.abs() + EPS
+    P = [stft(p) for p in pos]
+    pm = [(Pi.abs() / ax).clamp(0, 1) for Pi in P]
+    nm = [(stft(n).abs() / ax).clamp(0, 1) for n in neg]
+    if base_members is None:
+        base = torch.stack(pm).mean(0)
+    else:
+        base = torch.stack([P[i] for i in base_members]).mean(0)  # complex
+        pm = [(base.abs() / ax).clamp(0, 2) / 2] + pm
+    lx = torch.log(ax)
+    lx = (lx - lx.mean(dim=(-2, -1), keepdim=True)) / (lx.std(dim=(-2, -1), keepdim=True) + EPS)
+    if base_members is None:
+        chans = [lx, base] + pm + nm
+        if len(pm) > 1:
+            chans.append(torch.stack(pm).std(0))  # model disagreement
+    else:
+        chans = [lx] + pm + nm + [torch.stack(pm[1:]).std(0)]
+    feat = torch.stack(chans, dim=2)  # (B, 2, C, F, N)
+    B, S, C, Fq, N = feat.shape
+    return feat.reshape(B * S, C, Fq, N), X, base
+
+
+class ConvBlock(nn.Module):
+    def __init__(self, c: int, dil: int):
+        super().__init__()
+        self.conv = nn.Conv2d(c, c, 3, padding=(1, dil), dilation=(1, dil))
+        self.norm = nn.GroupNorm(4, c)
+
+    def forward(self, x):
+        return x + F.gelu(self.norm(self.conv(x)))
+
+
+class MaskRefiner(nn.Module):
+    """Full-resolution input/output convs; dilated residual blocks run at half frequency
+    resolution (and a further /4 pyramid level) to keep CPU training affordable."""
+
+    def __init__(self, in_ch: int, width: int = 24, depth: int = 6, freq_emb: int = 8,
+                 n_freq: int = N_FFT // 2 + 1, mode: str = "mask"):
+        super().__init__()
+        self.mode = mode  # "mask": sigmoid mask on the mixture; "gain": 0..2 gain on the base
+        self.freq_emb = nn.Parameter(torch.zeros(freq_emb, n_freq, 1))
+        self.inp = nn.Conv2d(in_ch + freq_emb, width, 3, padding=1)
+        self.down2 = nn.Conv2d(width, width, (4, 1), stride=(2, 1), padding=(1, 0))
+        self.blocks = nn.ModuleList([ConvBlock(width, 2 ** (i % 4)) for i in range(depth)])
+        self.down = nn.Conv2d(width, width, (4, 1), stride=(4, 1))
+        self.mid = nn.Sequential(ConvBlock(width, 1), ConvBlock(width, 2))
+        self.up = nn.ConvTranspose2d(width, width, (4, 1), stride=(4, 1))
+        self.up2 = nn.ConvTranspose2d(width, width, (2, 1), stride=(2, 1))
+        self.fuse = nn.Conv2d(width, width, 3, padding=1)
+        self.out = nn.Conv2d(width, 1, 1)
+        nn.init.zeros_(self.out.weight)
+        nn.init.zeros_(self.out.bias)
+
+    def _core(self, h: torch.Tensor) -> torch.Tensor:
+        ckpt = self.training and torch.is_grad_enabled()
+        for b in self.blocks:
+            h = torch.utils.checkpoint.checkpoint(b, h, use_reentrant=False) if ckpt else b(h)
+        f4 = (h.shape[2] // 4) * 4
+        d = self.mid(F.gelu(self.down(h[:, :, :f4])))
+        return h + F.pad(self.up(d), (0, 0, 0, h.shape[2] - f4))
+
+    def forward(self, feat: torch.Tensor, base: torch.Tensor) -> torch.Tensor:
+        BS, C, Fq, N = feat.shape
+        fe = self.freq_emb[:, :Fq].unsqueeze(0).expand(BS, -1, -1, N)
+        h0 = F.gelu(self.inp(torch.cat([feat, fe], 1)))
+        h = self._core(F.gelu(self.down2(h0)))
+        u = self.up2(h)
+        u = F.pad(u, (0, 0, 0, max(0, Fq - u.shape[2])))[:, :, :Fq]
+        h = F.gelu(self.fuse(u + h0))
+        delta = self.out(h).squeeze(1)  # (BS, F, N)
+        if self.mode == "gain":
+            return 2 * torch.sigmoid(delta)  # 1.0 at init: output == plain ensemble
+        b = base.reshape(BS, Fq, N).clamp(1e-4, 1 - 1e-4)
+        return torch.sigmoid(torch.logit(b) + delta)
+
+    def apply(self, feat, X, base):
+        """Complex output spectrogram (B, 2, F, N)."""
+        m = self(feat, base).reshape(*X.shape)
+        return m * (base if self.mode == "gain" else X)
+
+
+def apply_refiner(model: MaskRefiner, mix: np.ndarray, pos: list[np.ndarray], neg: list[np.ndarray],
+                  seg_s: float = 12.0, sr: int = 44100, base_members: list[int] | None = None) -> np.ndarray:
+    """Full-track inference in overlapping segments (numpy in/out, (2, T))."""
+    model.eval()
+    T = mix.shape[-1]
+    seg = int(seg_s * sr)
+    hop = seg // 2
+    out = np.zeros_like(mix)
+    wsum = np.zeros(T, dtype=np.float32)
+    win = np.hanning(seg).astype(np.float32).clip(1e-3)
+    starts = list(range(0, max(1, T - seg + hop), hop)) or [0]
+    for s in starts:
+        e = min(T, s + seg)
+        sl = slice(s, e)
+        t = lambda a: torch.from_numpy(np.ascontiguousarray(a[:, sl], dtype=np.float32))[None]  # noqa: E731
+        with torch.no_grad():
+            feat, X, base = features(t(mix), [t(p) for p in pos], [t(n) for n in neg], base_members)
+            y = istft(model.apply(feat, X, base), e - s)[0].numpy()
+        w = win[: e - s] if (e - s) == seg else np.hanning(e - s).astype(np.float32).clip(1e-3)
+        if s == 0:
+            w[: (e - s) // 2] = 1.0
+        if e == T:
+            w[(e - s) // 2:] = 1.0
+        out[:, sl] += y * w
+        wsum[sl] += w
+    return (out / wsum.clip(1e-6)).astype(np.float32)
+
+
+def sdr_loss(est: torch.Tensor, ref: torch.Tensor) -> torch.Tensor:
+    num = (ref ** 2).sum(-1) + 1e-8
+    den = ((ref - est) ** 2).sum(-1) + 1e-8
+    return -(10 * torch.log10(num / den)).mean()
+
+
+def refiner_loss(est: torch.Tensor, ref: torch.Tensor, w_sdr: float = 1.0, w_spec: float = 1.0) -> torch.Tensor:
+    E, R = stft(est), stft(ref)
+    spec = (E.abs() - R.abs()).abs().mean() / (R.abs().mean() + 1e-6)
+    return w_sdr * sdr_loss(est, ref) / 10 + w_spec * spec

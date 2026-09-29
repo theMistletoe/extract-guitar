@@ -1,0 +1,148 @@
+{
+ "scenario": "dense",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gaps_375_1w1wc",
+   "path": "/home/user/extract-guitar/data/raw/GAPS/audio/375_1w1wc.wav",
+   "cls": "acoustic_guitar",
+   "license": "research use (MIT card; audio from YouTube performances)",
+   "dataset": "GAPS (xavriley/GAPS, test split)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 40.758,
+   "fx": {
+    "eq": true,
+    "pan": 0.57,
+    "haas": true
+   }
+  },
+  {
+   "id": "msneg_Guarna_Parole_Vuote_Voc_LV_26_LeadVox2DT2_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Guarna - Parole_Vuote/Voc/LV/26_LeadVox2DT2.flac",
+   "cls": "vocals",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 66.727,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "bandlimit": true,
+    "pan": 0.21,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 4.99
+  },
+  {
+   "id": "msneg_Nicki_Bluhm_The_Gramblers_Go_Go_Go_Rhy_DK_NBATG_OH_Ride_ELA_M_260_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Nicki_Bluhm__The_Gramblers - Go_Go_Go/Rhy/DK/NBATG - OH Ride - ELA M 260.flac",
+   "cls": "drums",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 13.111,
+   "fx": {
+    "eq": true,
+    "pan": -0.13,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 0.61
+  },
+  {
+   "id": "msneg_Imp_Act_Back_In_Time_Bass_09_BassDI_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Imp_Act - Back_In_Time/Bass/09_BassDI.flac",
+   "cls": "bass",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 81.275,
+   "fx": {
+    "bandlimit": true,
+    "pan": 0.47,
+    "haas": true
+   },
+   "level_rel_guitar_db": 1.66
+  },
+  {
+   "id": "msneg_V_M_GY_Aureus_Necrosis_Kbs_PN_29_Piano_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/V.M.GY - Aureus_Necrosis/Kbs/PN/29_Piano.flac",
+   "cls": "piano",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 168.656,
+   "fx": {
+    "eq": true,
+    "pan": 0.63,
+    "haas": true
+   },
+   "level_rel_guitar_db": 3.21
+  },
+  {
+   "id": "msneg_Uncle_Dad_Who_I_Am_Orch_STR_FIDDLE_260_NEVE_1073LB_CL1B_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Uncle_Dad - Who_I_Am/Orch/STR/FIDDLE-260-NEVE 1073LB-CL1B.flac",
+   "cls": "violin",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 65.886,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": 0.35,
+    "reverb": true
+   },
+   "level_rel_guitar_db": -1.3
+  },
+  {
+   "id": "urmp_AuSep_4_cl_29_Fugue",
+   "path": "/home/user/extract-guitar/data/raw/URMP/29_Fugue_fl_fl_ob_cl/AuSep_4_cl_29_Fugue.wav",
+   "cls": "winds",
+   "license": "research use only (no explicit licence)",
+   "dataset": "URMP (HF Eredis02/URMP)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 65.938,
+   "fx": {
+    "eq": true,
+    "pan": -0.06,
+    "haas": true,
+    "echo": true,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 1.14
+  },
+  {
+   "id": "gjam_545",
+   "path": "/home/user/extract-guitar/data/raw/GuitarJam/guitar_jam/test/545.wav",
+   "cls": "electric_clean",
+   "license": "CC0-1.0",
+   "dataset": "GuitarJam (HF Julian-br/GuitarJam)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 1.554,
+   "fx": {
+    "eq": true,
+    "saturate": true,
+    "pan": -0.61
+   },
+   "level_rel_guitar_db": 2.56
+  }
+ ],
+ "guitar_to_rest_db": -9.390000343322754,
+ "category": "dense"
+}

@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+.pytest_cache/
+
+# Large binary artifacts: never commit audio, weights or datasets
+*.wav
+*.flac
+*.mp3
+*.m4a
+*.mp4
+*.ogg
+*.ckpt
+*.pth
+*.pt
+*.th
+*.safetensors
+*.onnx
+*.npy
+*.npz
+*.zip
+*.tar
+*.tar.gz
+models_cache/
+data/
+datasets/raw/
+datasets/validation/
+datasets/train/
+outputs/**/*.wav
+artifacts/**/*.wav
+experiments/**/*.wav
+experiments_*.log
+fetch_train.log
+phase7_refiner.log
+phase7b_refiner.log
+final_render.log
+phase9_r4.log
+
+# Learned refiners are small (~300 KB) and required by the --quality max preset
+!artifacts/refiner/*/model.pt

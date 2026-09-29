@@ -1,0 +1,80 @@
+{
+ "scenario": "distorted_electric",
+ "hard": false,
+ "sources": [
+  {
+   "id": "gs_05_Jazz2-110-Bb_comp_mic",
+   "path": "/home/user/extract-guitar/data/raw/guitarset/mic/05_Jazz2-110-Bb_comp_mic.wav",
+   "cls": "acoustic_guitar",
+   "license": "CC-BY-4.0",
+   "dataset": "GuitarSet (Xi et al. 2018, zenodo 3371780)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 3.285,
+   "fx": {
+    "pan": -0.35,
+    "reverb": true
+   }
+  },
+  {
+   "id": "msneg_The_MudPuddles_Dark_Space_Gtr_EG_23_ElecGtr1_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/The_MudPuddles - Dark_Space/Gtr/EG/23_ElecGtr1.flac",
+   "cls": "electric_dist",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 208.658,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "saturate": true,
+    "bandlimit": true,
+    "pan": -0.13,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 2.29
+  },
+  {
+   "id": "msneg_Nicki_Bluhm_The_Gramblers_Go_Go_Go_Rhy_DK_NBATG_OH_Ride_ELA_M_260_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Nicki_Bluhm__The_Gramblers - Go_Go_Go/Rhy/DK/NBATG - OH Ride - ELA M 260.flac",
+   "cls": "drums",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 185.36,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": 0.55,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 6.42
+  },
+  {
+   "id": "msneg_Our_Good_Wolf_Tourism_Bass_15_BassDI_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Our_Good_Wolf - Tourism/Bass/15_BassDI.flac",
+   "cls": "bass",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 159.344,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": 0.26,
+    "haas": true,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 3.23
+  }
+ ],
+ "guitar_to_rest_db": -12.380000114440918,
+ "category": "distorted_electric"
+}

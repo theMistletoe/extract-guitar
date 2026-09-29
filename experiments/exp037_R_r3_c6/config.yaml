@@ -1,0 +1,88 @@
+experiment: exp037_R_r3_c6
+strategy: D+gain-refiner+HEM
+pipeline:
+  name: R_r3_c6
+  description: 'Phase 7-9 gain refiner (r3) with every member computed with 6 s chunks
+    exactly as in training: learns a 0..2 time-frequency gain on the Champion ensemble
+    (HTDemucs-ft + Mega acoustic waveform mean), with SW guitar + Mega guitar as extra
+    positive evidence and SW other/piano/vocals/bass/drums + Mega violin/woodwind/electric
+    as negative evidence; hard-example-mined sampling'
+  steps:
+  - id: ht
+    model: htdemucs6s_gtrft
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+      chunk_size: 264600
+  - id: mm
+    model: mega_multi
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+      chunk_size: 264600
+  - id: sw
+    model: sw6
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+      chunk_size: 264600
+  - id: ref
+    refiner: artifacts/refiner/r3/model.pt
+    positives:
+    - ht.guitar
+    - mm.acoustic-guitar
+    - sw.guitar
+    - mm.guitar
+    negatives:
+    - sw.other
+    - sw.piano
+    - sw.vocals
+    - sw.bass
+    - sw.drums
+    - mm.violin
+    - mm.woodwind
+    - mm.electric-guitar
+  output: ref
+models:
+  htdemucs6s_gtrft:
+    repo: null
+    checkpoint: htdemucs_6s
+    sha256: demucs:htdemucs_6s:adityalakhani/htdemucs-6s-guitar-ft:guitar_htdemucs_6s.pt
+    arch: demucs_pkg
+    license: Apache-2.0 (fine-tune on MoisesDB)
+  mega_multi:
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: multihead
+    sha256: 1ce0838f692246a31637c08b43128ed5b574c3d2b6cd9b8572fae1b85a40711d
+    arch: bs_roformer_multihead
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+  sw6:
+    repo: enerjazzer/BS-ROFO-SW-Fixed
+    checkpoint: BS-Rofo-SW-Fixed.ckpt
+    sha256: 24e7d35ee9c64415673d3fd33e06a67cac2c103c5df6267ba1576459c775916e
+    arch: bs_roformer
+    license: unknown (anonymous; likely derived from Logic Pro Stem Splitter) - private
+      use only
+seed: 0
+reproducibility:
+  git_commit: 8bdf8bd8c1493cce319a9d3ebdae68750aea8611-dirty
+  command: /home/user/extract-guitar/scripts/benchmark.py --pipeline R_r3_c6 --slug
+    R_r3_c6 --strategy D+gain-refiner+HEM --hypothesis The refiner was trained on
+    member outputs computed with 6 s chunks; computing the members the same way at
+    inference removes the train/inference mismatch that cost ~0.35 dB on training
+    hold-out. --change R_r3 with chunk_size 264600 (6 s) for HTDemucs-ft, Mega and
+    SW --next final render
+  timestamp: '2026-09-27T04:28:44'
+  seed: 0
+  hardware:
+    python: 3.11.15
+    platform: Linux-6.18.44-fc-v37-x86_64-with-glibc2.39
+    processor: x86_64
+    torch: 2.14.0+cpu
+    numpy: 2.4.6
+    cuda: false
+    threads: 4
+    cpu_count: 4

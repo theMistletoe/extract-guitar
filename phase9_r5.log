@@ -1,0 +1,108 @@
+sw6:guitar>mega_multi:~electric-guitar: 168 clips in 30s
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+htdemucs6s_gtrft@native:guitar: 168 clips in 592s
+/usr/lib/python3.11/contextlib.py:105: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+  self.gen = func(*args, **kwds)
+mega_multi@176400:acoustic-guitar: 168 clips in 12188s
+sw6:guitar: 168 clips in 10s
+mega_multi@176400:guitar: 168 clips in 15s
+sw6:other: 168 clips in 9s
+sw6:piano: 168 clips in 10s
+sw6:vocals: 168 clips in 10s
+sw6:bass: 168 clips in 10s
+sw6:drums: 168 clips in 10s
+mega_multi@176400:violin: 168 clips in 15s
+mega_multi@176400:woodwind: 168 clips in 15s
+mega_multi@176400:electric-guitar: 168 clips in 15s
+148 train / 20 held-out clips; params 69k
+epoch 0 hold-out SDR 6.468 (base 6.468)
+/home/user/extract-guitar/scripts/train.py:305: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  losses.append(float(loss))
+epoch 1 loss 0.1520 hold-out SDR 6.013 (447s)
+epoch 2 loss -0.0155 hold-out SDR 6.909 * (444s)
+epoch 3 loss -0.0681 hold-out SDR 6.936 * (440s)
+epoch 4 loss 0.0097 hold-out SDR 7.170 * (430s)
+epoch 5 loss -0.0738 hold-out SDR 7.406 * (421s)
+epoch 6 loss -0.0219 hold-out SDR 7.477 * (435s)
+best hold-out SDR 7.477 (base 6.468) -> artifacts/refiner/r5/model.pt
+== exp050_R_r5_m4: pipeline R_r5_m4
+/usr/lib/python3.11/contextlib.py:105: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+  self.gen = func(*args, **kwds)
+  [1/41] ms_Adam_Buckley_Drag_me_Down_0           sdr=  6.65 si_sdr=  4.58 ret=0.68 leak= -14.5 (446s)
+  [2/41] ms_Andres_Guazzelli_Attention_0          sdr=  3.82 si_sdr=  1.30 ret=0.51 leak=  -7.4 (462s)
+  [3/41] ms_Bolz_Knecht_Summertime_0              sdr=  9.24 si_sdr=  8.41 ret=0.65 leak= -30.0 (468s)
+  [4/41] ms_Bolz_Knecht_Summertime_1              sdr= 13.72 si_sdr= 11.46 ret=0.81 leak= -28.8 (469s)
+  [5/41] ms_Catfolkin_Sant_Jordi_v2_0_0           sdr=  4.33 si_sdr=  0.03 ret=0.53 leak= -13.6 (467s)
+  [6/41] ms_Catfolkin_Sant_Jordi_v2_0_1           sdr=  2.50 si_sdr= -1.23 ret=0.34 leak= -12.9 (467s)
+  [7/41] ms_Egda_Carolyn_Saudade_Do_Teu__0        sdr=  4.07 si_sdr=  1.82 ret=0.52 leak= -12.6 (468s)
+  [8/41] ms_Enda_Reilly_An_Nasc_Nua_0             sdr=  9.98 si_sdr=  8.90 ret=0.72 leak= -19.8 (472s)
+  [9/41] ms_Enda_Reilly_An_Nasc_Nua_1             sdr=  9.91 si_sdr=  9.44 ret=0.82 leak= -16.0 (469s)
+  [10/41] ms_Leslie_Mendelson_The_Hardest_0        sdr=  1.44 si_sdr= -1.47 ret=0.56 leak= -10.5 (475s)
+  [11/41] ms_Perdidos_Na_Zona_Sul_Meu_Bem_0        sdr=  1.45 si_sdr= -3.89 ret=0.45 leak=  -7.7 (478s)
+  [12/41] ms_Perdidos_Na_Zona_Sul_Meu_Bem_1        sdr=  2.12 si_sdr= -2.38 ret=0.36 leak=  -9.7 (472s)
+  [13/41] ms_Rod_Alexander_Tears_In_The_R_0        sdr=  8.70 si_sdr=  6.72 ret=0.72 leak= -18.7 (455s)
+  [14/41] ms_Rod_Alexander_Tears_In_The_R_1        sdr=  0.49 si_sdr= -5.08 ret=0.53 leak=  -6.2 (463s)
+  [15/41] ms_Spektakulatius_What_Child_Is_0        sdr=  6.35 si_sdr=  5.26 ret=0.71 leak= -12.8 (466s)
+  [16/41] ms_Spektakulatius_What_Child_Is_1        sdr=  5.03 si_sdr=  3.51 ret=0.51 leak= -14.5 (443s)
+  [17/41] ms_Swing_Bazar_Fleche_DOr_0              sdr= -0.94 si_sdr= -0.75 ret=0.79 leak=  -3.2 (457s)
+  [18/41] ms_Swing_Bazar_Fleche_DOr_1              sdr= -3.86 si_sdr= -3.96 ret=0.85 leak=  -2.7 (465s)
+  [19/41] ms_Wolfs_Head_Vixen_Morris_Band_0        sdr=  7.96 si_sdr=  6.80 ret=0.85 leak= -12.2 (449s)
+  [20/41] syn_band_pop_0                           sdr=  1.22 si_sdr= -4.73 ret=0.21 leak=  -5.2 (446s)
+  [21/41] syn_buried_0                             sdr=  1.41 si_sdr= -3.71 ret=0.33 leak=  -5.0 (454s)
+  [22/41] syn_buried_1                             sdr=  3.09 si_sdr= -1.32 ret=0.34 leak= -10.5 (447s)
+  [23/41] syn_chamber_frevo_0                      sdr= 10.12 si_sdr=  9.19 ret=0.76 leak= -17.2 (444s)
+  [24/41] syn_chamber_frevo_1                      sdr= 13.35 si_sdr= 13.62 ret=0.81 leak= -23.7 (443s)
+  [25/41] syn_chamber_frevo_2                      sdr=  8.54 si_sdr=  7.68 ret=0.77 leak= -15.5 (450s)
+  [26/41] syn_clean_electric_0                     sdr= 20.07 si_sdr= 20.62 ret=0.99 leak= -24.1 (468s)
+  [27/41] syn_clean_electric_1                     sdr= -2.23 si_sdr= -3.54 ret=0.81 leak=  -2.7 (446s)
+  [28/41] syn_cymbal_drums_0                       sdr= 10.41 si_sdr= 10.41 ret=0.67 leak= -23.9 (455s)
+  [29/41] syn_dense_0                              sdr=  2.08 si_sdr= -2.31 ret=0.49 leak=  -5.6 (462s)
+  [30/41] syn_distorted_electric_0                 sdr=  3.01 si_sdr=  1.04 ret=0.73 leak=  -7.1 (459s)
+  [31/41] syn_electric_band_0                      sdr=  3.66 si_sdr=  1.17 ret=0.76 leak=  -6.9 (443s)
+  [32/41] syn_female_vocal_0                       sdr= 16.01 si_sdr= 15.72 ret=0.91 leak= -24.6 (445s)
+  [33/41] syn_piano_0                              sdr= 19.80 si_sdr= 18.03 ret=0.95 leak= -28.9 (424s)
+  [34/41] syn_piano_1                              sdr= 14.14 si_sdr= 14.34 ret=0.85 leak= -25.3 (435s)
+  [35/41] syn_piano_band_0                         sdr= 11.58 si_sdr= 11.29 ret=0.85 leak= -20.0 (436s)
+  [36/41] syn_plucked_0                            sdr= 17.41 si_sdr= 17.50 ret=0.97 leak= -21.9 (462s)
+  [37/41] syn_plucked_1                            sdr=  6.70 si_sdr=  7.61 ret=0.92 leak= -10.9 (469s)
+  [38/41] syn_strings_0                            sdr= 17.39 si_sdr= 17.68 ret=0.94 leak= -21.0 (457s)
+  [39/41] syn_strings_1                            sdr=  3.80 si_sdr=  0.59 ret=0.56 leak=  -7.5 (464s)
+  [40/41] syn_winds_0                              sdr= 17.78 si_sdr= 17.35 ret=0.95 leak= -23.0 (466s)
+  [41/41] syn_winds_1                              sdr= 19.99 si_sdr= 19.53 ret=0.95 leak= -27.0 (462s)
+'[Errno 111] Connection refused' thrown while requesting HEAD https://huggingface.co/MIT/ast-finetuned-audioset-10-10-0.4593/resolve/main/processor_config.json
+Retrying in 1s [Retry 1/5].
+'[Errno 111] Connection refused' thrown while requesting HEAD https://huggingface.co/MIT/ast-finetuned-audioset-10-10-0.4593/resolve/main/processor_config.json
+Retrying in 2s [Retry 2/5].
+'[Errno 111] Connection refused' thrown while requesting HEAD https://huggingface.co/MIT/ast-finetuned-audioset-10-10-0.4593/resolve/main/processor_config.json
+Retrying in 4s [Retry 3/5].
+'[Errno 111] Connection refused' thrown while requesting HEAD https://huggingface.co/MIT/ast-finetuned-audioset-10-10-0.4593/resolve/main/processor_config.json
+Retrying in 8s [Retry 4/5].
+'[Errno 111] Connection refused' thrown while requesting HEAD https://huggingface.co/MIT/ast-finetuned-audioset-10-10-0.4593/resolve/main/processor_config.json
+Retrying in 8s [Retry 5/5].
+'[Errno 111] Connection refused' thrown while requesting HEAD https://huggingface.co/MIT/ast-finetuned-audioset-10-10-0.4593/resolve/main/processor_config.json
+/home/user/extract-guitar/.venv/lib/python3.11/site-packages/transformers/audio_utils.py:821: UserWarning: At least one mel filter has all zero values. The value for `num_mel_filters` (128) may be set too high. Or, the value for `num_frequency_bins` (257) may be set too low.
+  warnings.warn(
+Loading weights:   0%|          | 0/203 [00:00<?, ?it/s]Loading weights:  26%|██▌       | 53/203 [00:00<00:00, 522.03it/s]Loading weights:  54%|█████▎    | 109/203 [00:00<00:00, 540.09it/s]Loading weights: 100%|██████████| 203/203 [00:00<00:00, 797.42it/s]
+# exp050_R_r5_m4
+
+## Hypothesis
+The Mega-side chunk sweep showed Mega at 4 s and HTDemucs at its native 7.8 s beat all-6 s by 0.32 dB on the plain ensemble (exp047 vs exp038); a refiner trained on candidates computed that way should keep that gain.
+
+## Change
+gain refiner r5: r4 recipe; HTDemucs members at native chunk, Mega-on-mix members at 4 s chunks (train and inference); SW and the SW-to-Mega cascade stay at 6 s
+
+## Result
+- validation SDR mean/median: 7.616 / 6.646 dB, SI-SDR mean 5.785, SDRi 13.101
+- SIR/SAR (BSS): 12.49 / 9.45 dB
+- by family: ms_* (real multitracks) SDR 4.892, syn_* (synthetic) SDR 9.969
+- target retention 0.693, leakage -14.91 dB, hard-case SDR 7.782
+- target-song proxy: guitar prob 0.224, max leak prob 0.029, residual guitar prob 0.008
+- runtime: validation 18749s, target 4348s
+
+## Conclusion
+PROMOTED to Champion. champion before: exp043_R_r4_c6 (sdr_mean=6.901); delta = +0.715 dB
+
+## Next experiment
+final render
+

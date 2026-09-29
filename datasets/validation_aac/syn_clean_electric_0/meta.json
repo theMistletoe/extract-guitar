@@ -1,0 +1,42 @@
+{
+ "scenario": "clean_electric",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gs_05_SS2-88-F_solo_mic",
+   "path": "/home/user/extract-guitar/data/raw/guitarset/mic/05_SS2-88-F_solo_mic.wav",
+   "cls": "acoustic_guitar",
+   "license": "CC-BY-4.0",
+   "dataset": "GuitarSet (Xi et al. 2018, zenodo 3371780)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 30.498,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.04,
+    "haas": true
+   }
+  },
+  {
+   "id": "gjam_050",
+   "path": "/home/user/extract-guitar/data/raw/GuitarJam/guitar_jam/test/050.wav",
+   "cls": "electric_clean",
+   "license": "CC0-1.0",
+   "dataset": "GuitarJam (HF Julian-br/GuitarJam)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 5.864,
+   "fx": {
+    "pan": 0.11,
+    "echo": true,
+    "reverb": true
+   },
+   "level_rel_guitar_db": -1.73
+  }
+ ],
+ "guitar_to_rest_db": 4.329999923706055,
+ "category": "clean_electric"
+}

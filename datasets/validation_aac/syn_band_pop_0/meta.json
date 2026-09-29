@@ -1,0 +1,99 @@
+{
+ "scenario": "band_pop",
+ "hard": false,
+ "sources": [
+  {
+   "id": "gaps_063_bV1wc",
+   "path": "/home/user/extract-guitar/data/raw/GAPS/audio/063_bV1wc.wav",
+   "cls": "acoustic_guitar",
+   "license": "research use (MIT card; audio from YouTube performances)",
+   "dataset": "GAPS (xavriley/GAPS, test split)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 38.201,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "bandlimit": true,
+    "pan": 0.5,
+    "echo": true,
+    "reverb": true
+   }
+  },
+  {
+   "id": "msneg_Nicki_Bluhm_The_Gramblers_Go_Go_Go_Voc_LV_NBATG_Lead_Vox_M80_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Nicki_Bluhm__The_Gramblers - Go_Go_Go/Voc/LV/NBATG - Lead Vox - M80.flac",
+   "cls": "vocals",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 100.69,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": 0.44,
+    "echo": true,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 2.45
+  },
+  {
+   "id": "msneg_Human_Radio_You_Me_The_Radio_Rhy_DK_DRUMS_OH_L_AR_01_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Human_Radio - You__Me__The_Radio/Rhy/DK/DRUMS -OH L AR_01.flac",
+   "cls": "drums",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 271.647,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "bandlimit": true,
+    "pan": -0.0,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 3.3
+  },
+  {
+   "id": "msneg_Imp_Act_Back_In_Time_Bass_09_BassDI_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Imp_Act - Back_In_Time/Bass/09_BassDI.flac",
+   "cls": "bass",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 161.565,
+   "fx": {
+    "eq": true,
+    "pan": 0.37,
+    "reverb": true
+   },
+   "level_rel_guitar_db": -0.61
+  },
+  {
+   "id": "gjam_545",
+   "path": "/home/user/extract-guitar/data/raw/GuitarJam/guitar_jam/test/545.wav",
+   "cls": "electric_clean",
+   "license": "CC0-1.0",
+   "dataset": "GuitarJam (HF Julian-br/GuitarJam)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 3.413,
+   "fx": {
+    "eq": true,
+    "pan": 0.13,
+    "reverb": true
+   },
+   "level_rel_guitar_db": -2.79
+  }
+ ],
+ "guitar_to_rest_db": -5.679999828338623,
+ "category": "band_pop"
+}

@@ -1,0 +1,10 @@
+# Phase 4: test-time settings for the SW guitar member (expensive model).
+base: A_xlance
+slug: T_sw
+strategy: "A+tuning"
+target: best
+hypothesis: "L/R-swap TTA and denser overlap reduce SW's per-chunk variance."
+next: "Use the best setting inside the ensemble."
+variants:
+  - {guitar.params.tta: [swap]}
+  - {guitar.params.num_overlap: 4}

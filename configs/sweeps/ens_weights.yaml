@@ -1,0 +1,10 @@
+# Phase 5: ensemble weight search for the 2-member Champion (HTDemucs-ft, SW guitar).
+base: D_htft_xl_wave_mean
+slug: W_htft_xl
+strategy: "D+tuning"
+target: best
+hypothesis: "Unequal weights may help because the two members have different error profiles (HTDemucs-ft better SI-SDR/retention, SW better SAR)."
+next: "Frequency-dependent weights learned on training clips."
+variants:
+  - {ens.weights: [0.35, 0.65]}
+  - {ens.weights: [0.65, 0.35]}

@@ -1,0 +1,9 @@
+name: A_mega_guitar
+description: "Strategy A (direct): MVSep Mega-53 all-guitar head applied to the full mix (merged mega_multi model)"
+steps:
+  - id: guitar
+    model: mega_multi
+    input: mix
+    take: guitar
+    params: {num_overlap: 2, precision: bf16}
+output: guitar

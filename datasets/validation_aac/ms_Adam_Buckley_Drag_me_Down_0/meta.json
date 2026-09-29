@@ -1,0 +1,67 @@
+{
+ "song": "Adam_Buckley - Drag_me_Down",
+ "start_s": 96.5,
+ "classes": {
+  "bass": {
+   "level_rel_guitar_db": 1.32,
+   "fx": {
+    "compress": true,
+    "saturate": true,
+    "pan": -0.22,
+    "reverb": true
+   }
+  },
+  "acoustic_guitar": {
+   "level_rel_guitar_db": 0.0,
+   "fx": {
+    "pan": 0.56,
+    "reverb": true
+   }
+  },
+  "electric_guitar": {
+   "level_rel_guitar_db": -1.1,
+   "fx": {
+    "pan": 0.54,
+    "echo": true,
+    "reverb": true
+   }
+  },
+  "piano": {
+   "level_rel_guitar_db": 1.4,
+   "fx": {
+    "pan": -0.23,
+    "reverb": true
+   }
+  },
+  "drums": {
+   "level_rel_guitar_db": 0.41,
+   "fx": {
+    "eq": true,
+    "pan": -0.29
+   }
+  },
+  "synth": {
+   "level_rel_guitar_db": -2.19,
+   "fx": {
+    "pan": 0.07,
+    "echo": true
+   }
+  },
+  "vocals": {
+   "level_rel_guitar_db": 0.58,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.19
+   }
+  }
+ },
+ "guitar_to_rest_db": -7.429999828338623,
+ "hard": true,
+ "scenario": "multitrack",
+ "source_ids": [
+  "ms_Adam_Buckley_Drag_me_Down"
+ ],
+ "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+ "category": "multitrack"
+}

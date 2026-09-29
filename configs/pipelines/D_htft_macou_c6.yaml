@@ -1,0 +1,25 @@
+name: D_htft_macou_c6
+description: 'Control for the c6 finding: plain waveform mean of HTDemucs-ft + Mega
+  acoustic with both members at 6 s chunks (no refiner)'
+steps:
+- id: m0_guitar
+  model: htdemucs6s_gtrft
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+    chunk_size: 264600
+- id: m1_guitar
+  model: mega_multi
+  input: mix
+  take: acoustic-guitar
+  params:
+    num_overlap: 2
+    precision: bf16
+    chunk_size: 264600
+- id: ens
+  ensemble:
+  - m0_guitar
+  - m1_guitar
+  method: wave_mean
+output: ens

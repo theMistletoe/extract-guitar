@@ -1,0 +1,74 @@
+{
+ "song": "Egda_Carolyn - Saudade_Do_Teu_Beijo",
+ "start_s": 52.0,
+ "classes": {
+  "bass": {
+   "level_rel_guitar_db": 1.37,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": -0.69,
+    "reverb": true
+   }
+  },
+  "acoustic_guitar": {
+   "level_rel_guitar_db": 0.0,
+   "fx": {
+    "compress": true,
+    "pan": -0.29
+   }
+  },
+  "electric_guitar": {
+   "level_rel_guitar_db": 2.63,
+   "fx": {
+    "eq": true,
+    "pan": 0.14,
+    "reverb": true
+   }
+  },
+  "keys": {
+   "level_rel_guitar_db": -2.36,
+   "fx": {
+    "eq": true,
+    "pan": 0.09,
+    "haas": true,
+    "echo": true,
+    "reverb": true
+   }
+  },
+  "drums": {
+   "level_rel_guitar_db": 2.43,
+   "fx": {
+    "eq": true,
+    "saturate": true,
+    "pan": -0.65
+   }
+  },
+  "percussion": {
+   "level_rel_guitar_db": -3.2,
+   "fx": {
+    "pan": 0.66
+   }
+  },
+  "synth": {
+   "level_rel_guitar_db": 0.73,
+   "fx": {
+    "pan": 0.31
+   }
+  },
+  "vocals": {
+   "level_rel_guitar_db": 5.16,
+   "fx": {
+    "pan": -0.17
+   }
+  }
+ },
+ "guitar_to_rest_db": -11.130000114440918,
+ "hard": true,
+ "scenario": "multitrack",
+ "source_ids": [
+  "ms_Egda_Carolyn_Saudade_Do_Teu_Beijo"
+ ],
+ "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+ "category": "multitrack"
+}

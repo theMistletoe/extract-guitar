@@ -1,0 +1,18 @@
+name: B_xlance_megaacoustic
+description: 'Strategy B (two-stage): SW/X-LANCE all-guitar stem, then the Mega-53
+  acoustic-guitar head on that stem'
+steps:
+- id: g
+  model: xlance_gtr
+  input: mix
+  params:
+    num_overlap: 2
+    precision: bf16
+- id: ag
+  model: mega_multi
+  input: g
+  take: acoustic-guitar
+  params:
+    num_overlap: 2
+    precision: bf16
+output: ag

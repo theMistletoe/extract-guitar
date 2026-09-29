@@ -1,0 +1,93 @@
+{
+ "scenario": "chamber_frevo",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gaps_358_441wc",
+   "path": "/home/user/extract-guitar/data/raw/GAPS/audio/358_441wc.wav",
+   "cls": "acoustic_guitar",
+   "license": "research use (MIT card; audio from YouTube performances)",
+   "dataset": "GAPS (xavriley/GAPS, test split)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 47.713,
+   "fx": {
+    "eq": true,
+    "pan": 0.09,
+    "reverb": true
+   }
+  },
+  {
+   "id": "urmp_AuSep_1_vn_27_King",
+   "path": "/home/user/extract-guitar/data/raw/URMP/27_King_vn_vn_va_sax/AuSep_1_vn_27_King.wav",
+   "cls": "violin",
+   "license": "research use only (no explicit licence)",
+   "dataset": "URMP (HF Eredis02/URMP)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 15.334,
+   "fx": {
+    "eq": true,
+    "pan": -0.22,
+    "haas": true,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 1.71
+  },
+  {
+   "id": "urmp_AuSep_1_fl_29_Fugue",
+   "path": "/home/user/extract-guitar/data/raw/URMP/29_Fugue_fl_fl_ob_cl/AuSep_1_fl_29_Fugue.wav",
+   "cls": "winds",
+   "license": "research use only (no explicit licence)",
+   "dataset": "URMP (HF Eredis02/URMP)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 147.218,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": 0.51
+   },
+   "level_rel_guitar_db": 5.48
+  },
+  {
+   "id": "msneg_Guarna_Parole_Vuote_Bass_11_Bass_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Guarna - Parole_Vuote/Bass/11_Bass.flac",
+   "cls": "bass",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 159.863,
+   "fx": {
+    "eq": true,
+    "pan": -0.15,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 5.84
+  },
+  {
+   "id": "msneg_Timo_Carlier_The_Road_Ahead_Rhy_PERC_03_Tambourine_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Timo_Carlier - The_Road_Ahead/Rhy/PERC/03_Tambourine.flac",
+   "cls": "percussion",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 155.766,
+   "fx": {
+    "eq": true,
+    "pan": -0.01,
+    "reverb": true
+   },
+   "level_rel_guitar_db": 1.0
+  }
+ ],
+ "guitar_to_rest_db": -10.260000228881836,
+ "category": "chamber_frevo"
+}

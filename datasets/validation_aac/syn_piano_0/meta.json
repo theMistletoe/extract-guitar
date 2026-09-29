@@ -1,0 +1,41 @@
+{
+ "scenario": "piano",
+ "hard": true,
+ "sources": [
+  {
+   "id": "gaps_291_3Sswc",
+   "path": "/home/user/extract-guitar/data/raw/GAPS/audio/291_3Sswc.wav",
+   "cls": "acoustic_guitar",
+   "license": "research use (MIT card; audio from YouTube performances)",
+   "dataset": "GAPS (xavriley/GAPS, test split)",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 90.979,
+   "fx": {
+    "eq": true,
+    "compress": true,
+    "pan": 0.65,
+    "reverb": true
+   }
+  },
+  {
+   "id": "msneg_Keystone_Angel_Afterglow_Kbs_PN_11_PianoMid_flac",
+   "path": "/home/user/extract-guitar/data/raw/mixing-secrets-rawstems/dev/Keystone_Angel - Afterglow/Kbs/PN/11_PianoMid.flac",
+   "cls": "piano",
+   "license": "Mixing Secrets / RawStems: non-commercial research & education only, no redistribution",
+   "dataset": "RawStems",
+   "split": "val",
+   "offset_s": 0.0,
+   "duration_s": null,
+   "offset_used_s": 114.54,
+   "fx": {
+    "eq": true,
+    "pan": -0.65
+   },
+   "level_rel_guitar_db": 4.5
+  }
+ ],
+ "guitar_to_rest_db": -1.8700000047683716,
+ "category": "piano"
+}

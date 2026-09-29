@@ -1,0 +1,83 @@
+experiment: exp029_R_r2
+strategy: D+refiner+HEM
+pipeline:
+  name: R_r2
+  description: Phase 7 learned mask refiner (r2) on SW guitar + HTDemucs-ft + Mega
+    acoustic/guitar (positive evidence) and SW other/piano/vocals/bass/drums + Mega
+    violin/woodwind/electric (negative evidence)
+  steps:
+  - id: sw
+    model: sw6
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: ht
+    model: htdemucs6s_gtrft
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: mm
+    model: mega_multi
+    input: mix
+    params:
+      num_overlap: 2
+      precision: bf16
+  - id: ref
+    refiner: artifacts/refiner/r2/model.pt
+    positives:
+    - sw.guitar
+    - ht.guitar
+    - mm.acoustic-guitar
+    - mm.guitar
+    negatives:
+    - sw.other
+    - sw.piano
+    - sw.vocals
+    - sw.bass
+    - sw.drums
+    - mm.violin
+    - mm.woodwind
+    - mm.electric-guitar
+  output: ref
+models:
+  sw6:
+    repo: enerjazzer/BS-ROFO-SW-Fixed
+    checkpoint: BS-Rofo-SW-Fixed.ckpt
+    sha256: 24e7d35ee9c64415673d3fd33e06a67cac2c103c5df6267ba1576459c775916e
+    arch: bs_roformer
+    license: unknown (anonymous; likely derived from Logic Pro Stem Splitter) - private
+      use only
+  htdemucs6s_gtrft:
+    repo: null
+    checkpoint: htdemucs_6s
+    sha256: demucs:htdemucs_6s:adityalakhani/htdemucs-6s-guitar-ft:guitar_htdemucs_6s.pt
+    arch: demucs_pkg
+    license: Apache-2.0 (fine-tune on MoisesDB)
+  mega_multi:
+    repo: noblebarkrr/BS-Roformer-MVSep-Mega-53-stems
+    checkpoint: multihead
+    sha256: 1ce0838f692246a31637c08b43128ed5b574c3d2b6cd9b8572fae1b85a40711d
+    arch: bs_roformer_multihead
+    license: unspecified (ZFTurbo / MVSep release v1.0.21)
+seed: 0
+reproducibility:
+  git_commit: d40d2373379fec10ff55dc3ccdcc225b6fc51cb9-dirty
+  command: '/home/user/extract-guitar/scripts/benchmark.py --pipeline R_r2 --slug
+    R_r2 --strategy D+refiner+HEM --hypothesis Oversampling the worst training clips
+    and adding clips of their failure types (hard-example mining: buried/dense scenarios)
+    improves the refiner on hard cases. --change refiner round 2: 48 new buried/dense
+    clips + 3x oversampling of mined hard clips (stopped at epoch 4, best hold-out
+    epoch 3) --next gain-mode refiner on the Champion (r3)'
+  timestamp: '2026-09-26T23:19:59'
+  seed: 0
+  hardware:
+    python: 3.11.15
+    platform: Linux-6.18.44-fc-v37-x86_64-with-glibc2.39
+    processor: x86_64
+    torch: 2.14.0+cpu
+    numpy: 2.4.6
+    cuda: false
+    threads: 1
+    cpu_count: 4
