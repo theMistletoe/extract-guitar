@@ -12,9 +12,36 @@ Caveat: `gaps_paper` may have been trained with GuitarSet (the GAPS paper report
 | kroma | separated from mix | guitarset | 0.920 | 0.750 | 0.826 | 0.781 |
 | kroma | separated from mix | gaps | 0.945 | 0.885 | 0.914 | - |
 | kroma | separated from mix | all | 0.928 | 0.790 | 0.853 | 0.781 |
+| fl | clean guitar | guitarset | 0.926 | 0.892 | 0.909 | 0.771 |
+| fl | clean guitar | gaps | 0.960 | 0.896 | 0.927 | - |
+| fl | clean guitar | all | 0.936 | 0.893 | 0.914 | 0.771 |
+| fl | separated from mix | guitarset | 0.919 | 0.841 | 0.878 | 0.805 |
+| fl | separated from mix | gaps | 0.921 | 0.867 | 0.893 | - |
+| fl | separated from mix | all | 0.920 | 0.848 | 0.883 | 0.805 |
+| gaps_paper | clean guitar | guitarset | 0.927 | 0.896 | 0.911 | 0.779 |
+| gaps_paper | clean guitar | gaps | 0.949 | 0.904 | 0.926 | - |
+| gaps_paper | clean guitar | all | 0.933 | 0.899 | 0.916 | 0.779 |
+| gaps_paper | separated from mix | guitarset | 0.923 | 0.876 | 0.899 | 0.783 |
+| gaps_paper | separated from mix | gaps | 0.917 | 0.900 | 0.908 | - |
+| gaps_paper | separated from mix | all | 0.922 | 0.883 | 0.902 | 0.783 |
 | fl+gaps_paper | clean guitar | guitarset | 0.938 | 0.909 | 0.923 | 0.774 |
 | fl+gaps_paper | clean guitar | gaps | 0.961 | 0.907 | 0.933 | - |
 | fl+gaps_paper | clean guitar | all | 0.944 | 0.908 | 0.926 | 0.774 |
 | fl+gaps_paper | separated from mix | guitarset | 0.923 | 0.872 | 0.897 | 0.771 |
 | fl+gaps_paper | separated from mix | gaps | 0.946 | 0.900 | 0.922 | - |
 | fl+gaps_paper | separated from mix | all | 0.930 | 0.880 | 0.904 | 0.771 |
+
+## How reliable the review signals are (fl+gaps_paper, all material)
+
+`scripts/verify_tab.py` flags tab notes that few of the distinct checkpoints (kroma, fl, gaps_paper; guitar_kroma = guitar-gaps) hear, and notes that >= 2 of them decode but the tab lacks.  The same rules applied here:
+
+| condition | signal | notes | correct / real |
+|---|---|---|---|
+| clean guitar | tab note heard by 3 of 3 | 756 | 0.97 |
+| clean guitar | tab note heard by 2 of 3 | 85 | 0.87 |
+| clean guitar | tab note heard by 1 of 3 | 41 | 0.66 |
+| clean guitar | heard by >= 2, not in the tab | 13 | 0.38 |
+| separated from mix | tab note heard by 3 of 3 | 731 | 0.96 |
+| separated from mix | tab note heard by 2 of 3 | 94 | 0.84 |
+| separated from mix | tab note heard by 1 of 3 | 43 | 0.53 |
+| separated from mix | heard by >= 2, not in the tab | 6 | 0.33 |

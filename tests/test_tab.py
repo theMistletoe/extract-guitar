@@ -135,8 +135,8 @@ def _tab():
 def test_pieces_fill_every_bar():
     tab = _tab()
     for pieces in export._pieces(tab):
-        assert sum(l for _, l, *_ in pieces) == tab.spb
-        assert all(l in export._TYPES for _, l, *_ in pieces)
+        assert sum(d for _, d, *_ in pieces) == tab.spb
+        assert all(d in export._TYPES for _, d, *_ in pieces)
 
 
 def test_ascii_and_musicxml_and_lilypond():
@@ -188,3 +188,6 @@ def test_check_page_and_synth():
     html = mtc.page({"title": "T"}, notes, {0: "Gm7"}, times, 2, {1: ["reason"]})
     assert 'class="bl rv1"' in html and 'title="reason"' in html and "Gm7" in html
     assert '"review": [0]' in html and html.count('class="c q0"') == 7
+    assert 'class="u"' not in html and "__LEGEND__" not in html
+    html = mtc.page({"title": "T"}, notes, {}, times, 2, uncertain={(3, 2)}, uncertain_correct=0.53)
+    assert html.count('<b class="u">3</b>') == 1 and "約 53 %" in html

@@ -10,7 +10,8 @@ Writes
   ab.mp3         left ear = extracted guitar, right ear = tab rendering (use headphones)
   index.html     player that highlights the current 16th in the tab; A/B modes, slow-down
                  without pitch change, click a bar to jump, loop a bar or a range; bars flagged by
-                 scripts/verify_tab.py (review.json) are marked with their reasons
+                 scripts/verify_tab.py (review.json) are marked with their reasons, and notes only
+                 one checkpoint hears (verification.json) are marked in the tab
 """
 from __future__ import annotations
 
@@ -102,8 +103,11 @@ def grid_times(meta: dict, n16: int) -> np.ndarray:
 
 
 def page(meta: dict, notes: list[dict], chords: dict[int, str], times: np.ndarray, n_bars: int,
-         review: dict[int, list[str]] | None = None, bars_per_line: int = 4) -> str:
-    review = review or {}
+         review: dict[int, list[str]] | None = None, bars_per_line: int = 4,
+         uncertain: set[tuple[int, int]] | None = None, uncertain_correct: float | None = None) -> str:
+    """``uncertain``: (16th index, tab row with 0 = high e) of notes to mark; ``uncertain_correct``:
+    the share of such notes that were right on the benchmark, for the legend."""
+    review, uncertain = review or {}, uncertain or set()
     cell: dict[int, dict[int, int]] = {}
     for n in notes:
         cell.setdefault(n["q"], {})[5 - n["string"]] = n["fret"]
@@ -136,6 +140,8 @@ def page(meta: dict, notes: list[dict], chords: dict[int, str], times: np.ndarra
                 for r in range(6):
                     fr = cell.get(q, {}).get(r)
                     txt = (str(fr) if fr is not None else "").ljust(3, "-")
+                    if fr is not None and (q, r) in uncertain:
+                        txt = f'<b class="u">{fr}</b>' + txt[len(str(fr)):]
                     rows[r].append(f'<span class="c q{q}">{txt}</span>')
             count.append(" ")
             for r in range(6):
@@ -146,16 +152,24 @@ def page(meta: dict, notes: list[dict], chords: dict[int, str], times: np.ndarra
     data = {"times": [round(float(x), 4) for x in times], "nBars": n_bars,
             "review": sorted((b - 1 for b in review), key=lambda b: (-len(review[b + 1]), b)),
             "priority": sorted(b - 1 for b in review if len(review[b]) >= 2)}
+    legend = ""
+    if uncertain:
+        legend = ("<br>赤い波線のフレット番号：3 つの採譜モデルのうち 1 つしか検出しなかった音（"
+                  f"{len(uncertain)} 音）。")
+        if uncertain_correct is not None:
+            legend += f"再現実験では、この種の音で正しかったのは約 {round(uncertain_correct * 100)} % でした。"
+        legend += "<br>"
     return TEMPLATE.replace("__SYSTEMS__", "\n".join(systems)).replace("__DATA__", json.dumps(data)) \
-        .replace("__TITLE__", html.escape(f"{meta.get('title', 'Frevo!')} タブ譜チェッカー"))
+        .replace("__TITLE__", html.escape(f"{meta.get('title', 'Frevo!')} タブ譜チェッカー")) \
+        .replace("__LEGEND__", legend)
 
 
 TEMPLATE = """<!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>__TITLE__</title>
 <style>
-:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6a64;--line:#dcd8cf;--hl:#ffd54a;--bar:#fff3c4;--accent:#1f6feb;--chord:#b35900}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#151514;--fg:#e9e6df;--muted:#9c998f;--line:#35332f;--hl:#7a5f00;--bar:#2b2616;--accent:#5aa2ff;--chord:#ffae57}}
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6a64;--line:#dcd8cf;--hl:#ffd54a;--bar:#fff3c4;--accent:#1f6feb;--chord:#b35900;--unc:#c62828}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#151514;--fg:#e9e6df;--muted:#9c998f;--line:#35332f;--hl:#7a5f00;--bar:#2b2616;--accent:#5aa2ff;--chord:#ffae57;--unc:#ff7b72}}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif}
 header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px}
 h1{font-size:17px;margin:0 0 6px}
@@ -172,6 +186,7 @@ main{padding:6px 16px 120px}
 .bl.loop{background:var(--accent);color:#fff}
 .bl.rv{color:#c62828;font-weight:700}
 .bl.rv1{color:#d9730d;font-weight:600}
+.u{color:var(--unc);text-decoration:underline wavy;text-underline-offset:2px}
 #rvlist a{color:#c62828;cursor:pointer;margin-right:6px}
 #time{font-variant-numeric:tabular-nums;min-width:120px;display:inline-block}
 </style></head><body>
@@ -189,12 +204,12 @@ main{padding:6px 16px 120px}
   <button id="loop">小節ループ</button>
   <button id="nextrv">次の要確認小節 ▶</button>
 </div>
-<div class="hint" id="rvlist"></div>
-<div class="hint">自動チェックで要確認になった小節：赤（!!）＝理由が 2 つ以上で優先、オレンジ（!）＝理由 1 つ。マウスを乗せると理由が出ます。
-小節番号をクリックでその小節へ移動。ループ中は Shift+クリックで範囲を広げられます。
-キー: スペース=再生/停止、←/→=前後の小節、L=ループ。左右比較はヘッドホン推奨。</div>
 </header>
 <main>
+<div class="hint" id="rvlist"></div>
+<div class="hint">自動チェックで要確認になった小節：赤（!!）＝理由が 2 つ以上で優先、オレンジ（!）＝理由 1 つ。マウスを乗せると理由が出ます。__LEGEND__
+小節番号をクリックでその小節へ移動。ループ中は Shift+クリックで範囲を広げられます。
+キー: スペース=再生/停止、←/→=前後の小節、L=ループ。左右比較はヘッドホン推奨。</div>
 __SYSTEMS__
 </main>
 <script>
@@ -217,6 +232,9 @@ function tick(){ const t = audio.currentTime;
   if (loop && t >= barStart(loop[1] + 1)) { seek(barStart(loop[0]) - 0.05); }
   const q = t < T[0] ? -1 : qAt(t);
   if (q !== cur) { (cells[cur] || []).forEach(e => e.classList.remove("cur")); (cells[q] || []).forEach(e => e.classList.add("cur")); cur = q;
+    const c0 = (cells[q] || [])[0];
+    if (c0) { const s = c0.closest(".sys"), cr = c0.getBoundingClientRect(), sr = s.getBoundingClientRect();  // narrow screens: follow sideways
+      if (cr.left < sr.left + 16 || cr.right > sr.right - 16) s.scrollLeft += cr.left - sr.left - sr.width / 4; }
     const b = q < 0 ? 0 : Math.floor(q / 8); if (b !== curBar || q < 0) { curBar = b;
       systems.forEach(s => s.classList.remove("cur")); const s = systems[Math.floor(b / 4)];
       if (s && q >= 0) { s.classList.add("cur"); const r = s.getBoundingClientRect(); if (r.top < 120 || r.bottom > innerHeight - 20) s.scrollIntoView({block: "center", behavior: "smooth"}); } } }
@@ -225,7 +243,7 @@ function tick(){ const t = audio.currentTime;
 requestAnimationFrame(tick);
 const rv = DATA.review;
 const pri = new Set(DATA.priority);
-document.getElementById("rvlist").innerHTML = rv.length ? "要確認の小節（優先 " + pri.size + " / 全 " + rv.length + "、優先度順）: " + rv.map(b => '<a data-bar="' + b + '"' + (pri.has(b) ? "" : ' style="color:#d9730d"') + ">" + (b + 1) + "</a>").join("") : "";
+document.getElementById("rvlist").innerHTML = rv.length ? "要確認の小節（優先 " + pri.size + " / 全 " + rv.length + "、優先度順）: " + rv.map(b => '<a data-bar="' + b + '"' + (pri.has(b) ? "" : ' style="color:#d9730d"') + ">" + (b + 1) + "</a>").join(" ") : "";
 document.querySelectorAll("#rvlist a").forEach(a => a.onclick = () => { const b = +a.dataset.bar; if (loop) { loop = [b, b]; markLoop(); } seek(barStart(b) - 0.3); if (audio.paused) toggle(); });
 const rvPos = [...rv].sort((a, b) => a - b);
 document.getElementById("nextrv").onclick = () => { const b = rvPos.find(x => x > curBar) ?? rvPos[0]; if (b === undefined) return;
@@ -280,7 +298,16 @@ def main() -> int:
     chords = {int(k): v for k, v in meta.get("chord_symbols", {}).items()}
     rv_path = tabdir / "review.json"
     review = {int(k): v for k, v in json.loads(rv_path.read_text()).items()} if rv_path.exists() else {}
-    (out / "index.html").write_text(page({"title": "Frevo!"}, notes, chords, times, n_bars, review))
+    ver_path, bench_path = tabdir / "verification.json", ROOT / "reports" / "tab_benchmark.json"
+    uncertain = {((n["bar"] - 1) * 8 + (n["beat"] - 1) * 4 + n["sixteenth"] - 1, n["string"] - 1)  # CSV string 1 = e
+                 for n in json.loads(ver_path.read_text()).get("uncertain_notes", [])} if ver_path.exists() else set()
+    share = None
+    if bench_path.exists():
+        one = json.loads(bench_path.read_text()).get("agreement", {}).get("separated from mix", {}) \
+            .get("by_checkpoints", {}).get("1")
+        share = one["correct"] / one["notes"] if one and one["notes"] else None
+    (out / "index.html").write_text(page({"title": "Frevo!"}, notes, chords, times, n_bars, review,
+                                         uncertain=uncertain, uncertain_correct=share))
     print(f"wrote {out}: tab_synth.mp3, stem.mp3, ab.mp3, index.html")
     return 0
 

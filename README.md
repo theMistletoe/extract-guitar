@@ -92,11 +92,16 @@ End-to-end accuracy on music with known notes ([`reports/tab_benchmark.md`](repo
 `scripts/bench_tab.py`): GuitarSet bossa-nova comping and GAPS choro guitar mixed with URMP
 violin/clarinet and percussion at the target's balance, separated with the Champion pipeline,
 then transcribed: note precision 0.930, recall 0.880, F1 0.904 (the earlier single checkpoint:
-0.853); strings match the performer's for 77 % of correctly detected notes.  On clean GuitarSet
-(60 excerpts, [`reports/tab_benchmark_guitarset.md`](reports/tab_benchmark_guitarset.md)) F1 is
-0.913 (earlier: 0.798).  The GAPS-paper checkpoint may have seen GuitarSet in training, so the
-GuitarSet-based numbers can be optimistic; on the benchmark's GAPS pieces, unseen by every
-checkpoint, the gain is smaller (0.912 -> 0.922).
+0.853; FL alone 0.883, GAPS paper version alone 0.902); strings match the performer's for 77 % of
+correctly detected notes.  On clean GuitarSet (60 excerpts,
+[`reports/tab_benchmark_guitarset.md`](reports/tab_benchmark_guitarset.md)) F1 is 0.913 (earlier:
+0.798).  The GAPS-paper checkpoint may have seen GuitarSet in training, so the GuitarSet-based
+numbers can be optimistic; on the benchmark's GAPS pieces (270 notes, unseen by every checkpoint)
+the gain is smaller (0.914 -> 0.922; FL alone 0.893, GAPS paper alone 0.908).  The same benchmark
+calibrates the review signals: tab notes that all three distinct checkpoints hear are right 96 %
+of the time, two 84 %, only one 53 %; applied to the target's counts this predicts about 90 wrong
+notes out of 1256 ([`verification.md`](outputs/target/tab/verification.md)), and the checker marks the
+79 single-checkpoint notes.
 
 ## Reproducing the experiments
 

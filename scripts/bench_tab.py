@@ -44,6 +44,8 @@ PERC_PATTERN = r"/Rhy/PERC/[^/]*(Shaker|Tamb|Conga|Perc)[^/]*\.flac$"
 # relative levels (dB re guitar RMS): together the accompaniment is ~4.7 dB above the guitar
 LEVELS = {"violin": 1.5, "clarinet": 0.5, "percussion": -4.0}
 PAN = {"guitar": 0.0, "violin": -0.3, "clarinet": 0.3, "percussion": 0.0}
+# distinct checkpoints for the agreement check (guitar_kroma is guitar-gaps re-saved), as in verify_tab.py
+DISTINCT = ("kroma", "fl", "gaps_paper")
 
 
 def _hf(repo: str, path: str) -> Path:
@@ -179,7 +181,7 @@ def build(args) -> int:
     return 0
 
 
-def _transcribe(wav: Path, cache: Path, models: list[str]) -> tuple[np.ndarray, list]:
+def _transcribe(wav: Path, cache: Path, models: list[str]) -> tuple[np.ndarray, list, float]:
     """Notes + fingering exactly as scripts/transcribe_tab.py does (no bar grid needed)."""
     from acoustic_separator.tab import amt, fretboard
 
@@ -201,7 +203,7 @@ def _transcribe(wav: Path, cache: Path, models: list[str]) -> tuple[np.ndarray, 
         for i, x in zip(g.idx, sf):
             strings[i] = None if x is None else x[0]
     keep = np.array([s is not None for s in strings])
-    return notes[keep], [s for s in strings if s is not None]
+    return notes[keep], [s for s in strings if s is not None], f
 
 
 def _score(ref, est, est_strings):
@@ -219,17 +221,66 @@ def _score(ref, est, est_strings):
             "string_acc_matched": float(np.mean(s_ok)) if s_ok else None}
 
 
+def _match(ref, on, pitch) -> tuple[set, set]:
+    """(matched ref indices, matched estimate indices): onset within 50 ms and same pitch."""
+    import mir_eval
+
+    hz = lambda m: 440.0 * 2 ** ((np.asarray(m, float) - 69) / 12)  # noqa: E731
+    if not len(ref) or not len(on):
+        return set(), set()
+    ri = np.array([[r[2], max(r[3], r[2] + 0.01)] for r in ref])
+    m = mir_eval.transcription.match_notes(ri, hz([r[4] for r in ref]), np.c_[on, on + 0.1], hz(pitch),
+                                           offset_ratio=None)
+    return {i for i, _ in m}, {j for _, j in m}
+
+
+def _agreement(notes: np.ndarray, f: float, cond: str, truth: list, segs: list) -> dict | None:
+    """How reliable the target song's review signals are: tab notes by the number of distinct
+    checkpoints that hear them (onset posterior >= 0.3 within 40 ms, the rule of verify_tab.py)
+    and the share that are correct; and notes >= 2 checkpoints decode that the tab lacks, with
+    the share that are real missed notes."""
+    from acoustic_separator.tab import amt
+
+    caches = [BENCH / f"post_{cond}_{m}.npz" for m in DISTINCT]
+    if not all(c.exists() for c in caches):
+        return None
+    posts = [dict(np.load(c)) for c in caches]
+    inseg = lambda t: any(s["start"] <= t < s["end"] + 0.5 for s in segs)  # noqa: E731
+    notes = notes[[inseg(t) for t in notes[:, 0]]]
+    ref_hit, ok = _match(truth, notes[:, 0], notes[:, 2])
+    fr = np.round(notes[:, 0] / f * amt.FPS).astype(int)
+    k = notes[:, 2].astype(int) - amt.BEGIN_NOTE
+    votes = np.array([[p["onset"][max(a - 4, 0):a + 5, b].max() >= 0.3 for p in posts] for a, b in zip(fr, k)]).sum(1)
+    out = {"by_checkpoints": {}}
+    for n in range(len(DISTINCT), 0, -1):
+        idx = np.nonzero(votes == n)[0]
+        out["by_checkpoints"][n] = {"notes": int(len(idx)), "correct": int(sum(i in ok for i in idx))}
+    extra: dict = {}
+    for m, p in zip(DISTINCT, posts):
+        est = amt.decode(p, onset_thr=0.3, frame_thr=0.3)
+        est[:, :2] *= f
+        for on, _, pitch, _ in est[(est[:, 2] >= 40) & (est[:, 2] <= 83)]:
+            if inseg(on) and not np.any((np.abs(notes[:, 0] - on) < 0.06) & (notes[:, 2] == pitch)):
+                extra.setdefault((round(on / 0.05) * 0.05, int(pitch)), {})[m] = on
+    cand = np.array([[np.mean(list(v.values())), key[1]] for key, v in extra.items() if len(v) >= 2]).reshape(-1, 2)
+    rest = [r for i, r in enumerate(truth) if i not in ref_hit]
+    out["heard_by_2plus_not_in_tab"] = {"notes": int(len(cand)), "real": len(_match(rest, cand[:, 0], cand[:, 1])[1])}
+    return out
+
+
 def evaluate(args) -> int:
     segs = json.loads((BENCH / "segments.json").read_text())
     with open(BENCH / "truth.csv") as f:
         truth = [(r["source"], r["clip"], float(r["onset"]), float(r["offset"]), int(r["midi"]), int(r["string"]))
                  for r in csv.DictReader(f)]
     sep = Path(args.sep) / "acoustic_guitar.wav"
-    out = {}
+    out, agree = {}, {}
     for mset in args.sets:
         models = mset.split("+")
         for cond, wav in (("clean guitar", BENCH / "clean.wav"), ("separated from mix", sep)):
-            notes, strings = _transcribe(wav, BENCH / f"post_{cond.split()[0]}_{mset}.npz", models)
+            notes, strings, f = _transcribe(wav, BENCH / f"post_{cond.split()[0]}_{mset}.npz", models)
+            if mset == args.tab_set:
+                agree[cond] = _agreement(notes, f, cond.split()[0], truth, segs)
             rows = {}
             for grp in ("guitarset", "gaps", "all"):
                 ref = [x for x in truth if grp in ("all", x[0])]
@@ -239,7 +290,9 @@ def evaluate(args) -> int:
             out[f"{mset} | {cond}"] = rows
             print(mset, cond, json.dumps(rows["all"]))
     rep = ROOT / "reports"
-    (rep / "tab_benchmark.json").write_text(json.dumps({"segments": segs, "results": out}, indent=2))
+    agree = {k: v for k, v in agree.items() if v}
+    (rep / "tab_benchmark.json").write_text(json.dumps({"segments": segs, "results": out, "tab_set": args.tab_set,
+                                                        "agreement": agree}, indent=2))
     lines = ["# Tab pipeline: end-to-end accuracy on music with known notes", "",
              "Guitar with note ground truth (GuitarSet bossa-nova comping, 4 players; GAPS classical-guitar "
              "test pieces incl. a choro) mixed with violin + clarinet (URMP) + percussion (RawStems) at the "
@@ -258,6 +311,19 @@ def evaluate(args) -> int:
         for grp, r in rows.items():
             sa = f"{r['string_acc_matched']:.3f}" if r["string_acc_matched"] is not None else "-"
             lines.append(f"| {mset} | {cond} | {grp} | {r['precision']:.3f} | {r['recall']:.3f} | {r['f1']:.3f} | {sa} |")
+    if agree:
+        lines += ["", f"## How reliable the review signals are ({args.tab_set}, all material)", "",
+                  "`scripts/verify_tab.py` flags tab notes that few of the distinct checkpoints "
+                  f"({', '.join(DISTINCT)}; guitar_kroma = guitar-gaps) hear, and notes that >= 2 of them decode but "
+                  "the tab lacks.  The same rules applied here:", "",
+                  "| condition | signal | notes | correct / real |", "|---|---|---|---|"]
+        for cond, a in agree.items():
+            for n, v in a["by_checkpoints"].items():
+                share = f"{v['correct'] / v['notes']:.2f}" if v["notes"] else "-"
+                lines.append(f"| {cond} | tab note heard by {n} of {len(DISTINCT)} | {v['notes']} | {share} |")
+            v = a["heard_by_2plus_not_in_tab"]
+            share = f"{v['real'] / v['notes']:.2f}" if v["notes"] else "-"
+            lines.append(f"| {cond} | heard by >= 2, not in the tab | {v['notes']} | {share} |")
     (rep / "tab_benchmark.md").write_text("\n".join(lines) + "\n")
     print("wrote reports/tab_benchmark.md")
     return 0
@@ -320,6 +386,9 @@ def main() -> int:
     e.add_argument("--sep", default=str(BENCH / "sep"))
     e.add_argument("--sets", nargs="+", default=["kroma", "fl", "gaps_paper", "fl+gaps_paper"],
                    help="checkpoint sets to compare; '+' joins checkpoints whose posteriors are averaged")
+    e.add_argument("--tab-set", default="fl+gaps_paper",
+                   help="the set the tab uses: its review signals are calibrated (needs the kroma, fl and "
+                        "gaps_paper sets too)")
     g = sub.add_parser("guitarset")
     g.add_argument("--guitarset", default=str(ROOT / "data" / "raw" / "guitarset"))
     g.add_argument("--sets", nargs="+", default=["kroma", "fl", "gaps_paper", "fl+gaps_paper"])

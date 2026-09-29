@@ -16,7 +16,9 @@
 6. Repeats: a note played in one statement of a repeated passage but missing at the repeat,
    although >= 2 checkpoints hear it there.
 Writes <tab dir>/verification.json, verification.md and review.json (bars to check by ear, with
-reasons; shown by scripts/make_tab_check.py).
+reasons; shown by scripts/make_tab_check.py, which also marks the notes only one checkpoint hears).
+If reports/tab_benchmark.json holds the benchmark's precision per agreement level
+(scripts/bench_tab.py eval), the number of wrong notes in the tab is estimated from it.
 """
 from __future__ import annotations
 
@@ -106,6 +108,19 @@ def main() -> int:
     agree = votes.sum(1)
     rep["model_agreement"] = {"checkpoints": names, "duplicates": dup,
                               "notes_by_n_checkpoints": {int(k): int((agree == k).sum()) for k in range(len(names) + 1)}}
+    rep["uncertain_notes"] = [{k: n[k] for k in ("bar", "beat", "sixteenth", "string", "fret", "midi")} | {"checkpoints": int(a)}
+                              for n, a in zip(notes, agree) if a <= 1]
+    bench = ROOT / "reports" / "tab_benchmark.json"
+    cal = json.loads(bench.read_text()).get("agreement", {}).get("separated from mix") if bench.exists() else None
+    if cal and len(names) == len(cal["by_checkpoints"]):
+        est, var = 0.0, 0.0
+        for k, v in cal["by_checkpoints"].items():
+            n_k, q = int((agree == int(k)).sum()), 1 - v["correct"] / max(v["notes"], 1)
+            est += n_k * q
+            var += n_k ** 2 * q * (1 - q) / max(v["notes"], 1)
+        rep["expected_wrong_notes"] = {"estimate": round(est), "range_95": [round(est - 2 * var ** 0.5), round(est + 2 * var ** 0.5)],
+                                       "basis": "benchmark precision per agreement level (separated from mix), "
+                                                "applied to this tab's agreement counts"}
     tab_on = np.array([n["onset_s"] for n in notes])
     tab_p = np.array([n["midi"] for n in notes])
     extra: dict[tuple, set] = {}
@@ -282,6 +297,10 @@ def markdown(rep: dict) -> str:
     ma = rep["model_agreement"]
     lines.append(f"| tab notes detected by k of {len(ma['checkpoints'])} guitar checkpoints (k: count) | "
                  + ", ".join(f"{k}: {v}" for k, v in ma["notes_by_n_checkpoints"].items()) + " |")
+    ew = rep.get("expected_wrong_notes")
+    if ew:
+        lines.append(f"| expected wrong notes (benchmark precision per agreement level) | about {ew['estimate']} "
+                     f"({ew['range_95'][0]}-{ew['range_95'][1]}) of {rep['n_notes']} |")
     lines.append(f"| notes heard by >= 2 checkpoints but not in the tab | {rep['notes_heard_by_2plus_checkpoints_not_in_tab']['count']} |")
     lines.append(f"| repeated passages: note missing at the repeat although heard | {rep['repeats']['missing_at_repeat_but_heard']} |")
     lines += [f"| max fret span in a chord / max fret | {p['max_span']} / {p['max_fret']} |",

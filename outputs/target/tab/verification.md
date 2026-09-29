@@ -10,6 +10,7 @@
 | bars with chroma cosine < 0.7 | none |
 | agreement with Basic Pitch (onset F1, 50 ms) | 0.67 (pitch class 0.69) |
 | tab notes detected by k of 3 guitar checkpoints (k: count) | 0: 0, 1: 79, 2: 107, 3: 1070 |
+| expected wrong notes (benchmark precision per agreement level) | about 92 (71-112) of 1256 |
 | notes heard by >= 2 checkpoints but not in the tab | 34 |
 | repeated passages: note missing at the repeat although heard | 8 |
 | max fret span in a chord / max fret | 4 / 7 |

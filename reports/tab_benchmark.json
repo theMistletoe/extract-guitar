@@ -96,6 +96,110 @@
         "string_acc_matched": 0.7814432989690722
       }
     },
+    "fl | clean guitar": {
+      "guitarset": {
+        "precision": 0.9261637239165329,
+        "recall": 0.8918083462132921,
+        "f1": 0.9086614173228346,
+        "n_ref": 647,
+        "n_est": 623,
+        "string_acc_matched": 0.7712305025996534
+      },
+      "gaps": {
+        "precision": 0.9603174603174603,
+        "recall": 0.8962962962962963,
+        "f1": 0.9272030651340996,
+        "n_ref": 270,
+        "n_est": 252,
+        "string_acc_matched": null
+      },
+      "all": {
+        "precision": 0.936,
+        "recall": 0.8931297709923665,
+        "f1": 0.9140625000000001,
+        "n_ref": 917,
+        "n_est": 875,
+        "string_acc_matched": 0.7712305025996534
+      }
+    },
+    "fl | separated from mix": {
+      "guitarset": {
+        "precision": 0.918918918918919,
+        "recall": 0.8408037094281299,
+        "f1": 0.8781275221953189,
+        "n_ref": 647,
+        "n_est": 592,
+        "string_acc_matched": 0.8051470588235294
+      },
+      "gaps": {
+        "precision": 0.9212598425196851,
+        "recall": 0.8666666666666667,
+        "f1": 0.8931297709923663,
+        "n_ref": 270,
+        "n_est": 254,
+        "string_acc_matched": null
+      },
+      "all": {
+        "precision": 0.9196217494089834,
+        "recall": 0.8484187568157033,
+        "f1": 0.8825865002836075,
+        "n_ref": 917,
+        "n_est": 846,
+        "string_acc_matched": 0.8051470588235294
+      }
+    },
+    "gaps_paper | clean guitar": {
+      "guitarset": {
+        "precision": 0.9265175718849841,
+        "recall": 0.8964451313755796,
+        "f1": 0.9112333071484683,
+        "n_ref": 647,
+        "n_est": 626,
+        "string_acc_matched": 0.7793103448275862
+      },
+      "gaps": {
+        "precision": 0.9494163424124513,
+        "recall": 0.9037037037037037,
+        "f1": 0.9259962049335864,
+        "n_ref": 270,
+        "n_est": 257,
+        "string_acc_matched": null
+      },
+      "all": {
+        "precision": 0.9331823329558324,
+        "recall": 0.8985823336968375,
+        "f1": 0.9155555555555556,
+        "n_ref": 917,
+        "n_est": 883,
+        "string_acc_matched": 0.7793103448275862
+      }
+    },
+    "gaps_paper | separated from mix": {
+      "guitarset": {
+        "precision": 0.9234527687296417,
+        "recall": 0.8763523956723338,
+        "f1": 0.8992862807295797,
+        "n_ref": 647,
+        "n_est": 614,
+        "string_acc_matched": 0.783068783068783
+      },
+      "gaps": {
+        "precision": 0.9169811320754717,
+        "recall": 0.9,
+        "f1": 0.908411214953271,
+        "n_ref": 270,
+        "n_est": 265,
+        "string_acc_matched": null
+      },
+      "all": {
+        "precision": 0.9215017064846417,
+        "recall": 0.8833151581243184,
+        "f1": 0.9020044543429844,
+        "n_ref": 917,
+        "n_est": 879,
+        "string_acc_matched": 0.783068783068783
+      }
+    },
     "fl+gaps_paper | clean guitar": {
       "guitarset": {
         "precision": 0.937799043062201,
@@ -146,6 +250,49 @@
         "n_ref": 917,
         "n_est": 868,
         "string_acc_matched": 0.7712765957446809
+      }
+    }
+  },
+  "tab_set": "fl+gaps_paper",
+  "agreement": {
+    "clean guitar": {
+      "by_checkpoints": {
+        "3": {
+          "notes": 756,
+          "correct": 732
+        },
+        "2": {
+          "notes": 85,
+          "correct": 74
+        },
+        "1": {
+          "notes": 41,
+          "correct": 27
+        }
+      },
+      "heard_by_2plus_not_in_tab": {
+        "notes": 13,
+        "real": 5
+      }
+    },
+    "separated from mix": {
+      "by_checkpoints": {
+        "3": {
+          "notes": 731,
+          "correct": 705
+        },
+        "2": {
+          "notes": 94,
+          "correct": 79
+        },
+        "1": {
+          "notes": 43,
+          "correct": 23
+        }
+      },
+      "heard_by_2plus_not_in_tab": {
+        "notes": 6,
+        "real": 2
       }
     }
   }
