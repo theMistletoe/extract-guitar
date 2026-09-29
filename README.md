@@ -103,6 +103,14 @@ of the time, two 84 %, only one 53 %; applied to the target's counts this predic
 notes out of 1256 ([`verification.md`](outputs/target/tab/verification.md)), and the checker marks the
 79 single-checkpoint notes.
 
+`scripts/render_tab_audio.py` plays the tab back as audio (FluidSynth, FluidR3_GM nylon guitar, MIT):
+one MIDI channel per string, each string damped at the transcribed end of its note, per-note
+velocity measured in the stem, and an EQ (within +-6 dB) toward the stem's long-term spectrum.
+[`outputs/target/tab/audio/frevo_tab_guitar.mp3`](outputs/target/tab/audio/frevo_tab_guitar.mp3)
+keeps the recording's timing and pitch (aligned with the stem to within the 1.5 ms measurement
+step); `frevo_tab_guitar_practice_110.mp3` is the tab's grid at a steady 110 BPM with a count-in and
+a click.
+
 ## Reproducing the experiments
 
 ```bash

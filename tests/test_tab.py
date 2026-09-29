@@ -191,3 +191,48 @@ def test_check_page_and_synth():
     assert 'class="u"' not in html and "__LEGEND__" not in html
     html = mtc.page({"title": "T"}, notes, {}, times, 2, uncertain={(3, 2)}, uncertain_correct=0.53)
     assert html.count('<b class="u">3</b>') == 1 and "約 53 %" in html
+
+
+def _script(name):
+    import importlib.util
+    import pathlib
+
+    spec = importlib.util.spec_from_file_location(name, pathlib.Path(__file__).resolve().parents[1] / "scripts" / f"{name}.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_render_grid_roundtrip_and_string_damping():
+    r = _script("render_tab_audio")
+    beats = 1.0 + 0.4 * np.arange(20)
+    centres = np.array([-0.006, 0.353, 0.492, 0.7])
+    q = np.array([0, 1, 2, 3, 4, 13, 22.5])
+    t = r.grid_time(q, 150.0, centres, 0.0)  # 150 BPM: the same 0.4 s beat as ``beats``
+    assert np.allclose(r.time_to_q(t + 1.0, beats, centres), q, atol=1e-9)
+    notes = [{"string": 2, "midi": 52}, {"string": 2, "midi": 55}, {"string": 0, "midi": 43}]
+    ev = r.note_events(notes, np.array([0.1, 0.3, 0.1]), np.array([0.5, 0.6, 0.2]), np.array([80, 90, 70]))
+    # the re-plucked string is damped (fade, note-off, sound off) before its second pluck ...
+    i_on = ev.index(next(e for e in ev if e[2] == "note_on" and e[4] == 55))
+    i_off = ev.index(next(e for e in ev if e[2] == "note_off" and e[4] == 52))
+    assert i_off < i_on and ev[i_on][0] == 0.3
+    # ... and its volume is back up for it
+    assert [e[5] for e in ev[:i_on] if e[3] == 2 and e[2] == "cc" and e[4] == 7][-1] == r.VOLUME
+    cut = [e for e in ev if e[3] == 0 and e[2] == "cc" and e[4] == 120]
+    assert len(cut) == 1 and abs(cut[0][0] - (0.2 + r.DAMP_S)) < 1e-9
+
+
+def test_render_lag_and_eq():
+    r = _script("render_tab_audio")
+    sr = r.SR
+    x = np.zeros(2 * sr)
+    for t in (0.2, 0.55, 0.9, 1.3, 1.6):
+        n = int(t * sr)
+        x[n:n + 2000] += np.sin(2 * np.pi * 196 * np.arange(2000) / sr) * np.exp(-np.arange(2000) / 400)
+    late = np.r_[np.zeros(441), x[:-441]]  # 10 ms
+    assert abs(r.onset_lag(late, x, sr) - 0.010) < 0.002
+    fc = np.array([100.0, 1000.0, 5000.0])
+    y = np.random.default_rng(0).normal(size=(2, sr)).astype(np.float32)
+    assert np.allclose(r.apply_eq(y, sr, fc, np.zeros(3)), y, atol=1e-5)
+    _, g = r.match_eq(y[0], y[0], sr)
+    assert np.abs(g).max() < 1e-6

@@ -19,6 +19,8 @@
 | `frevo_guitar_tab_notes.csv` | 全ノート一覧：小節・拍・16 分位置・発音/終了時刻・音名・弦・フレット・確信度 |
 | `frevo_guitar_tab.ly` | PDF の LilyPond ソース |
 | `frevo_guitar_tab.json` | 実行パラメータ（使用モデル・チェックサム・チューニング・テンポ・拍の時刻・コード位置） |
+| [`audio/frevo_tab_guitar.mp3`](audio/frevo_tab_guitar.mp3) | **演奏音源**：タブ譜をナイロン弦ギターの音で演奏したもの。録音と同じタイミング・ピッチで、原曲と重ねて聴けます（下記） |
+| [`audio/frevo_tab_guitar_practice_110.mp3`](audio/frevo_tab_guitar_practice_110.mp3) | 練習用：一定テンポ ♩=110（原曲は約 156）、A=440、2 小節のカウントとクリックつき |
 | [`check/index.html`](check/index.html) | **耳で確かめるためのチェッカー**（下記） |
 | `check/ab.mp3` | 左耳＝元のギター、右耳＝タブを音にしたもの（ヘッドホンで） |
 | `check/tab_synth.mp3` / `check/stem.mp3` | タブを音にしたもの／元のギター |
@@ -36,6 +38,25 @@
 - **赤い波線のフレット番号** は、3 つの採譜モデルのうち 1 つしか検出しなかった音です（79 音）。再現実験ではこの種の音の約半分（43 音中 20 音）が誤りだったので、まずここを聴くのが効率的です。
 
 違う音が見つかったら、小節番号と内容を教えてもらえれば直します。
+
+## 演奏音源（タブ譜を音にしたもの）
+
+タブ譜に書かれた音（音高・弦・フレット）だけを、サンプリングされたナイロン弦ギターの音で演奏させたものです（`audio/`）。
+
+| ファイル | タイミング | ピッチ | 使い方 |
+|---|---|---|---|
+| `frevo_tab_guitar.mp3`（2:13） | 録音で検出した各音の発音・終了時刻 | 録音と同じ A≈442 Hz | 聴いて楽しむ／原曲と同時に再生して比べる（時間軸が一致） |
+| `frevo_tab_guitar_practice_110.mp3`（3:05） | 譜面どおりの 16 分グリッド（曲の訛りはそのまま）、一定テンポ ♩=110 | A=440 Hz | 練習用。最初に 2 小節（4 拍）のカウント、全拍にウッドブロックのクリック |
+
+- 音源は General MIDI の SoundFont「FluidR3_GM」（MIT ライセンス）の Nylon String Guitar を FluidSynth で鳴らしています。
+- 弦ごとに別チャンネルで鳴らすので、同じ弦を弾き直すと前の音が止まります。各音の終わりで弦をミュートするため、この曲の短く切るコード刻みも再現されます。
+- 各音の強さは、元のギター（stem）の各音の立ち上がり直後の音量から付けています。
+- 音色の周波数バランスは、元のギターに近づけるイコライザー（±6 dB 以内）で整えています。
+- 元のギターとの比較（自動計測）：時間のずれ 0 ms、1 秒ごとの音量の推移の相関 0.85、和音の響き（クロマ）の一致 0.88。低音の 80〜100 Hz は元より 10〜19 dB 弱めです。
+- **タブ譜のとおりに鳴るので、タブ譜の誤りもそのまま聞こえます**（原曲と聴き比べると誤りを見つけやすい）。
+- 奏者のニュアンス（スライド、ビブラート、音色の変化、エンディングのトレモロの細かさなど）は再現しません。GM 音源の音で、実際のギターの音色とは違います。
+- 自然に聞こえるかどうかは耳で確かめていません（こちらでは音を聴けないため、上の数値のみで確認しています）。
+- 練習用のテンポは変えられます：`scripts/render_tab_audio.py --practice-bpm 130`（スチール弦の音にするなら `--program 25`）。
 
 ## 読み方
 
@@ -55,7 +76,7 @@
 3. **ビート・小節**：親指ベースを重み付けしたギター自身のオンセット包絡でビート追跡 → 全オンセットによる最小二乗でビート時刻を補正 → 16 分の訛り位置をクラスタリングして量子化 → 和声変化とベース位置から小節頭を決定。
 4. **弦・フレット割り当て**：（運指 × 左手ポジション）の状態空間で Viterbi。ポジション移動・ストレッチ・鳴っている音を切らないこと等をコスト化し、GuitarSet（奏者が実際に弾いた弦の正解つきデータ）で重みを調整。構造上弾けない和音や無理なストレッチになる場合は、確信度の低い音から落とす（ベース音は優先的に残す）。
 5. **コード名**：8 分単位のテンプレート照合＋ Viterbi 平滑化。
-6. **書き出し**：ASCII / MusicXML / Guitar Pro 5 / LilyPond→PDF / MIDI / CSV、確認用の合成音とチェッカー。
+6. **書き出し**：ASCII / MusicXML / Guitar Pro 5 / LilyPond→PDF / MIDI / CSV、確認用の合成音とチェッカー、演奏音源（FluidSynth）。
 
 ## 精度の実測（正解の分かっている曲での再現実験）
 
@@ -117,6 +138,7 @@ uv sync --extra cpu --extra tab
 uv run --no-sync python scripts/transcribe_tab.py --models fl gaps_paper   # 本ディレクトリを再生成
 uv run --no-sync python scripts/verify_tab.py                              # 自動チェックと要確認リスト
 uv run --no-sync python scripts/make_tab_check.py                          # 合成音とチェッカー
+uv run --no-sync python scripts/render_tab_audio.py                        # 演奏音源（要 fluidsynth と fluid-soundfont-gm）
 # 再現実験（データ取得・分離に CPU で約 1.5 時間）
 uv run --no-sync python scripts/bench_tab.py build
 uv run --no-sync python -m acoustic_separator --input data/bench_tab/mix.wav --quality max --output data/bench_tab/sep
