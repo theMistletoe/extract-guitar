@@ -92,7 +92,11 @@ End-to-end accuracy on music with known notes ([`reports/tab_benchmark.md`](repo
 `scripts/bench_tab.py`): GuitarSet bossa-nova comping and GAPS choro guitar mixed with URMP
 violin/clarinet and percussion at the target's balance, separated with the Champion pipeline,
 then transcribed: note precision 0.930, recall 0.880, F1 0.904 (the earlier single checkpoint:
-0.853); strings match the performer's for 77 % of correctly detected notes.
+0.853); strings match the performer's for 77 % of correctly detected notes.  On clean GuitarSet
+(60 excerpts, [`reports/tab_benchmark_guitarset.md`](reports/tab_benchmark_guitarset.md)) F1 is
+0.913 (earlier: 0.798).  The GAPS-paper checkpoint may have seen GuitarSet in training, so the
+GuitarSet-based numbers can be optimistic; on the benchmark's GAPS pieces, unseen by every
+checkpoint, the gain is smaller (0.912 -> 0.922).
 
 ## Reproducing the experiments
 

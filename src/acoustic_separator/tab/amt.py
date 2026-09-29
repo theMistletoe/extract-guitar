@@ -1,12 +1,17 @@
 """Guitar note transcription with a high-resolution onset/offset-regression CRNN.
 
 Architecture: Kong et al. 2021, "High-resolution piano transcription with pedals by regressing
-onset and offset times" (re-implemented here, state-dict compatible).  Weights: the guitar
-checkpoint of X. Riley (xavriley/midi-transcription-models, MIT licence), used zero-shot.  Only
-the safetensors checkpoint is loaded, so no pickled code is ever executed.
+onset and offset times" (re-implemented here, state-dict compatible).  Weights: X. Riley's guitar
+checkpoints (xavriley/midi-transcription-models, MIT licence), used as released (not fine-tuned
+here), the tab averaging two of them; only safetensors are ever loaded as weights (see
+``_convert_pth``).
 
-On GuitarSet (mic audio, 60 excerpts) this model reaches note-onset F1 0.80 (P 0.87 / R 0.75,
-mir_eval 50 ms) without having been trained on it.
+Note-onset F1 (mir_eval, 50 ms; reports/tab_benchmark*.md), ``fl`` + ``gaps_paper`` averaged
+vs ``kroma`` alone: clean GuitarSet (60 mic excerpts) 0.913 vs 0.798; guitar mixed with violin,
+clarinet and percussion and extracted with the Champion separator 0.904 vs 0.853 (on its GAPS
+choro/classical part, 270 notes unseen by every checkpoint: 0.922 vs 0.914).  ``gaps_paper`` may have been
+trained with GuitarSet, so GuitarSet-based numbers containing it can be optimistic; ``fl`` alone,
+documented as zero-shot on GuitarSet, scores 0.896 there.
 """
 from __future__ import annotations
 

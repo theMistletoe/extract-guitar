@@ -2,6 +2,8 @@
 
 Guitar with note ground truth (GuitarSet bossa-nova comping, 4 players; GAPS classical-guitar test pieces incl. a choro) mixed with violin + clarinet (URMP) + percussion (RawStems) at the target song's balance (guitar about 4.7 dB below the rest), separated with the Champion pipeline (`--quality max`), then transcribed exactly like the target song.  Note F1: onset within 50 ms and same pitch (mir_eval).  String accuracy: share of correctly detected GuitarSet notes placed on the performer's string.  Built by `scripts/bench_tab.py` (129 s, 917 notes).
 
+Caveat: `gaps_paper` may have been trained with GuitarSet (the GAPS paper reports a supervised GuitarSet setting), so its rows on GuitarSet material may be optimistic; the GAPS test pieces (`gaps` rows) are unseen by all checkpoints' documented training data.
+
 | checkpoints | condition | material | precision | recall | F1 | string acc. |
 |---|---|---|---|---|---|---|
 | kroma | clean guitar | guitarset | 0.929 | 0.787 | 0.852 | 0.786 |

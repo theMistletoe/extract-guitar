@@ -3,13 +3,14 @@
 
 Guitar recordings with note ground truth (GuitarSet bossa-nova comping: notes *and* strings;
 GAPS classical-guitar test pieces incl. choro) are mixed with real violin and clarinet stems
-(URMP) and a percussion stem (RawStems), at the target song's balance (guitar ~4.5 dB below the
+(URMP) and a percussion stem (RawStems), at the target song's balance (guitar ~4.7 dB below the
 rest).  The mix is separated with the Champion pipeline exactly as the target song was, then
 transcribed; clean-guitar transcription is the reference condition.
 
     python scripts/bench_tab.py build --guitarset data/raw/guitarset     # -> data/bench_tab/
     python -m acoustic_separator --input data/bench_tab/mix.wav --quality max --output data/bench_tab/sep
-    python scripts/bench_tab.py eval --sets kroma fl+gaps_paper          # -> reports/tab_benchmark.*
+    python scripts/bench_tab.py eval                                     # -> reports/tab_benchmark.*
+    python scripts/bench_tab.py guitarset --guitarset data/raw/guitarset  # clean GuitarSet, 60 excerpts
 
 GuitarSet: Zenodo 3371780 (audio_mono-mic + annotation); GAPS, URMP, RawStems: Hugging Face.
 ``eval`` needs mir_eval and mido (both in the ``tab`` extra).
@@ -40,7 +41,7 @@ URMP_VN = ["01_Jupiter_vn_vc/AuSep_1_vn_01_Jupiter.wav", "02_Sonata_vn_vn/AuSep_
 URMP_CL = ["03_Dance_fl_cl/AuSep_2_cl_03_Dance.wav", "14_Waltz_fl_fl_cl/AuSep_3_cl_14_Waltz.wav",
            "19_Pavane_cl_vn_vc/AuSep_1_cl_19_Pavane.wav"]
 PERC_PATTERN = r"/Rhy/PERC/[^/]*(Shaker|Tamb|Conga|Perc)[^/]*\.flac$"
-# relative levels (dB re guitar RMS): together the accompaniment is ~4.5 dB above the guitar
+# relative levels (dB re guitar RMS): together the accompaniment is ~4.7 dB above the guitar
 LEVELS = {"violin": 1.5, "clarinet": 0.5, "percussion": -4.0}
 PAN = {"guitar": 0.0, "violin": -0.3, "clarinet": 0.3, "percussion": 0.0}
 
@@ -247,6 +248,9 @@ def evaluate(args) -> int:
              "same pitch (mir_eval).  String accuracy: share of correctly detected GuitarSet notes placed on the "
              "performer's string.  Built by `scripts/bench_tab.py` (129 s, "
              f"{len(truth)} notes).", "",
+             "Caveat: `gaps_paper` may have been trained with GuitarSet (the GAPS paper reports a supervised "
+             "GuitarSet setting), so its rows on GuitarSet material may be optimistic; the GAPS test pieces "
+             "(`gaps` rows) are unseen by all checkpoints' documented training data.", "",
              "| checkpoints | condition | material | precision | recall | F1 | string acc. |",
              "|---|---|---|---|---|---|---|"]
     for key, rows in out.items():
@@ -259,6 +263,54 @@ def evaluate(args) -> int:
     return 0
 
 
+def guitarset(args) -> int:
+    """Note-onset F1 on clean GuitarSet mic audio: every 6th excerpt (60, all players and styles)."""
+    import mir_eval
+
+    from acoustic_separator.tab import amt
+
+    gs = Path(args.guitarset)
+    mic = gs / "mic" if (gs / "mic").exists() else gs / "audio_mic"
+    wavs = sorted(mic.glob("*_mic.wav"))[::6]
+    hz = lambda m: 440.0 * 2 ** ((np.asarray(m, float) - 69) / 12)  # noqa: E731
+    models: dict = {}
+    lines = ["# Tab note model on clean GuitarSet (60 mic excerpts, all players and styles)", "",
+             "Every 6th excerpt of GuitarSet's mono mic recordings (steel-string), onset within 50 ms and "
+             f"same pitch (mir_eval), onset threshold {args.thr}, mean over excerpts.  "
+             "`scripts/bench_tab.py guitarset`.", "",
+             "Caveat: the FL checkpoint is documented as zero-shot on GuitarSet, but the GAPS paper reports "
+             "both supervised (GuitarSet-trained) and zero-shot results and does not say which released "
+             "checkpoint is which, so `gaps_paper` (and ensembles containing it) may be optimistic here.", "",
+             "| checkpoints | precision | recall | F1 |", "|---|---|---|---|"]
+    for mset in args.sets:
+        res = []
+        for wav in wavs:
+            base = wav.name.replace("_mic.wav", "")
+            posts = []
+            for m in mset.split("+"):
+                cache = BENCH / "guitarset" / m / f"{base}.npz"
+                if not cache.exists():
+                    x, sr = load_audio(wav)
+                    y16 = resample(x, sr, amt.SR).mean(0)
+                    models[m] = models.get(m) or amt.load_model(m)
+                    cache.parent.mkdir(parents=True, exist_ok=True)
+                    np.savez_compressed(cache, **amt.posteriors(models[m], y16))
+                posts.append(dict(np.load(cache)))
+            post = {k: np.mean([q[k] for q in posts], 0) for k in ("onset", "offset", "frame", "velocity")}
+            est = amt.decode(post, onset_thr=args.thr, frame_thr=0.3)
+            ref = _guitarset_truth(gs / "annotation" / f"{base}.jams", 0.0, 1e9)
+            ri = np.array([[r[0], max(r[1], r[0] + 0.01)] for r in ref])
+            ei = np.c_[est[:, 0], np.maximum(est[:, 1], est[:, 0] + 0.01)]
+            res.append(mir_eval.transcription.precision_recall_f1_overlap(
+                ri, hz([r[2] for r in ref]), ei, hz(est[:, 2]), offset_ratio=None)[:3])
+        p, r, f = np.mean(res, 0)
+        print(f"{mset:24s} P={p:.3f} R={r:.3f} F1={f:.3f}")
+        lines.append(f"| {mset} | {p:.3f} | {r:.3f} | {f:.3f} |")
+    (ROOT / "reports" / "tab_benchmark_guitarset.md").write_text("\n".join(lines) + "\n")
+    print("wrote reports/tab_benchmark_guitarset.md")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -266,10 +318,14 @@ def main() -> int:
     b.add_argument("--guitarset", default=str(ROOT / "data" / "raw" / "guitarset"))
     e = sub.add_parser("eval")
     e.add_argument("--sep", default=str(BENCH / "sep"))
-    e.add_argument("--sets", nargs="+", default=["kroma", "fl+gaps_paper"],
+    e.add_argument("--sets", nargs="+", default=["kroma", "fl", "gaps_paper", "fl+gaps_paper"],
                    help="checkpoint sets to compare; '+' joins checkpoints whose posteriors are averaged")
+    g = sub.add_parser("guitarset")
+    g.add_argument("--guitarset", default=str(ROOT / "data" / "raw" / "guitarset"))
+    g.add_argument("--sets", nargs="+", default=["kroma", "fl", "gaps_paper", "fl+gaps_paper"])
+    g.add_argument("--thr", type=float, default=0.3)
     args = ap.parse_args()
-    return build(args) if args.cmd == "build" else evaluate(args)
+    return {"build": build, "eval": evaluate, "guitarset": guitarset}[args.cmd](args)
 
 
 if __name__ == "__main__":
