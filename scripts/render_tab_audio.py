@@ -39,7 +39,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from acoustic_separator.audio import ffmpeg_exe, load_audio, save_audio  # noqa: E402
+from acoustic_separator.audio import ffmpeg_exe, load_audio, resample, save_audio  # noqa: E402
 
 TAB = ROOT / "outputs" / "target" / "tab"
 SF2_PATHS = ["/usr/share/sounds/sf2/FluidR3_GM.sf2", "/usr/share/soundfonts/FluidR3_GM.sf2",
@@ -237,6 +237,22 @@ def render(ev: list[tuple], cents: float, sf2: Path, clicks: list[tuple] = (), p
     return x
 
 
+def performance(notes: list[dict], stem: np.ndarray, stem_sr: int, cents: float, sf2: Path,
+                program: int = NYLON) -> tuple[np.ndarray, np.ndarray, float, np.ndarray, np.ndarray]:
+    """The notes at their recorded times and at the recording's pitch, with the onset lag removed
+    and the EQ toward the (mono) stem applied: (audio (2, n) at SR, velocities, lag s, EQ fc, EQ gain)."""
+    on = np.array([n["onset_s"] for n in notes])
+    off = np.array([n["offset_s"] for n in notes])
+    vel = velocities(stem, stem_sr, on, np.array([n["midi"] for n in notes]), cents)
+    x = render(note_events(notes, on, off, vel), cents, sf2, program=program)
+    ref = stem if stem_sr == SR else resample(stem[None], stem_sr, SR)[0]
+    lag = onset_lag(x.mean(0), ref, SR)
+    k = int(round(lag * SR))
+    x = x[:, k:] if k > 0 else np.pad(x, ((0, 0), (-k, 0)))
+    fc, gain = match_eq(x.mean(0), ref, SR)
+    return apply_eq(x, SR, fc, gain)[:, : int((len(ref) / SR + 3) * SR)], vel, lag, fc, gain
+
+
 def find_sf2(arg: str | None) -> Path:
     for p in ([arg] if arg else SF2_PATHS):
         if p and Path(p).exists():
@@ -262,20 +278,11 @@ def main() -> int:
     notes, meta = read_tab(tabdir, args.name)
     beats, centres = np.asarray(meta["beat_times_s"]), np.asarray(meta["swing_centres"])
     bpb = meta.get("beats_per_bar", 2)
-    on = np.array([n["onset_s"] for n in notes])
     off = np.array([n["offset_s"] for n in notes])
-    midi = np.array([n["midi"] for n in notes])
     stem, sr = load_audio(ROOT / meta["stem"])
-    vel = velocities(stem.mean(0), sr, on, midi, meta["tuning_cents"])
 
     # 1. the recording's timing and pitch
-    perf = render(note_events(notes, on, off, vel), meta["tuning_cents"], sf2, program=args.program)
-    ref = stem.mean(0) if sr == SR else load_audio(ROOT / meta["stem"], sr=SR)[0].mean(0)
-    lag = onset_lag(perf.mean(0), ref, SR)
-    k = int(round(lag * SR))
-    perf = perf[:, k:] if k > 0 else np.pad(perf, ((0, 0), (-k, 0)))
-    fc, gain = match_eq(perf.mean(0), ref, SR)
-    perf = apply_eq(perf, SR, fc, gain)[:, : int((len(ref) / SR + 3) * SR)]
+    perf, vel, lag, fc, gain = performance(notes, stem.mean(0), sr, meta["tuning_cents"], sf2, args.program)
     mp3(out / "frevo_tab_guitar.mp3", perf)
 
     # 2. practice: steady tempo, standard pitch, count-in and click

@@ -197,8 +197,11 @@ def _script(name):
     import importlib.util
     import pathlib
 
+    import sys
+
     spec = importlib.util.spec_from_file_location(name, pathlib.Path(__file__).resolve().parents[1] / "scripts" / f"{name}.py")
     mod = importlib.util.module_from_spec(spec)
+    sys.modules[name] = mod  # dataclasses look their module up here
     spec.loader.exec_module(mod)
     return mod
 
@@ -236,3 +239,25 @@ def test_render_lag_and_eq():
     assert np.allclose(r.apply_eq(y, sr, fc, np.zeros(3)), y, atol=1e-5)
     _, g = r.match_eq(y[0], y[0], sr)
     assert np.abs(g).max() < 1e-6
+
+
+def test_compare_matching_flux_and_probe(tmp_path):
+    c = _script("compare_tab_audio")
+    # one-to-one matching: same pitch, closest onset within 50 ms
+    m = c.match(np.array([1.0, 1.02, 2.0]), np.array([60, 60, 62]), np.array([1.01, 2.2]), np.array([60, 62]))
+    assert m == {0: 0}
+    # onset flux peaks where a pitch row steps up
+    S = np.full((72, 200), -60.0)
+    S[24, 100:] = -20.0
+    fx = c.onset_flux(S)
+    assert 94 <= int(np.argmax(fx[24])) <= 100 and fx[24].max() > 30 and abs(fx[30]).max() < 1e-9
+    # the probe reads only its folder
+    T = 400
+    st = {k: np.full((72, T), -60, np.float16) for k in ("Ss", "Sr", "Sx")}
+    st["Ss"][55 - c.CQ0, 170:] = -10
+    post = np.zeros((T, 88), np.float16)
+    post[170, 55 - 21] = 0.9
+    np.savez(tmp_path / "state.npz", **st, f=1.0, ens=post, render=post, models=np.array(["a"]), post_a=post)
+    (tmp_path / "notes.csv").write_text("onset_s,offset_s,pitch,string,fret\n2.0,2.3,55,4,0\n")
+    txt = c.probe(tmp_path, 2.0, 55)
+    assert "h1" in txt and "stem, a" in txt and "midi 55 (string 4 fret 0)" in txt

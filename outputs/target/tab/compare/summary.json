@@ -1,0 +1,149 @@
+{
+ "case": "target",
+ "tab_notes": 1256,
+ "reproduction": {
+  "tab_notes_found_in_rendering": 0.98,
+  "rendering_notes": 1268,
+  "f1_tab_vs_rendering": 0.975,
+  "f1_stem_vs_rendering_same_transcriber": 0.969
+ },
+ "timing": {
+  "rendering_vs_tab_onset_ms_median_abs": 3.6,
+  "basic_pitch_vs_tab_onset_ms_median": 1.1,
+  "basic_pitch_vs_tab_onset_ms_p90_abs": 21.2,
+  "bar_lag_ms_median_abs": 0.0,
+  "bars_with_lag_over_20ms": []
+ },
+ "chroma": {
+  "bar_median": 0.89
+ },
+ "candidates": {
+  "missing": 795
+ },
+ "expected_wrong_notes": 138.0,
+ "notes_p_wrong_ge_0.5": 71,
+ "expected_missing_found": 119.0,
+ "missing_p_real_ge_0.5": 28,
+ "most_suspicious_bars": [
+  {
+   "bar": 160,
+   "score": 14.07
+  },
+  {
+   "bar": 161,
+   "score": 13.12
+  },
+  {
+   "bar": 59,
+   "score": 4.93
+  },
+  {
+   "bar": 50,
+   "score": 4.0
+  },
+  {
+   "bar": 157,
+   "score": 3.99
+  },
+  {
+   "bar": 30,
+   "score": 3.88
+  },
+  {
+   "bar": 142,
+   "score": 3.43
+  },
+  {
+   "bar": 73,
+   "score": 3.34
+  },
+  {
+   "bar": 79,
+   "score": 3.32
+  },
+  {
+   "bar": 80,
+   "score": 3.06
+  },
+  {
+   "bar": 131,
+   "score": 3.02
+  },
+  {
+   "bar": 60,
+   "score": 2.98
+  },
+  {
+   "bar": 31,
+   "score": 2.96
+  },
+  {
+   "bar": 19,
+   "score": 2.75
+  },
+  {
+   "bar": 132,
+   "score": 2.75
+  },
+  {
+   "bar": 76,
+   "score": 2.6
+  },
+  {
+   "bar": 137,
+   "score": 2.59
+  },
+  {
+   "bar": 57,
+   "score": 2.46
+  },
+  {
+   "bar": 124,
+   "score": 2.42
+  },
+  {
+   "bar": 74,
+   "score": 2.39
+  },
+  {
+   "bar": 47,
+   "score": 2.31
+  },
+  {
+   "bar": 77,
+   "score": 2.3
+  },
+  {
+   "bar": 122,
+   "score": 2.23
+  },
+  {
+   "bar": 155,
+   "score": 2.16
+  },
+  {
+   "bar": 103,
+   "score": 2.15
+  },
+  {
+   "bar": 22,
+   "score": 2.09
+  },
+  {
+   "bar": 11,
+   "score": 2.07
+  },
+  {
+   "bar": 111,
+   "score": 2.06
+  },
+  {
+   "bar": 141,
+   "score": 2.05
+  },
+  {
+   "bar": 25,
+   "score": 2.04
+  }
+ ]
+}
