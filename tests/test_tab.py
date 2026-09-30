@@ -191,6 +191,8 @@ def test_check_page_and_synth():
     assert 'class="u"' not in html and "__LEGEND__" not in html
     html = mtc.page({"title": "T"}, notes, {}, times, 2, uncertain={(3, 2)}, uncertain_correct=0.53)
     assert html.count('<b class="u">3</b>') == 1 and "約 53 %" in html
+    html = mtc.page({"title": "T"}, notes, {}, times, 2, uncertain={(3, 2)}, edited={(3, 2)})
+    assert '<b class="ed">3</b>' in html and 'class="u"' not in html and "自動レビューで追加・修正" in html
 
 
 def _script(name):

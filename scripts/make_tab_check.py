@@ -104,10 +104,12 @@ def grid_times(meta: dict, n16: int) -> np.ndarray:
 
 def page(meta: dict, notes: list[dict], chords: dict[int, str], times: np.ndarray, n_bars: int,
          review: dict[int, list[str]] | None = None, bars_per_line: int = 4,
-         uncertain: set[tuple[int, int]] | None = None, uncertain_correct: float | None = None) -> str:
+         uncertain: set[tuple[int, int]] | None = None, uncertain_correct: float | None = None,
+         edited: set[tuple[int, int]] | None = None) -> str:
     """``uncertain``: (16th index, tab row with 0 = high e) of notes to mark; ``uncertain_correct``:
-    the share of such notes that were right on the benchmark, for the legend."""
-    review, uncertain = review or {}, uncertain or set()
+    the share of such notes that were right on the benchmark, for the legend; ``edited``: notes
+    added or re-pitched by the reviewed corrections (marked differently)."""
+    review, uncertain, edited = review or {}, uncertain or set(), edited or set()
     cell: dict[int, dict[int, int]] = {}
     for n in notes:
         cell.setdefault(n["q"], {})[5 - n["string"]] = n["fret"]
@@ -140,7 +142,9 @@ def page(meta: dict, notes: list[dict], chords: dict[int, str], times: np.ndarra
                 for r in range(6):
                     fr = cell.get(q, {}).get(r)
                     txt = (str(fr) if fr is not None else "").ljust(3, "-")
-                    if fr is not None and (q, r) in uncertain:
+                    if fr is not None and (q, r) in edited:
+                        txt = f'<b class="ed">{fr}</b>' + txt[len(str(fr)):]
+                    elif fr is not None and (q, r) in uncertain:
                         txt = f'<b class="u">{fr}</b>' + txt[len(str(fr)):]
                     rows[r].append(f'<span class="c q{q}">{txt}</span>')
             count.append(" ")
@@ -159,6 +163,9 @@ def page(meta: dict, notes: list[dict], chords: dict[int, str], times: np.ndarra
         if uncertain_correct is not None:
             legend += f"再現実験では、この種の音で正しかったのは約 {round(uncertain_correct * 100)} % でした。"
         legend += "<br>"
+    if edited:
+        legend += (f"青い二重下線のフレット番号：自動レビューで追加・修正した音（{len(edited)} 音）。"
+                   "削除した音は小節番号の説明に出ます。<br>")
     return TEMPLATE.replace("__SYSTEMS__", "\n".join(systems)).replace("__DATA__", json.dumps(data)) \
         .replace("__TITLE__", html.escape(f"{meta.get('title', 'Frevo!')} タブ譜チェッカー")) \
         .replace("__LEGEND__", legend)
@@ -187,6 +194,7 @@ main{padding:6px 16px 120px}
 .bl.rv{color:#c62828;font-weight:700}
 .bl.rv1{color:#d9730d;font-weight:600}
 .u{color:var(--unc);text-decoration:underline wavy;text-underline-offset:2px}
+.ed{color:var(--accent);text-decoration:underline double;text-underline-offset:2px}
 #rvlist a{color:#c62828;cursor:pointer;margin-right:6px}
 #time{font-variant-numeric:tabular-nums;min-width:120px;display:inline-block}
 </style></head><body>
@@ -306,8 +314,19 @@ def main() -> int:
         one = json.loads(bench_path.read_text()).get("agreement", {}).get("separated from mix", {}) \
             .get("by_checkpoints", {}).get("1")
         share = one["correct"] / one["notes"] if one and one["notes"] else None
+    edited = set()
+    ed_path = tabdir / f"{args.name}_edits.json"
+    if ed_path.exists():  # reviewed corrections: mark added / re-pitched notes, explain every edit in its bar
+        for e in json.loads(ed_path.read_text())["edits"]:
+            pitch = e.get("new_pitch", e["pitch"])
+            what = {"remove": f"{e['pitch']} を削除", "add": f"{e['pitch']} を追加",
+                    "replace": f"{e['pitch']} → {pitch} に修正"}[e["action"]]
+            review.setdefault(e["bar"], []).append(f"自動レビューで修正（MIDI {what}）: {e['why']}")
+            if e["action"] != "remove":
+                hit = [n for n in notes if n["midi"] == pitch and abs(n["onset_s"] - e["t"]) < 0.03]
+                edited |= {(n["q"], 5 - n["string"]) for n in hit}
     (out / "index.html").write_text(page({"title": "Frevo!"}, notes, chords, times, n_bars, review,
-                                         uncertain=uncertain, uncertain_correct=share))
+                                         uncertain=uncertain, uncertain_correct=share, edited=edited))
     print(f"wrote {out}: tab_synth.mp3, stem.mp3, ab.mp3, index.html")
     return 0
 

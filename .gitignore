@@ -50,3 +50,6 @@ phase9_r4.log
 !outputs/target/tab/check/*.mp3
 # The tab rendered as guitar audio (scripts/render_tab_audio.py)
 !outputs/target/tab/audio/*.mp3
+
+# Agent review work files (scripts/review_tab.py pack)
+outputs/target/tab/compare/review/
