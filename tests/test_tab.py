@@ -261,3 +261,17 @@ def test_compare_matching_flux_and_probe(tmp_path):
     (tmp_path / "notes.csv").write_text("onset_s,offset_s,pitch,string,fret\n2.0,2.3,55,4,0\n")
     txt = c.probe(tmp_path, 2.0, 55)
     assert "h1" in txt and "stem, a" in txt and "midi 55 (string 4 fret 0)" in txt
+
+
+def test_transcribe_apply_edits():
+    tt = _script("transcribe_tab")
+    notes = np.array([[1.0, 1.3, 55, 0.9], [1.0, 1.3, 43, 0.8], [2.0, 2.2, 60, 0.4]])
+    post = {k: np.zeros((400, 88)) for k in ("onset", "frame")}
+    post["onset"][150, 62 - amt.BEGIN_NOTE] = 0.6
+    post["frame"][150:170, 62 - amt.BEGIN_NOTE] = 0.9
+    edits = [{"action": "remove", "t": 2.01, "pitch": 60}, {"action": "replace", "t": 1.0, "pitch": 55, "new_pitch": 67},
+             {"action": "add", "t": 1.5, "pitch": 62}, {"action": "remove", "t": 3.0, "pitch": 40}]
+    out, rep = tt.apply_edits(notes, post, 1.0, edits)
+    assert rep["remove"] == 1 and rep["replace"] == 1 and rep["add"] == 1 and len(rep["not_found"]) == 1
+    assert [int(p) for p in out[:, 2]] == [67, 43, 62]
+    assert abs(out[2, 1] - 1.7) < 0.011 and abs(out[2, 3] - 0.6) < 1e-9

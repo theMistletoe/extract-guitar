@@ -43,7 +43,47 @@ def build_parser() -> argparse.ArgumentParser:
                    help="window shifts (s) averaged over for the CRNN posteriors")
     p.add_argument("--tuning-cents", type=float, default=None, help="override the tuning estimate")
     p.add_argument("--no-cache", action="store_true")
+    p.add_argument("--edits", default=None,
+                   help="JSON list of reviewed corrections (default: <out>/<name>_edits.json if it exists)")
+    p.add_argument("--no-edits", action="store_true", help="ignore the corrections file")
     return p
+
+
+def apply_edits(notes: np.ndarray, post: dict, f: float, edits: list[dict]) -> tuple[np.ndarray, dict]:
+    """Reviewed corrections on the decoded notes (onset, offset, pitch, conf; original time).
+
+    Each edit names a note by its time ``t`` (s) and ``pitch``: ``remove`` it, ``replace`` its pitch
+    with ``new_pitch`` (same times), or ``add`` a note there (it lasts until the ensemble frame
+    posterior at that pitch drops below 0.3, 80 ms - 1.5 s).  A remove / replace that finds no
+    note within 30 ms is reported and skipped.
+    """
+    notes = notes.copy()
+    done = {"remove": 0, "replace": 0, "add": 0, "not_found": []}
+    drop = np.zeros(len(notes), bool)
+    added = []
+    for e in edits:
+        t, p = float(e["t"]), int(e["pitch"])
+        if e["action"] == "add":
+            a = int(round(t / f * amt.FPS))
+            fr = post["frame"][a:a + 150, p - amt.BEGIN_NOTE]
+            n = int(np.argmax(fr < 0.3)) if (fr < 0.3).any() else len(fr)
+            conf = float(post["onset"][max(a - 4, 0):a + 5, p - amt.BEGIN_NOTE].max())
+            added.append([t, t + float(np.clip(n / amt.FPS * f, 0.08, 1.5)), p, conf])
+            done["add"] += 1
+            continue
+        hit = np.nonzero((notes[:, 2] == p) & (np.abs(notes[:, 0] - t) < 0.03) & ~drop)[0]
+        if not len(hit):
+            done["not_found"].append(e)
+            continue
+        i = hit[np.argmin(np.abs(notes[hit, 0] - t))]
+        if e["action"] == "remove":
+            drop[i] = True
+            done["remove"] += 1
+        elif e["action"] == "replace":
+            notes[i, 2] = int(e["new_pitch"])
+            done["replace"] += 1
+    notes = np.r_[notes[~drop], np.array(added, float).reshape(-1, 4)]
+    return notes[np.argsort(notes[:, 0], kind="stable")], done
 
 
 def model_posteriors(model: str, y16: np.ndarray, out: Path, key: dict, tta, no_cache: bool) -> dict:
@@ -121,7 +161,13 @@ def main(argv: list[str] | None = None) -> int:
     print(f"[rhythm] {bpm:.1f} BPM, swing 16ths at {np.round(centres, 3)}, bar 1 at {beats[0]:.3f}s",
           flush=True)
 
-    # 3. quantise, merge duplicates ---------------------------------------------------
+    # 3. reviewed corrections (after the beat grid, so bar numbers stay put), quantise, merge duplicates
+    edits_path = Path(args.edits) if args.edits else out / f"{args.name}_edits.json"
+    edit_report = None
+    if not args.no_edits and edits_path.exists():
+        notes, edit_report = apply_edits(notes, post, f, json.loads(edits_path.read_text())["edits"])
+        print(f"[edits] {edit_report['remove']} removed, {edit_report['replace']} re-pitched, {edit_report['add']} added"
+              f" from {edits_path.name}; not found: {len(edit_report['not_found'])}", flush=True)
     q = rhythm.quantize(notes[:, 0], beats, bounds)
     kf, ph = rhythm.phases(notes[:, 1], beats)
     q_end = 4 * (kf + ph)
@@ -200,6 +246,8 @@ def main(argv: list[str] | None = None) -> int:
         "chord_changes": len(symbols),
         "chord_symbols": {str(k): v for k, v in sorted(symbols.items())},  # 16th position -> symbol
         "pdf": pdf is not None,
+        "edits": ({"file": edits_path.name} | {k: v for k, v in edit_report.items() if k != "not_found"}
+                  | {"not_found": len(edit_report["not_found"])}) if edit_report else None,
         "runtime_s": round(time.perf_counter() - t0, 1),
     }
     (out / f"{args.name}.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False))
