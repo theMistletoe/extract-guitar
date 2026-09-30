@@ -276,4 +276,4 @@ def test_transcribe_apply_edits():
     out, rep = tt.apply_edits(notes, post, 1.0, edits)
     assert rep["remove"] == 1 and rep["replace"] == 1 and rep["add"] == 1 and len(rep["not_found"]) == 1
     assert [int(p) for p in out[:, 2]] == [67, 43, 62]
-    assert abs(out[2, 1] - 1.7) < 0.011 and abs(out[2, 3] - 0.6) < 1e-9
+    assert abs(out[2, 1] - 1.7) < 0.011 and out[2, 3] == tt.REVIEWED and out[0, 3] == tt.REVIEWED

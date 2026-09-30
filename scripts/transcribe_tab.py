@@ -49,13 +49,17 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
+REVIEWED = 0.9  # confidence given to notes added or re-pitched by a reviewed correction
+
+
 def apply_edits(notes: np.ndarray, post: dict, f: float, edits: list[dict]) -> tuple[np.ndarray, dict]:
     """Reviewed corrections on the decoded notes (onset, offset, pitch, conf; original time).
 
     Each edit names a note by its time ``t`` (s) and ``pitch``: ``remove`` it, ``replace`` its pitch
     with ``new_pitch`` (same times), or ``add`` a note there (it lasts until the ensemble frame
     posterior at that pitch drops below 0.3, 80 ms - 1.5 s).  A remove / replace that finds no
-    note within 30 ms is reported and skipped.
+    note within 30 ms is reported and skipped.  Added and re-pitched notes get a confidence of at
+    least ``REVIEWED`` so that the fingering step keeps them rather than a note nobody checked.
     """
     notes = notes.copy()
     done = {"remove": 0, "replace": 0, "add": 0, "not_found": []}
@@ -67,7 +71,7 @@ def apply_edits(notes: np.ndarray, post: dict, f: float, edits: list[dict]) -> t
             a = int(round(t / f * amt.FPS))
             fr = post["frame"][a:a + 150, p - amt.BEGIN_NOTE]
             n = int(np.argmax(fr < 0.3)) if (fr < 0.3).any() else len(fr)
-            conf = float(post["onset"][max(a - 4, 0):a + 5, p - amt.BEGIN_NOTE].max())
+            conf = max(float(post["onset"][max(a - 4, 0):a + 5, p - amt.BEGIN_NOTE].max()), REVIEWED)
             added.append([t, t + float(np.clip(n / amt.FPS * f, 0.08, 1.5)), p, conf])
             done["add"] += 1
             continue
@@ -81,6 +85,7 @@ def apply_edits(notes: np.ndarray, post: dict, f: float, edits: list[dict]) -> t
             done["remove"] += 1
         elif e["action"] == "replace":
             notes[i, 2] = int(e["new_pitch"])
+            notes[i, 3] = max(notes[i, 3], REVIEWED)
             done["replace"] += 1
     notes = np.r_[notes[~drop], np.array(added, float).reshape(-1, 4)]
     return notes[np.argsort(notes[:, 0], kind="stable")], done

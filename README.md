@@ -111,6 +111,18 @@ keeps the recording's timing and pitch (aligned with the stem to within the 1.5 
 step); `frevo_tab_guitar_practice_110.mp3` is the tab's grid at a steady 110 BPM with a count-in and
 a click.
 
+Checking the tab against the recording (`.claude/workflows/tab-review.js`, a Claude Code workflow):
+`scripts/compare_tab_audio.py` renders the tab at the recorded times and compares rendering and stem
+(transcription round trip, onset timing, chroma per 8th, per-note evidence, notes the tab lacks),
+calibrated on the benchmark (`--bench`, `reports/tab_compare_calibration.json`).  Flagged spots are
+judged by two agents (acoustic analyst, adversarial skeptic) through `compare_tab_audio.py probe`;
+in a blind test on the benchmark ([`reports/tab_compare_agents.md`](reports/tab_compare_agents.md)) the
+acoustic reviewer's "wrong note" calls were right 14 times out of 16 (the statistical flags alone: 13
+of 25).  `scripts/review_tab.py` packs the flags and turns the verdicts into
+`outputs/target/tab/frevo_guitar_tab_edits.json`, which `transcribe_tab.py` applies.  On the target:
+no timing drift (median bar lag 0 ms), 98 % of tab notes transcribed back from the rendering, and
+31 corrections (17 removed, 2 re-pitched, 12 added) from 266 reviewed spots.
+
 ## Reproducing the experiments
 
 ```bash

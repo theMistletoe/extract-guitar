@@ -178,6 +178,13 @@ def collect(args) -> dict:
             edits.append(base | {"action": "add", "why": a["reason"], "skeptic_agrees": True})
             row["applied"] = "add"
         table.append(row)
+    # an addition that a re-pitched note already provides (same pitch within 60 ms) is dropped
+    made = [(e["t"], e["new_pitch"]) for e in edits if e["action"] == "replace"]
+    for e in [e for e in edits if e["action"] == "add" and any(abs(e["t"] - t) < 0.06 and e["pitch"] == q for t, q in made)]:
+        edits.remove(e)
+        for row in table:
+            if row["type"] == "missing" and row["t"] == e["t"] and row["pitch"] == e["pitch"]:
+                row["applied"] = "covered by a re-pitched note"
     (tabdir / f"{args.name}_edits.json").write_text(json.dumps({
         "source": "scripts/compare_tab_audio.py flags, reviewed by two agents (compare/agent_verdicts.csv)",
         "rule": "tab note: the acoustic reviewer calls it wrong (blind benchmark: 14 of 16 such calls right); "

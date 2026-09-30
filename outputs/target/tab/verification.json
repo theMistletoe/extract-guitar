@@ -1,13 +1,13 @@
 {
-  "n_notes": 1256,
+  "n_notes": 1250,
   "support": {
     "ensemble": [
       "fl",
       "gaps_paper"
     ],
-    "onset_post_median": 0.7538997530937195,
-    "weak_notes(onset<0.4)": 107,
-    "frame_post_median": 0.8896294832229614
+    "onset_post_median": 0.7544270753860474,
+    "weak_notes(onset<0.4)": 103,
+    "frame_post_median": 0.8900493383407593
   },
   "model_agreement": {
     "checkpoints": [
@@ -20,8 +20,8 @@
     },
     "notes_by_n_checkpoints": {
       "0": 0,
-      "1": 79,
-      "2": 107,
+      "1": 67,
+      "2": 113,
       "3": 1070
     }
   },
@@ -45,30 +45,12 @@
       "checkpoints": 1
     },
     {
-      "bar": 9,
-      "beat": 1,
-      "sixteenth": 4,
-      "string": 1,
-      "fret": 2,
-      "midi": 66,
-      "checkpoints": 1
-    },
-    {
       "bar": 14,
       "beat": 2,
       "sixteenth": 3,
       "string": 3,
       "fret": 2,
       "midi": 57,
-      "checkpoints": 1
-    },
-    {
-      "bar": 17,
-      "beat": 2,
-      "sixteenth": 3,
-      "string": 2,
-      "fret": 3,
-      "midi": 62,
       "checkpoints": 1
     },
     {
@@ -81,15 +63,6 @@
       "checkpoints": 1
     },
     {
-      "bar": 25,
-      "beat": 1,
-      "sixteenth": 4,
-      "string": 1,
-      "fret": 2,
-      "midi": 66,
-      "checkpoints": 1
-    },
-    {
       "bar": 26,
       "beat": 1,
       "sixteenth": 3,
@@ -99,12 +72,12 @@
       "checkpoints": 1
     },
     {
-      "bar": 31,
+      "bar": 28,
       "beat": 1,
       "sixteenth": 4,
-      "string": 4,
-      "fret": 1,
-      "midi": 51,
+      "string": 2,
+      "fret": 0,
+      "midi": 59,
       "checkpoints": 1
     },
     {
@@ -117,48 +90,12 @@
       "checkpoints": 1
     },
     {
-      "bar": 47,
+      "bar": 36,
       "beat": 2,
       "sixteenth": 3,
-      "string": 1,
-      "fret": 1,
-      "midi": 65,
-      "checkpoints": 1
-    },
-    {
-      "bar": 49,
-      "beat": 2,
-      "sixteenth": 1,
       "string": 3,
-      "fret": 2,
-      "midi": 57,
-      "checkpoints": 1
-    },
-    {
-      "bar": 50,
-      "beat": 1,
-      "sixteenth": 3,
-      "string": 1,
-      "fret": 1,
-      "midi": 65,
-      "checkpoints": 1
-    },
-    {
-      "bar": 50,
-      "beat": 1,
-      "sixteenth": 3,
-      "string": 3,
-      "fret": 0,
-      "midi": 55,
-      "checkpoints": 1
-    },
-    {
-      "bar": 52,
-      "beat": 1,
-      "sixteenth": 1,
-      "string": 2,
       "fret": 4,
-      "midi": 63,
+      "midi": 59,
       "checkpoints": 1
     },
     {
@@ -177,15 +114,6 @@
       "string": 5,
       "fret": 3,
       "midi": 48,
-      "checkpoints": 1
-    },
-    {
-      "bar": 58,
-      "beat": 2,
-      "sixteenth": 3,
-      "string": 2,
-      "fret": 1,
-      "midi": 60,
       "checkpoints": 1
     },
     {
@@ -297,30 +225,12 @@
       "checkpoints": 1
     },
     {
-      "bar": 82,
-      "beat": 2,
-      "sixteenth": 1,
-      "string": 1,
-      "fret": 3,
-      "midi": 67,
-      "checkpoints": 1
-    },
-    {
       "bar": 97,
       "beat": 2,
       "sixteenth": 4,
       "string": 4,
       "fret": 2,
       "midi": 52,
-      "checkpoints": 1
-    },
-    {
-      "bar": 98,
-      "beat": 1,
-      "sixteenth": 3,
-      "string": 4,
-      "fret": 0,
-      "midi": 50,
       "checkpoints": 1
     },
     {
@@ -360,12 +270,30 @@
       "checkpoints": 1
     },
     {
+      "bar": 106,
+      "beat": 2,
+      "sixteenth": 1,
+      "string": 3,
+      "fret": 1,
+      "midi": 56,
+      "checkpoints": 1
+    },
+    {
       "bar": 109,
       "beat": 1,
       "sixteenth": 3,
       "string": 1,
       "fret": 3,
       "midi": 67,
+      "checkpoints": 1
+    },
+    {
+      "bar": 111,
+      "beat": 2,
+      "sixteenth": 1,
+      "string": 4,
+      "fret": 5,
+      "midi": 55,
       "checkpoints": 1
     },
     {
@@ -423,24 +351,6 @@
       "checkpoints": 1
     },
     {
-      "bar": 130,
-      "beat": 2,
-      "sixteenth": 1,
-      "string": 2,
-      "fret": 3,
-      "midi": 62,
-      "checkpoints": 1
-    },
-    {
-      "bar": 131,
-      "beat": 1,
-      "sixteenth": 1,
-      "string": 3,
-      "fret": 3,
-      "midi": 58,
-      "checkpoints": 1
-    },
-    {
       "bar": 131,
       "beat": 1,
       "sixteenth": 3,
@@ -456,6 +366,15 @@
       "string": 3,
       "fret": 2,
       "midi": 57,
+      "checkpoints": 1
+    },
+    {
+      "bar": 132,
+      "beat": 1,
+      "sixteenth": 3,
+      "string": 3,
+      "fret": 0,
+      "midi": 55,
       "checkpoints": 1
     },
     {
@@ -523,38 +442,11 @@
     },
     {
       "bar": 157,
-      "beat": 1,
-      "sixteenth": 2,
-      "string": 3,
-      "fret": 3,
-      "midi": 58,
-      "checkpoints": 1
-    },
-    {
-      "bar": 157,
-      "beat": 1,
-      "sixteenth": 2,
-      "string": 4,
-      "fret": 3,
-      "midi": 53,
-      "checkpoints": 1
-    },
-    {
-      "bar": 157,
       "beat": 2,
       "sixteenth": 2,
       "string": 3,
       "fret": 4,
       "midi": 59,
-      "checkpoints": 1
-    },
-    {
-      "bar": 158,
-      "beat": 2,
-      "sixteenth": 1,
-      "string": 5,
-      "fret": 4,
-      "midi": 49,
       "checkpoints": 1
     },
     {
@@ -739,21 +631,21 @@
     }
   ],
   "expected_wrong_notes": {
-    "estimate": 92,
+    "estimate": 87,
     "range_95": [
-      71,
-      112
+      67,
+      107
     ],
     "basis": "benchmark precision per agreement level (separated from mix), applied to this tab's agreement counts"
   },
   "notes_heard_by_2plus_checkpoints_not_in_tab": {
-    "count": 34,
+    "count": 28,
     "examples": [
       [
-        11.5,
-        59,
+        11.55,
+        60,
         [
-          "gaps",
+          "fl",
           "gaps_paper"
         ]
       ],
@@ -782,6 +674,14 @@
         ]
       ],
       [
+        26.5,
+        66,
+        [
+          "fl",
+          "gaps"
+        ]
+      ],
+      [
         29.25,
         55,
         [
@@ -795,14 +695,6 @@
         [
           "fl",
           "gaps"
-        ]
-      ],
-      [
-        41.050000000000004,
-        56,
-        [
-          "gaps",
-          "gaps_paper"
         ]
       ],
       [
@@ -822,14 +714,6 @@
         ]
       ],
       [
-        46.45,
-        57,
-        [
-          "fl",
-          "gaps"
-        ]
-      ],
-      [
         46.95,
         49,
         [
@@ -838,24 +722,8 @@
         ]
       ],
       [
-        48.050000000000004,
-        55,
-        [
-          "fl",
-          "gaps"
-        ]
-      ],
-      [
         56.800000000000004,
         53,
-        [
-          "fl",
-          "gaps"
-        ]
-      ],
-      [
-        61.35,
-        52,
         [
           "fl",
           "gaps"
@@ -883,22 +751,6 @@
         [
           "gaps",
           "gaps_paper"
-        ]
-      ],
-      [
-        83.55000000000001,
-        56,
-        [
-          "fl",
-          "gaps"
-        ]
-      ],
-      [
-        91.55000000000001,
-        55,
-        [
-          "fl",
-          "gaps"
         ]
       ],
       [
@@ -959,14 +811,6 @@
       ],
       [
         112.05000000000001,
-        52,
-        [
-          "fl",
-          "gaps"
-        ]
-      ],
-      [
-        112.05000000000001,
         64,
         [
           "gaps",
@@ -988,11 +832,43 @@
           "gaps",
           "gaps_paper"
         ]
+      ],
+      [
+        125.4,
+        58,
+        [
+          "fl",
+          "gaps_paper"
+        ]
+      ],
+      [
+        125.55000000000001,
+        58,
+        [
+          "fl",
+          "gaps_paper"
+        ]
+      ],
+      [
+        125.55000000000001,
+        61,
+        [
+          "gaps",
+          "gaps_paper"
+        ]
+      ],
+      [
+        126.30000000000001,
+        61,
+        [
+          "gaps",
+          "gaps_paper"
+        ]
       ]
     ]
   },
   "uncovered_activations": {
-    "count": 10,
+    "count": 11,
     "examples": [
       [
         44.13,
@@ -1030,9 +906,9 @@
         0.1
       ],
       [
-        103.94,
-        55,
-        0.1
+        40.55,
+        57,
+        0.12
       ],
       [
         41.43,
@@ -1043,64 +919,75 @@
         44.35,
         59,
         0.09
+      ],
+      [
+        11.54,
+        60,
+        0.11
       ]
     ]
   },
   "chroma_cosine": {
-    "median_frame": 0.8915997674877488,
-    "median_bar": 0.8779348989368937,
-    "p10_bar": 0.8288059471095314,
+    "median_frame": 0.887633950473083,
+    "median_bar": 0.8765051336074697,
+    "p10_bar": 0.8252044188776627,
     "bars_below_0.7": [],
     "lowest_bars": [
       127,
-      21,
-      115,
-      15,
-      83,
-      38,
-      114,
+      96,
       37,
-      11,
-      100,
-      17,
-      159
+      15,
+      21,
+      47,
+      114,
+      131,
+      129,
+      67,
+      38,
+      33
     ]
   },
   "basic_pitch_agreement": {
     "n_bp": 1173,
-    "onset_f1": 0.6661177439275423,
-    "precision_vs_tab": 0.6441082802547771,
-    "recall_of_tab": 0.6896845694799659,
-    "onset_f1_pitch_class": 0.6850555784273363
+    "onset_f1": 0.6727197688815517,
+    "precision_vs_tab": 0.652,
+    "recall_of_tab": 0.6947996589940324,
+    "onset_f1_pitch_class": 0.6908790755262071
   },
   "playability": {
     "max_span": 4,
-    "chords_span_ge4": 2,
+    "chords_span_ge4": 3,
     "max_fret": 7,
     "median_position": 3.0,
     "shifts_gt_5_frets": 0
   },
   "repeats": {
-    "repeated_bar_pairs": 73,
-    "missing_at_repeat_but_heard": 8,
+    "repeated_bar_pairs": 72,
+    "missing_at_repeat_but_heard": 7,
     "examples": [
       [
-        11,
-        7,
-        59,
-        27
+        17,
+        6,
+        62,
+        1
+      ],
+      [
+        17,
+        6,
+        62,
+        33
+      ],
+      [
+        17,
+        6,
+        62,
+        65
       ],
       [
         19,
         0,
         48,
         67
-      ],
-      [
-        76,
-        5,
-        52,
-        28
       ],
       [
         114,
@@ -1135,33 +1022,33 @@
     ]
   },
   "review_bars": {
-    "count": 70,
+    "count": 64,
     "top": [
       160,
       161,
-      50,
-      59,
-      76,
-      58,
-      124,
-      131,
       132,
-      142,
-      157,
-      11,
+      17,
+      59,
+      124,
       19,
       31,
+      58,
+      76,
       101,
       103,
-      105,
       117,
-      130,
+      131,
+      142,
       155,
+      157,
       3,
       8,
-      9,
+      11,
       12,
-      14
+      14,
+      22,
+      26,
+      28
     ]
   }
 }
