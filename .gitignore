@@ -45,3 +45,11 @@ phase9_r4.log
 !outputs/target/original.wav
 !outputs/target/best/acoustic_guitar.wav
 !outputs/target/best/non_acoustic_guitar.wav
+
+# Listening aids for checking the tab by ear (small MP3s, scripts/make_tab_check.py)
+!outputs/target/tab/check/*.mp3
+# The tab rendered as guitar audio (scripts/render_tab_audio.py)
+!outputs/target/tab/audio/*.mp3
+
+# Agent review work files (scripts/review_tab.py pack)
+outputs/target/tab/compare/review/

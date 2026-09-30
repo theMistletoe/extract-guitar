@@ -65,6 +65,64 @@ Model weights are downloaded once from Hugging Face into `~/.cache/acoustic-sepa
 (override with `ACOUSTIC_SEPARATOR_CACHE`) and their sha256 is recorded. Weights, datasets
 and audio are never committed to git.
 
+## Guitar tablature of the target song
+
+[`outputs/target/tab/`](outputs/target/tab/README.md) holds a tab transcribed from the extracted
+guitar stem: engraved [PDF](outputs/target/tab/frevo_guitar_tab.pdf) (notation + TAB),
+[ASCII tab](outputs/target/tab/frevo_guitar_tab.txt), Guitar Pro 5, MusicXML, recording-aligned
+MIDI and a note CSV.  [`check/index.html`](outputs/target/tab/check/index.html) plays the extracted
+guitar, a rendering of the tab, or both (left/right) while highlighting the current 16th, with
+the bars flagged by the automatic checks marked for listening first.  It has not been checked
+against the recording by ear yet.
+
+```bash
+uv sync --extra cpu --extra tab
+uv run --no-sync python scripts/transcribe_tab.py   # --stem x.wav --out dir --title ... for other songs
+uv run --no-sync python scripts/verify_tab.py       # consistency checks + bars to review
+uv run --no-sync python scripts/make_tab_check.py   # listening aids
+```
+
+Pipeline (`src/acoustic_separator/tab/`): tuning estimate -> high-resolution onset/offset
+regression CRNN (Kong et al. architecture) averaging two of X. Riley's guitar checkpoints (FL and
+GAPS paper version; `.pth` files are read with `torch.load(weights_only=True)` and a NumPy-only
+allowlist, then kept as safetensors) -> beat grid from the guitar's own onsets with swing-aware
+16th quantisation -> string/fret Viterbi over fingering x hand position -> chord symbols.
+
+End-to-end accuracy on music with known notes ([`reports/tab_benchmark.md`](reports/tab_benchmark.md),
+`scripts/bench_tab.py`): GuitarSet bossa-nova comping and GAPS choro guitar mixed with URMP
+violin/clarinet and percussion at the target's balance, separated with the Champion pipeline,
+then transcribed: note precision 0.930, recall 0.880, F1 0.904 (the earlier single checkpoint:
+0.853; FL alone 0.883, GAPS paper version alone 0.902); strings match the performer's for 77 % of
+correctly detected notes.  On clean GuitarSet (60 excerpts,
+[`reports/tab_benchmark_guitarset.md`](reports/tab_benchmark_guitarset.md)) F1 is 0.913 (earlier:
+0.798).  The GAPS-paper checkpoint may have seen GuitarSet in training, so the GuitarSet-based
+numbers can be optimistic; on the benchmark's GAPS pieces (270 notes, unseen by every checkpoint)
+the gain is smaller (0.914 -> 0.922; FL alone 0.893, GAPS paper alone 0.908).  The same benchmark
+calibrates the review signals: tab notes that all three distinct checkpoints hear are right 96 %
+of the time, two 84 %, only one 53 %; applied to the target's counts this predicts about 90 wrong
+notes out of 1256 ([`verification.md`](outputs/target/tab/verification.md)), and the checker marks the
+79 single-checkpoint notes.
+
+`scripts/render_tab_audio.py` plays the tab back as audio (FluidSynth, FluidR3_GM nylon guitar, MIT):
+one MIDI channel per string, each string damped at the transcribed end of its note, per-note
+velocity measured in the stem, and an EQ (within +-6 dB) toward the stem's long-term spectrum.
+[`outputs/target/tab/audio/frevo_tab_guitar.mp3`](outputs/target/tab/audio/frevo_tab_guitar.mp3)
+keeps the recording's timing and pitch (aligned with the stem to within the 1.5 ms measurement
+step); `frevo_tab_guitar_practice_110.mp3` is the tab's grid at a steady 110 BPM with a count-in and
+a click.
+
+Checking the tab against the recording (`.claude/workflows/tab-review.js`, a Claude Code workflow):
+`scripts/compare_tab_audio.py` renders the tab at the recorded times and compares rendering and stem
+(transcription round trip, onset timing, chroma per 8th, per-note evidence, notes the tab lacks),
+calibrated on the benchmark (`--bench`, `reports/tab_compare_calibration.json`).  Flagged spots are
+judged by two agents (acoustic analyst, adversarial skeptic) through `compare_tab_audio.py probe`;
+in a blind test on the benchmark ([`reports/tab_compare_agents.md`](reports/tab_compare_agents.md)) the
+acoustic reviewer's "wrong note" calls were right 14 times out of 16 (the statistical flags alone: 13
+of 25).  `scripts/review_tab.py` packs the flags and turns the verdicts into
+`outputs/target/tab/frevo_guitar_tab_edits.json`, which `transcribe_tab.py` applies.  On the target:
+no timing drift (median bar lag 0 ms), 98 % of tab notes transcribed back from the rendering, and
+31 corrections (17 removed, 2 re-pitched, 12 added) from 266 reviewed spots.
+
 ## Reproducing the experiments
 
 ```bash
@@ -94,12 +152,14 @@ See `docs/experiments.md` for the full list of commands that produced every expe
 configs/models.yaml        model catalog (HF repo, file, sha256, licence)
 configs/pipelines/         direct / two-stage / cascade / ensemble pipelines
 src/acoustic_separator/    cli, audio, inference, pipeline, ensemble, evaluation, proxy,
-                           mixing/augment (synthetic data), report, tracking, models/
-scripts/                   benchmark, download_models, prepare_dataset, train, evaluate, run_target
+                           mixing/augment (synthetic data), report, tracking, models/,
+                           tab/ (guitar tablature: amt, rhythm, fretboard, chords, export)
+scripts/                   benchmark, download_models, prepare_dataset, train, evaluate, run_target,
+                           transcribe_tab, verify_tab, make_tab_check, bench_tab
 datasets/manifest.csv      every source file used, with licence and split
 experiments/               one folder per experiment + results.csv
 artifacts/champion/        current Champion (history.jsonl keeps every past Champion)
 artifacts/refiner/rN/      learned gain refiners (model.pt ~300 KB + train_log.json)
-outputs/target/            target-song candidates, best/, report.html
+outputs/target/            target-song candidates, best/, report.html, tab/ (guitar tab)
 reports/final_report.md    final evaluation
 ```

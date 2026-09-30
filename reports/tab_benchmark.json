@@ -1,0 +1,299 @@
+{
+  "segments": [
+    {
+      "source": "guitarset",
+      "name": "00_BN2-166-Ab_comp",
+      "start": 0.0,
+      "end": 20.0,
+      "accomp_db": 4.65
+    },
+    {
+      "source": "guitarset",
+      "name": "02_BN3-154-E_comp",
+      "start": 21.5,
+      "end": 41.5,
+      "accomp_db": 4.68
+    },
+    {
+      "source": "guitarset",
+      "name": "04_BN1-147-Gb_comp",
+      "start": 43.0,
+      "end": 63.0,
+      "accomp_db": 4.7
+    },
+    {
+      "source": "guitarset",
+      "name": "05_BN3-119-G_comp",
+      "start": 64.5,
+      "end": 84.5,
+      "accomp_db": 4.67
+    },
+    {
+      "source": "gaps",
+      "name": "126_XD1wc",
+      "start": 86.0,
+      "end": 106.0,
+      "accomp_db": 4.67
+    },
+    {
+      "source": "gaps",
+      "name": "112_mf1wc",
+      "start": 107.5,
+      "end": 127.5,
+      "accomp_db": 4.66
+    }
+  ],
+  "results": {
+    "kroma | clean guitar": {
+      "guitarset": {
+        "precision": 0.9288321167883211,
+        "recall": 0.7867078825347759,
+        "f1": 0.8518828451882845,
+        "n_ref": 647,
+        "n_est": 548,
+        "string_acc_matched": 0.7858546168958742
+      },
+      "gaps": {
+        "precision": 0.9607843137254902,
+        "recall": 0.9074074074074074,
+        "f1": 0.9333333333333333,
+        "n_ref": 270,
+        "n_est": 255,
+        "string_acc_matched": null
+      },
+      "all": {
+        "precision": 0.9389788293897883,
+        "recall": 0.822246455834242,
+        "f1": 0.8767441860465117,
+        "n_ref": 917,
+        "n_est": 803,
+        "string_acc_matched": 0.7858546168958742
+      }
+    },
+    "kroma | separated from mix": {
+      "guitarset": {
+        "precision": 0.920303605313093,
+        "recall": 0.749613601236476,
+        "f1": 0.8262350936967633,
+        "n_ref": 647,
+        "n_est": 527,
+        "string_acc_matched": 0.7814432989690722
+      },
+      "gaps": {
+        "precision": 0.9446640316205533,
+        "recall": 0.8851851851851852,
+        "f1": 0.9139579349904398,
+        "n_ref": 270,
+        "n_est": 253,
+        "string_acc_matched": null
+      },
+      "all": {
+        "precision": 0.9282051282051282,
+        "recall": 0.7895310796074155,
+        "f1": 0.8532704773129052,
+        "n_ref": 917,
+        "n_est": 780,
+        "string_acc_matched": 0.7814432989690722
+      }
+    },
+    "fl | clean guitar": {
+      "guitarset": {
+        "precision": 0.9261637239165329,
+        "recall": 0.8918083462132921,
+        "f1": 0.9086614173228346,
+        "n_ref": 647,
+        "n_est": 623,
+        "string_acc_matched": 0.7712305025996534
+      },
+      "gaps": {
+        "precision": 0.9603174603174603,
+        "recall": 0.8962962962962963,
+        "f1": 0.9272030651340996,
+        "n_ref": 270,
+        "n_est": 252,
+        "string_acc_matched": null
+      },
+      "all": {
+        "precision": 0.936,
+        "recall": 0.8931297709923665,
+        "f1": 0.9140625000000001,
+        "n_ref": 917,
+        "n_est": 875,
+        "string_acc_matched": 0.7712305025996534
+      }
+    },
+    "fl | separated from mix": {
+      "guitarset": {
+        "precision": 0.918918918918919,
+        "recall": 0.8408037094281299,
+        "f1": 0.8781275221953189,
+        "n_ref": 647,
+        "n_est": 592,
+        "string_acc_matched": 0.8051470588235294
+      },
+      "gaps": {
+        "precision": 0.9212598425196851,
+        "recall": 0.8666666666666667,
+        "f1": 0.8931297709923663,
+        "n_ref": 270,
+        "n_est": 254,
+        "string_acc_matched": null
+      },
+      "all": {
+        "precision": 0.9196217494089834,
+        "recall": 0.8484187568157033,
+        "f1": 0.8825865002836075,
+        "n_ref": 917,
+        "n_est": 846,
+        "string_acc_matched": 0.8051470588235294
+      }
+    },
+    "gaps_paper | clean guitar": {
+      "guitarset": {
+        "precision": 0.9265175718849841,
+        "recall": 0.8964451313755796,
+        "f1": 0.9112333071484683,
+        "n_ref": 647,
+        "n_est": 626,
+        "string_acc_matched": 0.7793103448275862
+      },
+      "gaps": {
+        "precision": 0.9494163424124513,
+        "recall": 0.9037037037037037,
+        "f1": 0.9259962049335864,
+        "n_ref": 270,
+        "n_est": 257,
+        "string_acc_matched": null
+      },
+      "all": {
+        "precision": 0.9331823329558324,
+        "recall": 0.8985823336968375,
+        "f1": 0.9155555555555556,
+        "n_ref": 917,
+        "n_est": 883,
+        "string_acc_matched": 0.7793103448275862
+      }
+    },
+    "gaps_paper | separated from mix": {
+      "guitarset": {
+        "precision": 0.9234527687296417,
+        "recall": 0.8763523956723338,
+        "f1": 0.8992862807295797,
+        "n_ref": 647,
+        "n_est": 614,
+        "string_acc_matched": 0.783068783068783
+      },
+      "gaps": {
+        "precision": 0.9169811320754717,
+        "recall": 0.9,
+        "f1": 0.908411214953271,
+        "n_ref": 270,
+        "n_est": 265,
+        "string_acc_matched": null
+      },
+      "all": {
+        "precision": 0.9215017064846417,
+        "recall": 0.8833151581243184,
+        "f1": 0.9020044543429844,
+        "n_ref": 917,
+        "n_est": 879,
+        "string_acc_matched": 0.783068783068783
+      }
+    },
+    "fl+gaps_paper | clean guitar": {
+      "guitarset": {
+        "precision": 0.937799043062201,
+        "recall": 0.9088098918083463,
+        "f1": 0.9230769230769231,
+        "n_ref": 647,
+        "n_est": 627,
+        "string_acc_matched": 0.7738095238095238
+      },
+      "gaps": {
+        "precision": 0.9607843137254902,
+        "recall": 0.9074074074074074,
+        "f1": 0.9333333333333333,
+        "n_ref": 270,
+        "n_est": 255,
+        "string_acc_matched": null
+      },
+      "all": {
+        "precision": 0.9444444444444444,
+        "recall": 0.9083969465648855,
+        "f1": 0.9260700389105058,
+        "n_ref": 917,
+        "n_est": 882,
+        "string_acc_matched": 0.7738095238095238
+      }
+    },
+    "fl+gaps_paper | separated from mix": {
+      "guitarset": {
+        "precision": 0.9230769230769231,
+        "recall": 0.8717156105100463,
+        "f1": 0.8966613672496025,
+        "n_ref": 647,
+        "n_est": 611,
+        "string_acc_matched": 0.7712765957446809
+      },
+      "gaps": {
+        "precision": 0.9455252918287937,
+        "recall": 0.9,
+        "f1": 0.922201138519924,
+        "n_ref": 270,
+        "n_est": 257,
+        "string_acc_matched": null
+      },
+      "all": {
+        "precision": 0.9297235023041475,
+        "recall": 0.8800436205016358,
+        "f1": 0.9042016806722689,
+        "n_ref": 917,
+        "n_est": 868,
+        "string_acc_matched": 0.7712765957446809
+      }
+    }
+  },
+  "tab_set": "fl+gaps_paper",
+  "agreement": {
+    "clean guitar": {
+      "by_checkpoints": {
+        "3": {
+          "notes": 756,
+          "correct": 732
+        },
+        "2": {
+          "notes": 85,
+          "correct": 74
+        },
+        "1": {
+          "notes": 41,
+          "correct": 27
+        }
+      },
+      "heard_by_2plus_not_in_tab": {
+        "notes": 13,
+        "real": 5
+      }
+    },
+    "separated from mix": {
+      "by_checkpoints": {
+        "3": {
+          "notes": 731,
+          "correct": 705
+        },
+        "2": {
+          "notes": 94,
+          "correct": 79
+        },
+        "1": {
+          "notes": 43,
+          "correct": 23
+        }
+      },
+      "heard_by_2plus_not_in_tab": {
+        "notes": 6,
+        "real": 2
+      }
+    }
+  }
+}

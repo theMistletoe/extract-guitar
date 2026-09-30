@@ -1,0 +1,159 @@
+{
+ "notes": {
+  "features": [
+   "post_ens",
+   "votes",
+   "bp"
+  ],
+  "mean": [
+   0.7542415448048148,
+   2.792626728110599,
+   0.8099078341013825
+  ],
+  "std": [
+   0.13648226344839415,
+   0.5132717993769477,
+   0.39237371872659904
+  ],
+  "coef": [
+   -0.9471233055639103,
+   -0.08704232576750309,
+   -0.28667266096603006
+  ],
+  "intercept": -3.289911348898158,
+  "n": 868,
+  "positives": 61,
+  "cv_auc": 0.8643630527962297,
+  "cv_average_precision": 0.33372408258854624,
+  "cv_calibration": [
+   {
+    "p_range": [
+     0.0,
+     0.2
+    ],
+    "n": 785,
+    "positive_rate": 0.03949044585987261
+   },
+   {
+    "p_range": [
+     0.2,
+     0.5
+    ],
+    "n": 58,
+    "positive_rate": 0.29310344827586204
+   },
+   {
+    "p_range": [
+     0.5,
+     0.8
+    ],
+    "n": 25,
+    "positive_rate": 0.52
+   },
+   {
+    "p_range": [
+     0.8,
+     1.01
+    ],
+    "n": 0,
+    "positive_rate": null
+   }
+  ],
+  "feature_set": "models",
+  "compared": {
+   "confidence": {
+    "cv_auc": 0.859,
+    "cv_average_precision": 0.351
+   },
+   "models": {
+    "cv_auc": 0.864,
+    "cv_average_precision": 0.334
+   },
+   "models+context": {
+    "cv_auc": 0.845,
+    "cv_average_precision": 0.307
+   },
+   "all": {
+    "cv_auc": 0.856,
+    "cv_average_precision": 0.367
+   }
+  }
+ },
+ "missing": {
+  "features": [
+   "post_ens"
+  ],
+  "mean": [
+   0.06775331224742076
+  ],
+  "std": [
+   0.09425162796881294
+  ],
+  "coef": [
+   1.0062437851508093
+  ],
+  "intercept": -2.696392482382059,
+  "n": 401,
+  "positives": 38,
+  "cv_auc": 0.7438741481803682,
+  "cv_average_precision": 0.21239870525632548,
+  "cv_calibration": [
+   {
+    "p_range": [
+     0.0,
+     0.2
+    ],
+    "n": 355,
+    "positive_rate": 0.08450704225352113
+   },
+   {
+    "p_range": [
+     0.2,
+     0.5
+    ],
+    "n": 40,
+    "positive_rate": 0.175
+   },
+   {
+    "p_range": [
+     0.5,
+     0.8
+    ],
+    "n": 5,
+    "positive_rate": 0.2
+   },
+   {
+    "p_range": [
+     0.8,
+     1.01
+    ],
+    "n": 1,
+    "positive_rate": 0.0
+   }
+  ],
+  "feature_set": "confidence",
+  "compared": {
+   "confidence": {
+    "cv_auc": 0.744,
+    "cv_average_precision": 0.212
+   },
+   "models": {
+    "cv_auc": 0.732,
+    "cv_average_precision": 0.218
+   },
+   "models+context": {
+    "cv_auc": 0.593,
+    "cv_average_precision": 0.161
+   },
+   "all": {
+    "cv_auc": 0.537,
+    "cv_average_precision": 0.134
+   }
+  }
+ },
+ "baselines": {
+  "notes_by_votes_auc": 0.7362321490239097,
+  "notes_by_post_ens_auc": 0.8678570703069454,
+  "missing_by_n_models_auc": 0.6337538060026098
+ }
+}
